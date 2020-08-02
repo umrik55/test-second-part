@@ -1,0 +1,17 @@
+{
+  "name": "api_inventory",
+  "version": "1.0.0",
+  "dependencies": {
+    "@frangiskos/mssql": "0.0.2",
+    "body-parser": "^1.19.0",
+    "consign": "^0.1.6",
+    "cron": "^1.7.2",
+    "express": "^4.17.1",
+    "hbs": "^4.0.6",
+    "jsftp": "^2.1.3",
+    "mongodb": "^2.2.36",
+    "nconf": "^0.9.1",
+    "node-fetch": "^2.6.0",
+    "request": "^2.88.0"
+  }
+}

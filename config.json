@@ -1,0 +1,11 @@
+{
+  "ServerPort": 3000,
+  "urldb": "mongodb://localhost:27017/fueldb",
+  "urls_services": {
+    "hostGetAwp": "http://test.asotr.ttc.net.ua/",
+    "hostGetAsdu": "http://gpsapi.kpt.kiev.ua/"
+  },
+  "local_api_services": {
+    "patch_zero_ways": "data/trip0.json"
+  }
+}

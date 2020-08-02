@@ -1,0 +1,32 @@
+﻿<!-- 20200729 редставления помилки виконання  -->
+<html>
+
+<head>
+	<title>Помилка</title>
+	<meta charset="utf-8" />
+
+	<link rel="stylesheet" type="text/css" href="../../bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="../../style.css" />
+	<link rel="stylesheet" href="../../font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="../../fonts.css" />
+	<script type="text/javascript" src="../../bootstrap.min.js"></script>
+</head>
+
+<body>
+	{{> menu}}
+	{{> header_2}}
+	<div class="clearfix"></div>
+	<div class="container">
+		<div class="row">
+			<h1>Помилка при виконанні</h1>
+
+			Більш детально:
+			<div>{{errit}}</div>
+
+			<br><a href="/repport" class="btn btn-sm btn-primary">Назад</a>
+
+		</div><!-- row -->
+	</div><!-- container -->
+    {{> footer}}
+</body>
+<html>

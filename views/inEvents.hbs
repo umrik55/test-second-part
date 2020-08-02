@@ -1,0 +1,291 @@
+﻿<!-- 20200729 форма формирование мониторинга Списку дій водіїв, що надійшли з АСОП -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список дій водіїв, що надійшли з АСОП</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="fonts.css" />
+    <link rel="stylesheet" type="text/css" href="gridview.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap-datepicker.css" />
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <script src="gridview.js"></script>
+    <script src="jquery.js"></script>
+    <script type="text/javascript" src="bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
+</head>
+
+<body>
+    {{> menu}}
+	{{> header_2}}
+	
+    <h2 align="center">Список дій водіїв, що надійшли з АСОП</h2>
+	<div id="wrapper">
+        <div id="ten">
+            <table id='ptable' class="table table-condensed table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Час події</th>
+                        <th>Водій</th>
+                        <th>Рухома одиниця</th>
+                        <th>Завдання на роботу</th>
+                        <th>Маршрут водія</th>
+                        <th>Рейс водія</th>
+                        <th>Дія водія</th>
+                        <!--<th>Детально</th>-->
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        
+        <script>
+            var store;
+            // Получение всех 
+            function GetUsers() {
+                $.ajax({
+                    url: "/api/vausers",
+                    type: "GET",
+                    contentType: "application/json",
+                    success: function (users) {
+                        var rows = "";
+                        $.each(users, function (index, user) {
+                            // добавляем полученные элементы в таблицу
+                            rows += row(user);
+                        })
+                        ////$("table tbody").append(rows);
+                        store = users;
+                    }
+                });
+            }
+            // Получение одного 
+            function GetUser(id) {
+                $.ajax({
+                    url: "/api/vausers/" + id,
+                    type: "GET",
+                    contentType: "application/json",
+                    success: function (user) {
+                        var form = document.forms["userForm"];
+                        form.elements["id"].value = user.id;
+                        form.elements["timestamp"].value = user.timestamp;
+                        form.elements["line"].value = user.ext_driver_id;
+                        form.elements["trip_id"].value = user.duty_code;
+                        form.elements["passengers"].value = user.route;
+                        form.elements["stop_code"].value = user.ext_trip_id;
+                        form.elements["stop_sequence"].value = user.event;
+
+                    }
+                });
+            }
+
+
+            // Добавление 
+            function CreateUser(timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num) {
+                $.ajax({
+                    url: "api/vausers",
+                    contentType: "application/json",
+                    method: "POST",
+                    data: JSON.stringify({
+                        timestamp: timestamp,
+                        line: line,
+                        trip_id: trip_id,
+                        passengers: passengers,
+                        stop_code: stop_code,
+                        stop_sequence: stop_sequence,
+                        location_id: location_id,
+                        product_id: product_id,
+                        card_id: card_id,
+                        doc_num: doc_num
+                    }),
+                    success: function (user) {
+                        reset();
+                        $("table tbody").append(row(user));
+                        g.updateDataStoreRow(user);
+                        g.pgShowLastPage();
+                    }
+                })
+            }
+            // Изменение 
+            function EditUser(userId, timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num) {
+                $.ajax({
+                    url: "api/vausers",
+                    contentType: "application/json",
+                    method: "PUT",
+                    data: JSON.stringify({
+                        id: userId,
+                        timestamp: timestamp,
+                        line: line,
+                        trip_id: trip_id,
+                        passengers: passengers,
+                        stop_code: stop_code,
+                        stop_sequence: stop_sequence,
+                        location_id: location_id,
+                        product_id: product_id,
+                        card_id: card_id,
+                        doc_num: doc_num
+                    }),
+                    success: function (user) {
+                        reset();
+                        $("tr[data-rowid='" + user.id + "']").replaceWith(row(user));
+                        g.updateDataStoreRow(user);
+                    }
+                })
+            }
+
+            // сброс формы
+            function reset() {
+                var form = document.forms["userForm"];
+                form.reset();
+                form.elements["id"].value = 0;
+            }
+
+            // Удаление 
+            function DeleteUser(id) {
+                var isDelete = confirm("Видалити запис?");
+                if (isDelete) {
+                    $.ajax({
+                        url: "api/vausers/" + id,
+                        contentType: "application/json",
+                        method: "DELETE",
+                        success: function (user) {
+                            console.log(user);
+                            $("tr[data-rowid='" + user.id + "']").remove();
+                            g.deleteDataStoreRow(user);
+                        }
+                    })
+                }
+            }
+            // создание строки для таблицы
+            var row = function (user) {
+                if (typeof user.duty_code == "undefined") user.duty_code = " ";
+                if (typeof user.location_id == "undefined") user.location_id = " ";
+                if (typeof user.route == "undefined") user.route = " ";
+                if (typeof user.ext_trip_id == "undefined") user.ext_trip_id = " ";
+                if (typeof user.event == "undefined") user.event = " ";
+                if (typeof user.ext_driver_tb == "undefined") user.ext_driver_tb = " ";
+                if (typeof user.ext_driver_id == "undefined") user.ext_driver_id = " ";
+
+                return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
+                    "<td>" + user.timestamp.substr(0, 10) + " " + user.timestamp.substr(11, 8) + "</td>" +
+                    "<td>" + user.ext_driver_id + "</td>" +
+                    "<td>" + user.location_id + "</td>" +
+                    "<td>" + user.duty_code + "</td>" +
+                    "<td>" + user.route + "</td>" +
+                    "<td>" + user.ext_trip_id + "</td>" +
+                    "<td>" + user.event + "</td>" +
+
+                    //"<td><a class='editLink' data-id='" + user.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>  ";
+					"</tr>";
+            }
+            // сброс значений формы
+            $("#reset").click(function (e) {
+
+                e.preventDefault();
+                reset();
+            })
+
+            // отправка формы
+            $("form").submit(function (e) {
+                e.preventDefault();
+                var id = this.elements["id"].value;
+                var timestamp = this.elements["timestamp"].value;
+                var line = this.elements["line"].value;
+                var trip_id = this.elements["trip_id"].value;
+                var passengers = this.elements["passengers"].value;
+                var stop_code = this.elements["stop_code"].value;
+                var stop_sequence = this.elements["stop_sequence"].value;
+                var location_id = this.elements["location_id"].value;
+                var product_id = this.elements["product_id"].value;
+                var card_id = this.elements["card_id"].value;
+                var doc_num = this.elements["doc_num"].value;
+                if (id == 0)
+                    CreateUser(timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num);
+                else
+                    EditUser(id, timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num);
+            });
+
+            // нажимаем на ссылку Изменить
+            $("body").on("click", ".editLink", function () {
+                var id = $(this).data("id");
+                GetUser(id);
+            })
+            // нажимаем на ссылку Удалить
+            $("body").on("click", ".removeLink", function () {
+                var id = $(this).data("id");
+                DeleteUser(id);
+            })
+
+            function InitPaging(ag) {
+                ag.renderRow = row;
+                var f = function () {
+                    ag.updateDataStore(store);
+                    ag.InitPaging(true, 10);
+                    ag.pgShowFirstPage();
+                };
+                setTimeout(f, 2000);
+            }
+            // загрузка пользователей
+            GetUsers();
+
+            // Code to initialize GridView
+            var g = new GridView('ptable');
+            g.Init();
+            InitPaging(g);
+
+
+
+
+            try {
+                var tablefields =
+                {
+                    sortOrder: 0,
+                    fields:
+                        [
+                            {
+                                name: 'id',
+                                col: 0
+                            },
+                            {
+                                name: 'timestamp',
+                                col: 1
+                            },
+                            {
+                                name: 'ext_driver_id',
+                                col: 2
+                            },
+                            {
+                                name: 'location_id',
+                                col: 3
+                            },
+							 {
+                                name: 'route',
+                                col: 5
+                            },
+							 {
+                                name: 'event',
+                                col: 7
+                            }
+                        ]
+                };
+                g.SetTableFields(tablefields);
+            } catch (e) {
+                alert('tablefields error ' + e.message);
+            }
+        </script>
+
+        <script type="text/javascript">
+            $('.datefuelpicker').datepicker({ 'format': 'yyyy-mm-dd', 'language': 'uk' });
+        </script>
+    </div>
+	{{> footer}}
+</body>
+
+</html>
