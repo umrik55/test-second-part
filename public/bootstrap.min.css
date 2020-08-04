@@ -3002,7 +3002,7 @@ input[type=search] {
 }
 
 .form-group {
-    margin-bottom: 15px
+    margin-bottom: 0px;
 }
 
 .checkbox, .radio {
@@ -6228,31 +6228,13 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
     border-radius: 3px
 }
 
-.close {
-    float: right;
-    font-size: 21px;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
-    filter: alpha(opacity=20);
-    opacity: .2
-}
 
-.close:focus, .close:hover {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-    filter: alpha(opacity=50);
-    opacity: .5
-}
 
 button.close {
     -webkit-appearance: none;
     padding: 0;
     cursor: pointer;
-    background: 0 0;
-    border: 0
+
 }
 
 .modal-open {

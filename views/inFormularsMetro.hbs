@@ -51,35 +51,23 @@
 			display: block;
 		}
 
-		.close {
-			display: inline-block;
-			border: 1px solid #0000cc;
-			color: #0000cc;
-			padding: 0 12px;
-			margin: 10px;
-			text-decoration: none;
-			background: #f2f2f2;
-			font-size: 14pt;
-			cursor: pointer;
-		}
-
-		.close:hover {
-			background: #e6e6ff;
-		}
 	</style>
 
 </head>
 
 <body>
+    {{> loader}}
 	{{> menu_metro}}
 	{{> header}}
+    {{> modalLegend}}
 
-	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
+	<h2 id="DateInfo" align="center" > Транспортна робота філії на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="M1">
 	<div class="modal">
 		<!-- Place at bottom of page -->
 	</div>
 	<div id="wrapper_form">
+        <div class="external-borders">
 		<label for="dateCreate"> </label>
 		<div class="form-group" style="float: left">
 			<select name="rezs" id="rezs" onchange="addChange()" class="form-control" style="width:300px;">
@@ -107,13 +95,14 @@
 						<th>Станція</th>
 						<th>Валідації</th>
 						<th>Обладнання</th>
-						<th>Детально</th>
+                        <!--th>Детально</th>-->
 					</tr>
 				</thead>
 				<tbody>
 				</tbody>
 			</table>
 		</div>
+        </div>
 		<script>
 			//Ожидание списка формуляров :)
 			var gCheck = true;
@@ -137,6 +126,7 @@
 			function GetUsers() {
 				//GetMed();
 				//GetVtk();
+                document.getElementById("loader").style.display = "block";
 				var tDate = document.getElementById('datebegin').value;
 				var data4 = document.getElementById('selRep').value; //текущая филия
 				var tempDateH = new Date();
@@ -158,11 +148,12 @@
 
 							var rows = "";
 							$.each(users, function (index, user) {
-								console.log(user.name);
+								//console.log(user.name);
 								rows += row(user)
 
 							})
 							$("#col").append(rows);
+                            document.getElementById("loader").style.display = "none";
 						}
 					},
 					error: function (error) { alert("Невідома помилка...") }
@@ -276,7 +267,7 @@
 			var row = function (user) {
 				if (!user.validation) user.validation = "-";
 				if (user.obtime == 0) user.obtime = "-";
-	/*			
+	/*
 				var strTD = "";
 				var strTD1 = "";
 
@@ -315,7 +306,7 @@
 				var strTD1 = " bgcolor='#D3D3D3'";
 				//оборудование
 				if (user.obtime === "-") {
-					//strTD = " bgcolor='#FF7518'";  //подсвечиваем красным ;					
+					//strTD = " bgcolor='#FF7518'";  //подсвечиваем красным ;
 					strTD = " bgcolor='#EDBB39'";  //подсвечиваем красным ;
 				} else {
 					var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
@@ -323,7 +314,7 @@
 					var local = localISOTime + ".003Z";
 					if (+Date.parse(local) - Date.parse(user.obtime + ".003Z") <= 180000) {
 						//strTD = " bgcolor='#00ffa1'";   //подсвечиваем зеленым;
-						strTD = " bgcolor='#87F630'";   //подсвечиваем зеленым;						
+						strTD = " bgcolor='#87F630'";   //подсвечиваем зеленым;
 					} else {
 						//strTD = " bgcolor='#FFFF00'";   //;
 						strTD = " bgcolor='#E1F037'";  //подсвечиваем ;желтым ;
@@ -356,9 +347,9 @@
 				return "<tr data-rowid='" + user.id + "'><td" + ">" + user.id + "</td>" +
 					// "<td"+strTD+">"  + user.name + "</td>" +
 					"<td" + ">" + user.name + "</td>" +
-					"<td" + strTD1 + ">" + user.validation + "</td>" +
-					"<td" + strTD + ">" + user.obtime + "</td>" +
-					"<td" + strTD + "><a href='#' class='close' data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
+					"<td" + strTD1 + ">" + user.validation.replace(/T/g, " ").slice(0, -3) + "</td>" +
+					"<td class='close'" + strTD + "data-id='" + user.info + "'>" + user.obtime.replace(/T/g, " ").slice(0, -3) + "</td></tr>"// +
+					//"<td" + strTD + "><a href='#' class='close' data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
 			}
 
 			// нажимаем на ссылку показать оборудование
@@ -433,8 +424,8 @@
 						strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;
 					} else {
 						var duty1 = user.smenTripCount.substr(0, 10);
-						console.log(duty1);
-						console.log(ndate);
+						//console.log(duty1);
+						//console.log(ndate);
 						if (!(duty1 == ndate)) {
 							strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;
 						}

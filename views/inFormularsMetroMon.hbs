@@ -51,29 +51,16 @@
 			display: block;
 		}
 
-		.close {
-			display: inline-block;
-			border: 1px solid #0000cc;
-			color: #0000cc;
-			padding: 0 12px;
-			margin: 10px;
-			text-decoration: none;
-			background: #f2f2f2;
-			font-size: 14pt;
-			cursor: pointer;
-		}
-
-		.close:hover {
-			background: #e6e6ff;
-		}
 	</style>
 
 </head>
 
 <body>
-	{{> menu_metro}}
+    {{> loader}}
+    {{> menu_metro}}
 	{{> header}}
-	
+    {{> modalLegend}}
+
 	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="10">
 	<div class="modal">
@@ -136,6 +123,7 @@
 
 			// Получение всех формуляров
 			function GetUsers() {
+                document.getElementById("loader").style.display = "block";
 				var tDate = document.getElementById('datebegin').value;
 				var data4 = "Mon";
 				var tempDateH = new Date();
@@ -157,7 +145,7 @@
 							var cont = "";
 							var rows = "";
 							$.each(users, function (index, user) {
-								console.log(user.name);
+								//console.log(user.name);
 								cont = row(user);
 								if (cont === "0") {
 								} else {
@@ -165,6 +153,7 @@
 								};
 							})
 							$("#col").append(rows);
+                            document.getElementById("loader").style.display = "none";
 						}
 					},
 					error: function (error) { alert("Невідома помилка...") }
@@ -271,7 +260,7 @@
 			var row = function (user) {
 				if (!user.validation) user.validation = "-";
 				if (user.obtime == 0) user.obtime = "-";
-	/*			
+	/*
 				var strTD = "";
 				var strTD1 = "";
 				//оборудование
@@ -314,7 +303,7 @@
 				var strTD1 = " bgcolor='#D3D3D3'";
 				//оборудование
 				if (user.obtime === "-") {
-					//strTD = " bgcolor='#FF7518'";  //подсвечиваем красным ;					
+					//strTD = " bgcolor='#FF7518'";  //подсвечиваем красным ;
 					strTD = " bgcolor='#EDBB39'";  //подсвечиваем красным ;
 				} else {
 					var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
@@ -322,7 +311,7 @@
 					var local = localISOTime + ".003Z";
 					if (+Date.parse(local) - Date.parse(user.obtime + ".003Z") <= 180000) {
 						//strTD = " bgcolor='#00ffa1'";   //подсвечиваем зеленым;
-						strTD = " bgcolor='#87F630'";   //подсвечиваем зеленым;						
+						strTD = " bgcolor='#87F630'";   //подсвечиваем зеленым;
 					} else {
 						//strTD = " bgcolor='#FFFF00'";   //;
 						strTD = " bgcolor='#E1F037'";  //подсвечиваем ;желтым ;
@@ -345,7 +334,7 @@
 
 				};
 
-		
+
 				if (user.info && user.validation) {
 				};
 				if (user.info) {
@@ -435,8 +424,8 @@
 						strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;
 					} else {
 						var duty1 = user.smenTripCount.substr(0, 10);
-						console.log(duty1);
-						console.log(ndate);
+						//console.log(duty1);
+						//console.log(ndate);
 						if (!(duty1 == ndate)) {
 							strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;
 						}

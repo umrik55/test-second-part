@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+
+        /* The Modal (background) */
+        .modalLegend {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 0;
+            border: 1px solid #888;
+            width: 80%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        @keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        /* The Close Button */
+        .closeLegend {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .closeLegend:hover,
+        .closeLegend:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header-green {
+            padding: 2px 16px;
+            background: linear-gradient(90deg, #87F630 11.65%, rgba(135, 246, 48, 0.28) 79.61%);
+            color: white;
+        }
+
+        .modal-header-yellow {
+            padding: 2px 16px;
+            background: linear-gradient(90deg, #E1F037 29.99%, rgba(225, 240, 55, 0.26) 65.78%);
+            color: white;
+        }
+
+        .modal-header-orange {
+            padding: 2px 16px;
+            background: linear-gradient(90deg, #EDBB39 0%, rgba(237, 187, 57, 0.1) 100%);
+            color: white;
+        }
+
+        .modal-header-grey {
+            padding: 2px 16px;
+            background: linear-gradient(90deg, #7A7E7C 5.56%, rgba(122, 126, 124, 0.12) 76.07%);
+            color: white;
+        }
+
+        .modal-body {padding: 2px 16px;}
+    </style>
+</head>
+<body>
+
+<!-- The Modal green -->
+<div id="myModalGreenLegend" class="modalLegend">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header-green">
+            <span class="closeLegend" style="color: #87F630;">&times;</span>
+            <h2 style="color: white">Критерій зеленого кольору коли:</h2>
+        </div>
+        <div class="modal-body">
+            <b><p>Перевірка по Валідаціям (КПТ):</p></b>
+            <p>Дані останньої валідації надійшли НЕ пізніше <b><em>31 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка по Формулярам (КПТ):</p></b>
+            <p>Водій працює в автоматичному режимі по формуляру по системі АСОП.</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (обладнання):</p></b>
+            <p>Дані з обладнання турнікетів надійшли НЕ пізніше  <b><em>3 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (валідації):</p></b>
+            <p>Дані останньої валідації надійшли НЕ пізніше  <b><em>5 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (обладнання):</p></b>
+            <p>Дані з обладнання турнікетів надійшли НЕ пізніше  <b><em>3 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (валідації):</p></b>
+            <p>Дані останньої валідації надійшли НЕ пізніше  <b><em>5 хвилин</em></b> від поточного часу.</p>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal green -->
+<div id="myModalYellowLegend" class="modalLegend">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header-yellow">
+            <span class="closeLegend" style="color: #E1F037;">&times;</span>
+            <h2 style="color: white">Критерій жовтого кольору коли:</h2>
+        </div>
+        <div class="modal-body">
+            <b><p>Перевірка по Валідаціям (КПТ):</p></b>
+            <p>Дані останньої валідації надійшли не пізніше <b><em>60 хвилин</em></b>, але пізніше <b><em>31 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка по Формулярам (КПТ):</p></b>
+            <p>Водій працює в "ручному" режимі у системі АСОП. Вірогідність відхилення часу роботи за розкладом.</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (обладнання):</p></b>
+            <p>Дані з обладнання турнікетів надійшли пізніше  <b><em>3 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (валідації):</p></b>
+            <p>Дані останньої валідації надійшли пізніше  <b><em>5 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (обладнання):</p></b>
+            <p>Дані з обладнання турнікетів надійшли пізніше  <b><em>3 хвилин</em></b> від поточного часу.</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (валідації):</p></b>
+            <p>Дані останньої валідації надійшли пізніше  <b><em>5 хвилин</em></b> від поточного часу.</p>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal green -->
+<div id="myModalOrangeLegend" class="modalLegend">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header-orange">
+            <span class="closeLegend" style="color: #EDBB39;">&times;</span>
+            <h2 style="color: white">Критерій помаранчового кольору коли:</h2>
+        </div>
+        <div class="modal-body">
+            <b><p>Перевірка по Валідаціям (КПТ):</p></b>
+            <p>Критерій не використовується для даного типу перевірки.</p>
+            <br>
+            <b><p>Перевірка по Формулярам (КПТ):</p></b>
+            <p>Водій не вибрав формуляр по системі АСОП. Робота не фіксується.</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (обладнання):</p></b>
+            <p>Дані з обладнання турнікетів не надходять.</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (валідації):</p></b>
+            <p>Дані по валідаціям не надходять.</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (обладнання):</p></b>
+            <p>Дані з обладнання турнікетів не надходять</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (валідації):</p></b>
+            <p>Дані по валідаціям не надходять.</p>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal green -->
+<div id="myModalGreyLegend" class="modalLegend">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header-grey">
+            <span class="closeLegend" style="color: #D3D3D3;">&times;</span>
+            <h2 style="color: white">Критерій сірого кольору коли:</h2>
+        </div>
+        <div class="modal-body">
+            <b><p>Перевірка по Валідаціям (КПТ):</p></b>
+            <p>За замовчуванням. (Не відповідає жодному з критеріїв ("Зелений", "Жовтий", "Помаранчевий")</p>
+            <br>
+            <b><p>Перевірка по Формулярам (КПТ):</p></b>
+            <p>За замовчуванням. (Не відповідає жодному з критеріїв ("Зелений", "Жовтий", "Помаранчевий")</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (обладнання):</p></b>
+            <p>За замовчуванням. (Не відповідає жодному з критеріїв ("Зелений", "Жовтий", "Помаранчевий")</p>
+            <br>
+            <b><p>Перевірка турнікетів КПТ (валідації):</p></b>
+            <p>За замовчуванням. (Не відповідає жодному з критеріїв ("Зелений", "Жовтий", "Помаранчевий")</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (обладнання):</p></b>
+            <p>За замовчуванням. (Не відповідає жодному з критеріїв ("Зелений", "Жовтий", "Помаранчевий")</p>
+            <br>
+            <b><p>Перевірка турнікетів метро (валідації):</p></b>
+            <p>За замовчуванням. (Не відповідає жодному з критеріїв ("Зелений", "Жовтий", "Помаранчевий")</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get the modal
+    var modalGreen = document.getElementById("myModalGreenLegend");
+    var modalYellow = document.getElementById("myModalYellowLegend");
+    var modalOrange = document.getElementById("myModalOrangeLegend");
+    var modalGrey = document.getElementById("myModalGreyLegend");
+
+
+
+    $( "#greenLegend" ).hover(function() {
+                modalGreen.style.display = "block"
+            }
+    );
+
+    $( "#yellowLegend" ).hover(function() {
+                modalYellow.style.display = "block"
+            }
+    );
+
+    $( "#orangeLegend" ).hover(function() {
+                modalOrange.style.display = "block"
+            }
+    );
+
+    $( "#greyLegend" ).hover(function() {
+                modalGrey.style.display = "block"
+            }
+    );
+
+    $( ".closeLegend" ).hover(function() {
+            modalGreen.style.display = "none";
+            modalYellow.style.display = "none";
+            modalOrange.style.display = "none";
+            modalGrey.style.display = "none";
+        }
+    );
+
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modalGreen || event.target == modalYellow || event.target == modalOrange || event.target == modalGrey) {
+            modalGreen.style.display = "none";
+            modalYellow.style.display = "none";
+            modalOrange.style.display = "none";
+            modalGrey.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>

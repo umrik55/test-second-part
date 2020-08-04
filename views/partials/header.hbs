@@ -1,16 +1,67 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
- <head>
-  <meta charset="utf-8">
-  <title>Тег IMG</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  
-  
-  
- </head>
- <body> 
-	<!--<p><img src= "img/header2.png" class="header2" alt="lorem" width="100%" height="255">  </p>-->
-	<p><img src= "img/header2.png" class="header2" alt="no" width="100%" ></p>
 
- </body>
+<head>
+    <style>
+        .svg-header {
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -99;
+        }
+        .container-header {
+            display: inline-block;
+            position: absolute;
+            width: 100%;
+            padding-bottom: 100%;
+            vertical-align: middle;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: -99;
+        }
+
+        .div-main {
+            overflow: hidden;
+            z-index: -99;
+        }
+    </style>
+</head>
+
+<div class="div-main" style="text-align:center;">
+    <div class="container-header">
+        <svg class="svg-header" viewBox="0 0 500 1000"
+             preserveAspectRatio="xMinYMin meet"
+             style="z-index: -2;">
+
+            <path d="M178.89,-42.33 C128.10,52.27 375.27,62.22 508.46,14.43 L554.74,-22.42 L632.61,4.48 Z"
+                  style="stroke: none;
+                fill:#116cc9">
+            </path>
+        </svg>
+    </div>
+
+    <div class="container-header">
+        <svg class="svg-header" viewBox="0 0 500 500"
+             preserveAspectRatio="xMinYMin meet"
+             style="z-index:-1;">
+
+            <path d="M0, 8 C100, 0 0,
+                0 500, 50 L500, 00 L0, 0 Z"
+                  style="stroke: none;
+                fill:rgba(16,190,246,0.5);">>
+            </path>
+        </svg>
+    </div>
+
+    <div class="container-header">
+        <svg class="svg-header" viewBox="0 0 500 500"
+             preserveAspectRatio="xMinYMin meet"
+             style="z-index:-3;">
+
+            <path d="M-1.70,26.38 C51.91,50.26 271.29,-50.11 514.67,58.23 L500.00,0.00 L0.00,0.00 Z" style="stroke: none; fill:rgba(16,190,246,0.5);"></path>
+        </svg>
+    </div>
+</div>
 </html>

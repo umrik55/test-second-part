@@ -12,45 +12,50 @@
     <link rel="stylesheet" type="text/css" href="fonts.css" />
     <link rel="stylesheet" type="text/css" href="gridview.css" />
     <link rel="stylesheet" type="text/css" href="bootstrap-datepicker.css" />
+    <script src="jquery.js"></script>
     <script type="text/javascript" src="bootstrap.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
     <script src="gridview.js"></script>
-    <script src="jquery.js"></script>
     <script type="text/javascript" src="bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
 </head>
 
 <body>
+    {{> loader}}
     {{> menu}}
 	{{> header_2}}
-	
+    {{> modalLegend}}
+
     <h2 align="center">Список дій водіїв, що надійшли з АСОП</h2>
 	<div id="wrapper">
-        <div id="ten">
-            <table id='ptable' class="table table-condensed table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>№</th>
-                        <th>Час події</th>
-                        <th>Водій</th>
-                        <th>Рухома одиниця</th>
-                        <th>Завдання на роботу</th>
-                        <th>Маршрут водія</th>
-                        <th>Рейс водія</th>
-                        <th>Дія водія</th>
-                        <!--<th>Детально</th>-->
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <div class="external-borders-big">
+            <div id="ten">
+                <table id='ptable' class="table table-condensed table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Час події</th>
+                            <th>Водій</th>
+                            <th>Рухома одиниця</th>
+                            <th>Завдання на роботу</th>
+                            <th>Маршрут водія</th>
+                            <th>Рейс водія</th>
+                            <th>Дія водія</th>
+                            <!--<th>Детально</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <br>
-        
+
         <script>
             var store;
-            // Получение всех 
+            // Получение всех
             function GetUsers() {
+                document.getElementById("loader").style.display = "block";
                 $.ajax({
                     url: "/api/vausers",
                     type: "GET",
@@ -63,10 +68,11 @@
                         })
                         ////$("table tbody").append(rows);
                         store = users;
+                        document.getElementById("loader").style.display = "none";
                     }
                 });
             }
-            // Получение одного 
+            // Получение одного
             function GetUser(id) {
                 $.ajax({
                     url: "/api/vausers/" + id,
@@ -87,7 +93,7 @@
             }
 
 
-            // Добавление 
+            // Добавление
             function CreateUser(timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num) {
                 $.ajax({
                     url: "api/vausers",
@@ -113,7 +119,7 @@
                     }
                 })
             }
-            // Изменение 
+            // Изменение
             function EditUser(userId, timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num) {
                 $.ajax({
                     url: "api/vausers",
@@ -147,7 +153,7 @@
                 form.elements["id"].value = 0;
             }
 
-            // Удаление 
+            // Удаление
             function DeleteUser(id) {
                 var isDelete = confirm("Видалити запис?");
                 if (isDelete) {
@@ -156,7 +162,7 @@
                         contentType: "application/json",
                         method: "DELETE",
                         success: function (user) {
-                            console.log(user);
+                            //console.log(user);
                             $("tr[data-rowid='" + user.id + "']").remove();
                             g.deleteDataStoreRow(user);
                         }

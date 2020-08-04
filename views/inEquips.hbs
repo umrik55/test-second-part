@@ -19,32 +19,35 @@
 	<script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
 </head>
 <body>
+{{> loader}}
 {{> menu}}
 {{> header_2}}
+{{> modalLegend}}
 <h2  align="center">Список стану обладнання рухомих одиниць, що надійшли з АСОП</h2>
 <div id="wrapper">
-    
-	<div id="ten">
-		<table id='ptable' class="table table-condensed table-striped table-bordered">
-			<thead>
-			<tr><th>№</th>
-			<th>Час повідомлення</th>
-			<th>Вид транспорту</th>
-			<th>UID</th>
-			<th>ІД контролера</th>
-			<th>Рухома одиниця</th>
-			<th>Час роботи</th>
-			<th>Версія прошивки контролера</th>
-			<th>Валідатори</th>
-			<th>Безперервна робота ПО</th>
-			<th>Стан бортової системи</th>
-			<th>Дані gps</th>
-			<th>Термінал водія</th>
-			<th>Поточний рейс</th>
-			</tr></thead>
-			<tbody>
-			</tbody>
-		</table>
+    <div class="external-borders-big">
+        <div id="ten">
+            <table id='ptable' class="table table-condensed table-striped table-bordered">
+                <thead>
+                <tr><th>№</th>
+                <th>Час повідомлення</th>
+                <th>Вид транспорту</th>
+                <th>UID</th>
+                <th>ІД контролера</th>
+                <th>Рухома одиниця</th>
+                <th>Час роботи</th>
+                <th>Версія прошивки контролера</th>
+                <th>Валідатори</th>
+                <th>Безперервна робота ПО</th>
+                <th>Стан бортової системи</th>
+                <th>Дані gps</th>
+                <th>Термінал водія</th>
+                <th>Поточний рейс</th>
+                </tr></thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 	<br>
 
@@ -52,6 +55,7 @@
          var store;
        // Получение всех пользователей
         function GetUsers() {
+            document.getElementById("loader").style.display = "block";
             $.ajax({
                 url: "/api/qvausers",
                 type: "GET",
@@ -64,6 +68,7 @@
                     })
                     ////$("table tbody").append(rows);
                     store = users;
+                    document.getElementById("loader").style.display = "none";
                  }
             });
         }
@@ -161,7 +166,7 @@
 					contentType: "application/json",
 					method: "DELETE",
 					success: function (user) {
-						console.log(user);
+						//console.log(user);
 						$("tr[data-rowid='" + user.id + "']").remove();
                                                 g.deleteDataStoreRow(user);
 					}

@@ -20,39 +20,44 @@
     <script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
 </head>
 <body>
+    {{> loader}}
     {{> menu}}
     {{> header_2}}
+    {{> modalLegend}}
 	<h2 align="center">Список валідацій, що надійшли з АСОП</h2>
-	<div id="wrapper">        
-        <div id="ten">
-            <table id='ptable' class="table table-condensed table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>timestamp</th>
-                        <th>line</th>
-                        <th>trip_id</th>
-                        <th>passengers</th>
-                        <th>stop_code</th>
-                        <th>stop_sequence</th>
-                        <th>location_id</th>
-                        <th>product_id</th>
-                        <th>card_id</th>
-                        <th>doc_num</th>
-                        <!--<th></th>-->
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+	<div id="wrapper">
+        <div class="external-borders-big">
+            <div id="ten">
+                <table id='ptable' class="table table-condensed table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>timestamp</th>
+                            <th>line</th>
+                            <th>trip_id</th>
+                            <th>passengers</th>
+                            <th>stop_code</th>
+                            <th>stop_sequence</th>
+                            <th>location_id</th>
+                            <th>product_id</th>
+                            <th>card_id</th>
+                            <th>doc_num</th>
+                            <!--<th></th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <br>
-        
+
 
         <script>
             var store;
             // Получение всех пользователей
             function GetUsers() {
+                document.getElementById("loader").style.display = "block";
                 $.ajax({
                     url: "/api/ausers",
                     type: "GET",
@@ -65,6 +70,7 @@
                         })
                         ////$("table tbody").append(rows);
                         store = users;
+                        document.getElementById("loader").style.display = "none";
                     }
                 });
             }
@@ -159,15 +165,15 @@
                         contentType: "application/json",
                         method: "DELETE",
                         success: function (user) {
-                            console.log(user);
+                            //console.log(user);
                             $("tr[data-rowid='" + user.id + "']").remove();
                             g.deleteDataStoreRow(user);
                         }
                     })
                 }
             }
-			
-            // создание строки для таблицы			
+
+            // создание строки для таблицы
             var row = function (user) {
 			if(user.line===null) user.line=" ";
 			if(user.trip_id===null) user.trip_id=" ";
@@ -331,7 +337,7 @@
                                 name: 'card_id',
                                 col: 9
                             }
-							
+
                         ]
                 };
                 g.SetTableFields(tablefields);

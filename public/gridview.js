@@ -1,43 +1,43 @@
 ﻿/**
  * http://usejsdoc.org/
  */
- 
+
  function GridView(aid)
  {
    this.classname = 'gridview';
-   
+
    this.InitDefaults();
-   
+
    if (  aid != undefined )
-   {	   
+   {
      this.id_table = aid;
      this.ref_table = aid;
-   }  
+   }
  }
- 
+
  GridView.prototype.setUserFormId = function(aid)
  {
-    this.ref_userform = aid;  	 
+    this.ref_userform = aid;
  };
- 
- 
+
+
  GridView.prototype.setDataProvider = function(aprovider)
  {
-    this.p = aprovider; 
+    this.p = aprovider;
     this.bUseDataProvider = true;
  };
- 
+
  GridView.prototype.updateCache = function()
  {
     var ptr = this;
-    
-    try 
+
+    try
     {
     this.p.getAll(function(data)
     		 {
-// update data and rerender grid    	
+// update data and rerender grid
     	     /////   alert('callback called!  ');
-    	     /////   alert('Data: ' + JSON.stringify(data));  
+    	     /////   alert('Data: ' + JSON.stringify(data));
     	       ptr.updateDataStore.call(ptr,data);
     		 }
     		);
@@ -46,13 +46,13 @@
       alert('updateCache Error ' + e.message);
     }
  };
- 
- 
- 
+
+
+
  GridView.prototype.getSelectedOption = function(sel)
  {
 	 var res;
-	 try 
+	 try
 	 {
        //return sel.options[sel.value-1].text;
 		res =  $(sel).find('option:selected').text();
@@ -64,30 +64,30 @@
 	 return res;
  };
 
- 
+
  GridView.prototype.resetData = function()
 {
-	 
+
   var fx = this.getUserFormElements();
   var ctl  = fx['id'];
   ctl.value = 0;
-}; 
+};
 
- 
+
  // Method to gather data from form controls
  GridView.prototype.getData = function()
  {
 	  ////////  alert('getData called!');
 	  var datarow = {};
 	  var fx = this.getUserFormElements();
-	 
-	    try 
+
+	    try
 	    {
 		for ( f  in this.formfields  )
 		{
 		  var a = this.formfields[f];
 		  /////  alert('A: ' + JSON.stringify(a));
-		  
+
 		  ////// alert('ControlName: ' + a.uf_id);
 		  var ctl  = fx[a.uf_id];
 		  var name = a.name;
@@ -96,103 +96,103 @@
 		   datarow[name] = ctl.value;
 		  if ( a.sel != undefined)
 		  {
-			if ( a.fldtype == 4 )  // sel options  
-			{ 
+			if ( a.fldtype == 4 )  // sel options
+			{
 				name = a.sel.opt;
 				////////    alert('Selector: ' + name);
-				datarow[name] = this.getSelectedOption(ctl); 
+				datarow[name] = this.getSelectedOption(ctl);
 			}
-		  }	  
-		  
+		  }
+
 		}
 	    } catch (e)
 	    {
-	      alert('getData Error ' + e.message);	
+	      alert('getData Error ' + e.message);
 	    }
-	 
+
      //////  alert('get Data: ' + JSON.stringify(datarow));
-     
+
      this.resetData();
-	 return datarow;   
+	 return datarow;
  };
- 
+
 
    GridView.prototype.saveData = function()
  {
 	var bIsNewRow = true;
-// Get data from userForm Controls 	
+// Get data from userForm Controls
 	var  datarow = this.getData();
 	if ( datarow.id > 0)
 	{
 		bIsNewRow = false;
 	}
-	
+
 	var ptr = this;
     this.p.saveRow( datarow,
     		   function(item)
     		   {
     	         ///////   alert('SaveRow callback called');
     	         ptr.updateDataStoreRow(item);
-    	         
+
     	         var row = ptr.renderRow.call(ptr,item);
     	         if (  bIsNewRow   )
     	         {
-    	            ptr.getTableBodyjq.call(ptr).append(row); 
+    	            ptr.getTableBodyjq.call(ptr).append(row);
     	         }	else
     	         {
-    	        	$("tr[data-rowid='" + item.id + "']").replaceWith(row); 
-    	         }	 
+    	        	$("tr[data-rowid='" + item.id + "']").replaceWith(row);
+    	         }
                   ptr.doSortX();
     		   }
-    		 );	
+    		 );
  };
- 
- 
- 
+
+
+
  GridView.prototype.bindData = function(datarow)
  {
 	  var fx = this.getUserFormElements();
 	  //////////  alert('Data to bind: ' + JSON.stringify(datarow));
-	 
-	    try 
+
+	    try
 	    {
 		for ( f  in this.formfields  )
 		{
 		  var a = this.formfields[f];
 		  /////  alert('A: ' + JSON.stringify(a));
-		  
+
 		  ////// alert('ControlName: ' + a.uf_id);
 		  var ctl  = fx[a.uf_id];
 		  var name = a.name;
 
 		  ///////// alert('ControlName: ' + a.uf_id + 'DataFieldName: '  + name);
-		  
-		  ctl.value =  datarow[name]; 
+
+		  ctl.value =  datarow[name];
 		}
 	    } catch (e)
 	    {
-	      alert('bindData Error ' + e.message);	
+	      alert('bindData Error ' + e.message);
 	    }
-	 
+
  };
- 
- 
+
+
   GridView.prototype.removeRow = function(datarow)
  {
-	  
-	try 
+
+	try
 	{
       $("tr[data-rowid='" + datarow.id + "']").remove();
 	}  catch ( e )
 	{
-	    alert('removeRow error ' + e.message);	
+	    alert('removeRow error ' + e.message);
 	}
  };
- 
+
    GridView.prototype.renderRow = function(datarow)
  {
     var row = "<tr data-rowid='" + datarow.id + "' >";
-    try 
+    try
     {
 	for ( f  in  this.tablefields  )
 	{
@@ -207,40 +207,40 @@
 	}
     } catch (e)
     {
-      alert('renderRow Error ' + e.message);	
+      alert('renderRow Error ' + e.message);
     }
-    //row += "<td><a class='editLink' data-id='" + datarow.id + "'>Змінити</a> | "; 
+    //row += "<td><a class='editLink' data-id='" + datarow.id + "'>Змінити</a> | ";
     //row += "<a class='removeLink' data-id='" + datarow.id + "'>Видалити</a></td></tr>";
-    row += "<td><a  class='editLink' data-id='" + datarow.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a> | "; 
+    row += "<td><a  class='editLink' data-id='" + datarow.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a> | ";
     row += "<a class='removeLink ' data-id='" + datarow.id + "'><span class='glyphicon glyphicon-remove-sign'></span></td></tr>";
-      
-    
+
+
 	row += '</tr>';
     return row;
-      
+
  };
- 
+
 
  GridView.prototype.dsCheckCondition = function(acond,arow)
  {
-	try 
+	try
 	{
 	var res = false;
 	var name = acond.name;
 	var value = acond.value;
 	var op = acond.op;
 	var dst = arow[name];
-	
+
 	switch (op)
 	{
 	  case 1:  // ==
 		 if ( dst == value )
-		 {  res = true;  }	 
+		 {  res = true;  }
 	  break;
 	  case 2: // like
 		 if ( dst.indexOf(value) >= 0 )
-		 {  res = true;  }	 
-	  break;	  
+		 {  res = true;  }
+	  break;
 	}
 	  return res;
 	}  catch (e)
@@ -249,24 +249,24 @@
 	  return false;
 	}
  };
- 
- 
+
+
  GridView.prototype.dsFilterDataRow = function(arow)
  {
-	 try 
+	 try
 	 {
-	  /////// this.Trace('FilterExpression: ' + JSON.stringify(this.filterexpression));	 
+	  /////// this.Trace('FilterExpression: ' + JSON.stringify(this.filterexpression));
 	  var res = false;
 	 //this.Trace('DataRow: ' + arow);
 	 for ( p in this.filterexpression)
 	 {
 	   var a = this.filterexpression[p];
-	   /////////// this.Trace('Condition: ' + JSON.stringify(a));	 
+	   /////////// this.Trace('Condition: ' + JSON.stringify(a));
 	   var res1 = this.dsCheckCondition(a,arow);
 	   if (  res1  )
 	   {
-		  res = res1; 
-	   }	   
+		  res = res1;
+	   }
 	 	else
 	 {
 		 res = false;
@@ -277,22 +277,22 @@
 	 } catch (e)
 	 {
 		this.handleError(e,'dsFilterDataRow');
-		return false; 
+		return false;
 	 }
  };
- 
- 
+
+
 
  GridView.prototype.dsOnRowCountChanged = function(acnt)
  {
 	 this.pgUpdatePaging();
  };
 
- 
+
  GridView.prototype.dsPrepareFilterContext = function(afilter)
  {
 	/////// this.Trace('dsPrepareFilterContext called ' + JSON.stringify(afilter));
-	try 
+	try
 	{
 	var name = this.pgGetFieldNameByCol(afilter.colindex);
 	var value = afilter.value;
@@ -309,16 +309,16 @@
 	//////// this.Trace('FilterExpression ' + JSON.stringify(this.filterexpression));
 	}  catch (e)
 	{
-	   this.handleError(e,'dsPrepareFilterContext');	
+	   this.handleError(e,'dsPrepareFilterContext');
 	}
- 	 
+
  };
- 
- 
+
+
  GridView.prototype.SetFilter = function(afilter)
  {
 	//////// this.Trace('setFilter called ' + JSON.stringify(afilter));
-	try 
+	try
 	{
     this.bUseFilter = true;
     this.dsPrepareFilterContext(afilter);
@@ -327,7 +327,7 @@
     		                                 function(a)
     		                                 {  return ptr.dsFilterDataRow.call(ptr,a);  }
     		                               );_
-    /////////  this.Trace('FilteredData:' + JSON.stringify(this.datastoref)); 		                               
+    /////////  this.Trace('FilteredData:' + JSON.stringify(this.datastoref));
     this.dsOnRowCountChanged(this.dsGetRowCount());
 	this.pgShowFirstPage();
 	} catch (e)
@@ -336,7 +336,7 @@
 	   //console.log('er');
 	}
  };
- 
+
  GridView.prototype.ResetFilter = function()
  {
 	 try
@@ -354,8 +354,8 @@
 	   //console.log('er');
 	}
  };
- 
- 
+
+
  GridView.prototype.IsFilter = function()
  {
      if ( this.bUseFilter != undefined)
@@ -364,16 +364,16 @@
      } 	 else
      {
     	 return false;
-     }	 
+     }
  };
- 
-  
-   
+
+
+
  GridView.prototype.dsGetPageDataSource = function(abounds)
  {
     /////alert('dsGetPageDataSource called');
     /////alert('Bounds: ' + JSON.stringify(abounds));
-	try 
+	try
 	{
 	 if ( abounds.start != undefined )
 	{
@@ -381,20 +381,20 @@
 		var to     =  from + abounds.limit;
 		if (this.IsFilter())
 		{
-		  //////////   this.Trace('filterd');	
+		  //////////   this.Trace('filterd');
 		  // return this.datastore.filter(function (a) { return this.dsFilterDataRow(a)}).slice(from,to);
-		  return this.datastoref.slice(from,to);	
+		  return this.datastoref.slice(from,to);
 		}
 		else
-		{	
-		  //////this.Trace('Not filterd');	
+		{
+		  //////this.Trace('Not filterd');
 		  return  this.datastore.slice(from,to);
-		}   
+		}
 	}	else
 	{
 		if (this.IsFilter())
 		{
-		   ////////this.Trace('filterd');	
+		   ////////this.Trace('filterd');
 			//return this.datastore.filter( function (a)
 			//		                      { return this.dsFilterDataRow(a); }
 			//                            );
@@ -403,15 +403,15 @@
 		else
 		{
 		   return this.datastore;
-		}   
+		}
 	}
 	} catch (e)
 	{
-	  alert('dsGetPageDataSource Error ' + e.message);	
+	  alert('dsGetPageDataSource Error ' + e.message);
 	}
  };
 
- 
+
  GridView.prototype.IsPaging = function()
  {
 	if ( this.bUsePaging != undefined )
@@ -420,93 +420,93 @@
 	}	else
 	{
 		return false;
-	}	
+	}
  };
- 
- 
+
+
    GridView.prototype.GetPageDataStore = function()
 {
-   var bounds = {};   
+   var bounds = {};
    if ( this.IsPaging())
    {
-	  var size = this.pgGetPageSize();  
+	  var size = this.pgGetPageSize();
 	  var from = (this.pgGetPageNum()-1)*size;
 	  bounds.start =  from;
 	  bounds.limit =  size;
-    } 
+    }
       return this.dsGetPageDataSource(bounds);
 };
- 
- 
+
+
  GridView.prototype.renderTableBody = function()
  {
 	 var rows = '';
 	 var ds = this.GetPageDataStore();
-	 
-	 
-	 ///// alert('BodySource: ' + JSON.stringify(ds)); 
-	 
-	 
-	 try 
+
+
+	 ///// alert('BodySource: ' + JSON.stringify(ds));
+
+
+	 try
 	 {
 	 /// for (  r in this.datastore  )
 	 this.getTableBodyjq().empty();
 	 for (  r in ds )
 	 {
-		var datarow = ds[r];  
+		var datarow = ds[r];
 		//alert('DataRow: ' + JSON.stringify(datarow));
 		var row = this.renderRow(datarow);
 		//alert('Row: ' + row);
-	    rows += row;	 
-	 }	 
+	    rows += row;
+	 }
 	 this.getTableBodyjq().append(rows);
 	 ///// alert('call doSortX');
 	 ///////////////////// this.doSortX();
-	 
+
 	 } catch (e)
 	 {
-		alert('renderTableBody error' + e.message); 
+		alert('renderTableBody error' + e.message);
 	 }
  };
-       
 
- // create table fields and form fields arranged collections  
+
+ // create table fields and form fields arranged collections
  GridView.prototype.parseModel = function()
  {
 	 ///// alert('ParseMode started!');
-	 
+
 	// find fields to render in table
 	 this.tablefields = [];
 	 this.formfields = [];
-	 
+
 	 var fields = this.model.fields;
 
 ////// alert('Fields: ' + JSON.stringify(fields));
 
-	 
+
 	 for ( f in fields )
 	 {
-	   //alert('F:' + f);	 
+	   //alert('F:' + f);
 	   var a = fields[f];
 	   //alert('Field['+f+'] = ' + JSON.stringify(a));
-	   
+
 	   // create and push table field
 	   var item;
 	   if ( a.tblname != undefined  )
 	   {
 		   item = {
-			       name: a.tblname   
-	              }; 	 
+			       name: a.tblname
+	              };
 	   } else
-	   {	   
-	   
+	   {
+
 	   item = {
-			      name: a.name   
+			      name: a.name
 	           };
 	   }
 	   this.tablefields.push(item);
 
-	   
+
 	   // create and push formfield
 	   if ( a.name != undefined  )
 	   {
@@ -515,71 +515,71 @@
 		   var fldtype = a.fldtype;
 		   var sel;
 		   if (  a.sel != undefined)
-		   sel = a.sel; 	   
+		   sel = a.sel;
            if ( a.sel  !=  undefined )
-           {	   
+           {
 		      item = {
 			            name: name,
 			            uf_id: uf_id,
 			            fldtype: fldtype,
 			            sel: sel
-	                 }; 	 
+	                 };
 	       } else
 			  item = {
 		               name: name,
 		               uf_id: uf_id,
 		               fldtype: fldtype,
-                    }; 	 
+                    };
 	       }
        this.formfields.push(item);
        // =============================================
-	   
+
 	 }
 	 ////////  alert('TableFields: ' + JSON.stringify(this.tablefields));
 	 ////////  alert('FormFields: ' + JSON.stringify(this.formfields));
-	 
+
  };
- 
- 
+
+
  GridView.prototype.InitDataModel = function(amodel)
  {
 	//////   alert('InitDataModel');
-	try 
+	try
 	{
 	this.model = amodel;
 	this.parseModel();
 	} catch (e)
 	{
-       alert('InitDataModel error' + e.message);		
+       alert('InitDataModel error' + e.message);
 	}
-	
-	
+
+
  };
- 
+
  GridView.prototype.updateDataStore = function(rows)
  {
-	try 
+	try
 	{
 	this.datastore = rows;
 	//////  alert('DataStore: ' +  JSON.stringify(this.datastore));
 	this.doSortFields(this.datastore);
 	////// alert('Sorted: ' + JSON.stringify(this.datastore));
-	
+
 	this.pgUpdatePaging();
 	this.renderTableBody();
 	//////this.ShowFirstPage();
-	} catch (e) 
-	{ 
+	} catch (e)
+	{
 	  alert('updateDataStore Error: ' + e.message);
 	}
  };
- 
+
 
  GridView.prototype.updateDataStoreRow = function(arow)
  {
-	try 
+	try
 	{
-	   var bFound = false;	
+	   var bFound = false;
 	   for ( r in this.datastore)
 	 {
 	    var row = this.datastore[r];
@@ -588,89 +588,89 @@
 	      this.datastore[r] = arow;
 	      bFound = true;
 	      break;
-	    }	
-	 }	   
+	    }
+	 }
 	   if ( !bFound )
 	  {
-	    this.datastore.push(arow);  
-	  }	   
+	    this.datastore.push(arow);
+	  }
 		this.pgUpdatePaging();
 	    this.doSortFields(this.datastore);
-		
+
 	  } catch (e)
-	  
-	{ 
+
+	{
 	  alert('updateDataStoreRow  Error: ' + e.message);
 	}
  };
- 
+
 
  GridView.prototype.deleteDataStoreRow = function(arow)
  {
-	//// alert('deleteDataStoreRow called ' + arow.id) 
-	try 
+	//// alert('deleteDataStoreRow called ' + arow.id)
+	try
 	{
-	   var bFound = false;	
+	   var bFound = false;
 	   for ( r in this.datastore)
 	 {
 	    var row = this.datastore[r];
 	    if ( row.id == arow.id )
 	    {
-	      ///// this.Trace('beforeDelete: ' + JSON.stringify(this.datastore));	
+	      ///// this.Trace('beforeDelete: ' + JSON.stringify(this.datastore));
 	      this.datastore.splice(r,1);
-	      ///// this.Trace('afterDelete: ' + JSON.stringify(this.datastore));	
+	      ///// this.Trace('afterDelete: ' + JSON.stringify(this.datastore));
 	      bFound = true;
 	      break;
-	    }	
+	    }
 	 }
-	   
+
 	   this.pgUpdatePaging();
-		
-	  } catch (e) 
-	{ 
+
+	  } catch (e)
+	{
 	  alert('deleteDataStoreRow  Error: ' + e.message);
 	}
  };
 
- 
- 
+
+
     GridView.prototype.HoverOn = function()
   {
-     var sender = this;	
-     $(sender).addClass('focus');	
+     var sender = this;
+     $(sender).addClass('focus');
   };
- 
+
     GridView.prototype.HoverOff = function()
     {
-      var sender = this;	
-      $(sender).removeClass('focus');	
+      var sender = this;
+      $(sender).removeClass('focus');
     };
- 
- 
+
+
    GridView.prototype.HeaderCellClickListener = function(e,sender)
  {
        //alert('THis: ' + JSON.stringify(this));
 	   /*
-       try 
+       try
        {
          ///// alert('Event: ' + JSON.stringify(e));
        } catch (e)
        {
-    	//alert('StringiftError: ' + e.message); 
+    	//alert('StringiftError: ' + e.message);
        }
        if (sender.sortorder == undefined || sender.sortorder == 'asc')
        {
-    	 sender.sortorder = 'desc';   
+    	 sender.sortorder = 'desc';
        } else if ( sender.sortorder == 'desc' )
        {
-   	      sender.sortorder = 'asc';   
+   	      sender.sortorder = 'asc';
        }
        */
-	   
+
 	   var bIsAsc =  $(sender).is('.asc');
-	   
+
 	   this.ResetHeaderSelection();
-	   
+
 	   var sortOrder = 0;
 //       if ($(sender).is('.asc'))
 	    if ( bIsAsc )
@@ -685,21 +685,21 @@
 	         $(sender).removeClass('desc');
 	         sortOrder = 1;
 	       }
-	   
-       var res = 
+
+       var res =
        {
-    	  datakey: -1,	   
+    	  datakey: -1,
           colname: $(sender).attr('cn'),
           displayvalue: $(sender).text(),
-          sortorder:  sortOrder,  
+          sortorder:  sortOrder,
           col: $(sender).index(),
           sender: sender
        };
-       
-       
+
+
        /*
        var col = -1;
-       
+
           switch (res.colname )
         {
           case 'date':
@@ -717,15 +717,15 @@
           case 'unitname':
               col = 5;
               break;
-        }; 
-       
+        };
+
        res.col = col;
        */
-       
+
        ///// alert(JSON.stringify(res));
        this.HeaderClicked = res;
        this.dsPrepareSortContext(this.HeaderClicked);
-       
+
        if ( this.IsPaging())
        {
     	 //this.doSortFields(this.datastore);
@@ -733,9 +733,9 @@
     	 this.pgShowFirstPage();
        }
        else
-       {	   
+       {
          this.doSort();
-       }  
+       }
  };
 
 
@@ -745,46 +745,46 @@
 	{   return this.datastoref; }
 	else
 	{
-	    return this.datastore; 	
-	}	
+	    return this.datastore;
+	}
  };
- 
- 
- 
+
+
+
  GridView.prototype.handleError = function(ae,ainfo)
  {
-	try 
+	try
 	{
 	  alert(ainfo + ' error ' + ae.message);
-	} catch (e) {}  
+	} catch (e) {}
  };
- 
- 
+
+
  GridView.prototype.Trace = function(msg)
  {
-    alert(msg); 	 
+    alert(msg);
  };
-  
- 
+
+
  GridView.prototype.pgGetFieldNameByCol = function(acol)
  {
 	var res = '';
-	/////this.Trace('pgGetFieldNameByCol tablefields: ' + JSON.stringify(this._tablefields)); 
-	try 
-	{ 
+	/////this.Trace('pgGetFieldNameByCol tablefields: ' + JSON.stringify(this._tablefields));
+	try
+	{
 		for ( f in this._tablefields.fields )
 		{
 		  var a =  this._tablefields.fields[f];
-		  ///////this.Trace('A: ' + JSON.stringify(a)); 
-		  
-		  
+		  ///////this.Trace('A: ' + JSON.stringify(a));
+
+
 		  if ( a.col == acol)
 		  {
 		     res = a.name;
 		     //////// this.Trace('Res: ' + res);
 		     break;
-		  }	  
-		}	
+		  }
+		}
 	}
 	catch (e)
 	{
@@ -794,156 +794,156 @@
 	return res;
  };
 
- 
+
  // define datafield name to grid column index  map
  GridView.prototype.SetTableFields = function(afields)
  {
-	this._tablefields = afields;   
+	this._tablefields = afields;
  };
- 
- 
+
+
    GridView.prototype.SetSortFields = function(afields)
  {
-	this.sortfields = afields;   
+	this.sortfields = afields;
  };
 
  GridView.prototype.SetSortOrder = function(acols)
  {
-	this.sortcols = acols;   
+	this.sortcols = acols;
  };
- 
- 
- 
+
+
+
    GridView.prototype.doSortFields = function(adata)
  {
 	 ///// alert('sortFields called!');
-	   
+
 	 if (  this.sortfields == undefined)
 	 {
-		////// alert('Sort fields not defined!'); 
-		return; 
-	 }	 
+		////// alert('Sort fields not defined!');
+		return;
+	 }
 
-	////////   this.Trace('doSortFields Input: ' + JSON.stringify(adata)); 
-	 
-	 var fields = this.sortfields.fields; 
+	////////   this.Trace('doSortFields Input: ' + JSON.stringify(adata));
+
+	 var fields = this.sortfields.fields;
 	 var sortOrder = this.sortfields.sortOrder;
-	 
-	 
+
+
 	 /////  alert('F: ' + JSON.stringify(fields) +  ' sortOrder: ' + sortOrder);
-	 
+
 	   var fcompare = function(a,b)
 	 {
        var res = 0;
        if($.isNumeric(a) && $.isNumeric(b))
-       {  
+       {
           res =  sortOrder == 1 ? a-b : b-a;
-       }   
+       }
        else
        {
           res =  (a < b) ? -sortOrder : (a > b) ? sortOrder : 0;
           ////  alert('R= ' + res + 'a= ' + a + 'b= ' + b);
-       }   
+       }
          return res;
      };
-	 
-	 
+
+
 	 adata.sort(
 		function(a,b)
 		{
-		   var res = 0;	
-		   for ( f in fields  ) 
+		   var res = 0;
+		   for ( f in fields  )
 		  {
 			var af = fields[f];
 			var name = af.name;
 			var v1 = a[name];
 			var v2 = b[name];
 			/////////////   alert('name: ' + name + 'v1= ' + v1 + ' v2=' + v2);
-			
+
 			var res = fcompare(v1,v2);
 			if ( res != 0 )
 			{
-			   //////  alert('NE! ' + res);	
+			   //////  alert('NE! ' + res);
 			   return res;
-		    }	
-		  }	
+		    }
+		  }
 		 return res;
 	    }
 	);
-	 
-	//////  alert('Result: ' + JSON.stringify(adata)); 
+
+	//////  alert('Result: ' + JSON.stringify(adata));
 	//return adata;
  };
 
- 
- 
+
+
  GridView.prototype.doSortX = function()
  {
 	 //  $(document).ready(function() {
 //  http://www.learningjquery.com/2017/03/how-to-sort-html-table-using-jquery-code
-	
+
 	 //////   alert('doSortX started');
-	 
+
 	  if ( this.sortcols == undefined)
 	{
-	  //alert('SortOrder not defined!');	 
-	  return;	 
-	}	 
-	 
+	  //alert('SortOrder not defined!');
+	  return;
+	}
+
 	 var ptr = this;
-  	 var cols = this.sortcols.cols;   
+  	 var cols = this.sortcols.cols;
 	 var sortOrder = this.sortcols.sortOrder; //// this.HeaderClicked.sortorder;
 
 	 ////// alert('Cols: ' + JSON.stringify(cols) + ' sortOrder ' +  sortOrder);
-	 
-	   try 
+
+	   try
 	 {
 		 $('th').removeClass('asc selected');
 		 $('th').removeClass('desc selected');
 
 		       //var arrData = $('table').find('tbody >tr:has(td)').toArray();    //.get();
 		       var arrData = $(this.ref_table).find('tbody >tr:has(td)').toArray();    //.get();
-	
-		       
+
+
 		      /////  alert('arrData: ' + JSON.stringify(arrData));
-		       
+
 		       arrData.sort(function(a, b)
 		    	{
-		    	   
-		    	 var res = 0;  
-		    	   
+
+		    	 var res = 0;
+
 		    	     for  ( c in cols )
 		            {
-		    	    	 
+
 		    	      var af = cols[c];
 		    	      var col = af.col;
-		    	    	 
+
 		              var val1 = $(a).children('td').eq(col).text().toUpperCase();
 		              var val2 = $(b).children('td').eq(col).text().toUpperCase();
-		              
+
 				    ///// alert('col: ' + col +  'V1: ' + val1 + ' V2: ' + val2);
 
 		                 if($.isNumeric(val1) && $.isNumeric(val2))
-		                {  
+		                {
 		                   res =  sortOrder == 1 ? val1-val2 : val2-val1;
-		                }   
+		                }
 		                  else
                         {
 		                    res = (val1 < val2) ? -sortOrder : (val1 > val2) ? sortOrder : 0;
                         }
-		                 
-		                 
-		                  if ( res != 0)  
+
+
+		                  if ( res != 0)
 		                  {
-		                	 //// alert('NE!' + res); 
+		                	 //// alert('NE!' + res);
 		                	 return res;
-		                  }	  
-		            }  
-		    	     
+		                  }
+		            }
+
                        return res;
 		       });
 
-		       
+
 		        $(ptr.ref_tbody).children().remove();
 		        $.each(arrData, function(index, row) {
 		        	                                    //////////////alert('R: ' + row);
@@ -954,19 +954,19 @@
 
 	   }  catch (e)
     {
-		 alert('SortErrorX: ' + e.message);  
+		 alert('SortErrorX: ' + e.message);
     }
- }; 
-  
- 
+ };
+
+
    GridView.prototype.doSort = function()
   {
 	 //  $(document).ready(function() {
 //   http://www.learningjquery.com/2017/03/how-to-sort-html-table-using-jquery-code
-	   
+
 	   var ptr = this;
 
-	   try 
+	   try
 	   {
        var dst = document.getElementById('ptable');
        var dstbody = document.getElementById('tbldata');
@@ -974,13 +974,13 @@
        var sortOrder = this.HeaderClicked.sortorder;
        var col = this.HeaderClicked.col;
        ///////alert('Col: '+ col);
-	   
+
 		   ///////////////   $('th').each(function(col) {
-			   
-			   
-			   
-			   
-			   
+
+
+
+
+
 		    // $(this).hover(
 
 		   //  function() { $(this).addClass('focus'); },
@@ -1010,49 +1010,49 @@
 		     //    sortOrder = 1;
 
 		     // }
-		      
+
                //alert('SortOrder:' + sortOrder);
-       
+
 		       $(sender).siblings().removeClass('asc selected');
 		       $(sender).siblings().removeClass('desc selected');
 
-		       try 
+		       try
 		       {
 		          // alert('Table: ' + JSON.stringify(dst));
 		       }  catch (e)
 		       {
-		    	  alert('GridError: ' + e.message); 
+		    	  alert('GridError: ' + e.message);
 		       }
-		       
+
 		       //var arrData = $('table').find('tbody >tr:has(td)').toArray();    //.get();
 		       var arrData = $(this.ref_table).find('tbody >tr:has(td)').toArray();    //.get();
-		       
-		       
+
+
 		       //var arrData = $(dst).find('tbody').get();
-		       
+
 		       // alert('Data:' +  JSON.stringify(arrData));
-		       
+
 
 		       arrData.sort(function(a, b) {
 		         var val1 = $(a).children('td').eq(col).text().toUpperCase();
 		         var val2 = $(b).children('td').eq(col).text().toUpperCase();
-		         
+
 		         // alert('V1: ' + val1);
 		         // alert('V2: ' + val2);
-		         
+
 
 		         if($.isNumeric(val1) && $.isNumeric(val2))
-		         {  
+		         {
 		            return sortOrder == 1 ? val1-val2 : val2-val1;
-		         }   
+		         }
 		         else
                  {
 		            return (val1 < val2) ? -sortOrder : (val1 > val2) ? sortOrder : 0;
-                 }   
+                 }
 
 		       });
 
-		       
+
 		        $.each(arrData, function(index, row) {
 
 		         //$('tbody').append(row);
@@ -1068,48 +1068,48 @@
 		// });
 	   }  catch (e)
      {
-		 alert('SortError: ' + e.message);  
+		 alert('SortError: ' + e.message);
      }
-  }; 
-   
+  };
 
-  
-  
+
+
+
 GridView.prototype.getColIndexByColName = function(aname)
 {
    var col = -1;
-  
+
   switch (aname )
 {
   case 'date':
   col = 1;
   break;
-  
+
   case 'tankname':
       col = 2;
       break;
-      
+
   case 'productname':
       col = 3;
       break;
-      
+
   case 'fact_volume':
       col = 4;
       break;
-      
+
   case 'unitname':
       col = 5;
       break;
-      
-   default:
-	  col = -1; 
-   break;	   
-   }   
-  
-    return col;    
-}; 
 
-    
+   default:
+	  col = -1;
+   break;
+   }
+
+    return col;
+};
+
+
    GridView.prototype.ResetSelection = function()
    {
   	 $('td').removeClass('selected');
@@ -1122,16 +1122,16 @@ GridView.prototype.getColIndexByColName = function(aname)
   	 $('th').removeClass('asc');
    };
 
-   
+
     GridView.prototype.dsPrepareSortContext = function(aparam)
   {
-	 
-	 var sortOrder = this.HeaderClicked.sortorder;  
-	 var col = this.HeaderClicked.col; 
+
+	 var sortOrder = this.HeaderClicked.sortorder;
+	 var col = this.HeaderClicked.col;
 	 ///////   this.Trace('Col: ' + col);
 	 var name = this.pgGetFieldNameByCol(col);
 	 ///////// this.Trace('NameFound:  ' + name  + ' sortOrder ' + sortOrder);
-	 
+
 	 var f = {
 			    'sortOrder': sortOrder,
 			    fields:
@@ -1139,13 +1139,13 @@ GridView.prototype.getColIndexByColName = function(aname)
 			      { name:  name  }
 			    ]
 	         };
-	 
+
 	  this.sortfields = f;
 	  /////////// alert('F: ' + JSON.stringify(f));
-  }; 
-   
-  
-   
+  };
+
+
+
    GridView.prototype.DataCellClickListener = function(e,sender)
    {
 	   //alert('class' + this.classname);
@@ -1153,66 +1153,66 @@ GridView.prototype.getColIndexByColName = function(aname)
        //alert(JSON.stringify(sender));
        //alert(JSON.stringify($(sender).parent()));
        //alert($(sender).parent().attr('data-rowid'));
-	   
-	   
-	   //try 
+
+
+	   //try
 	   //{
 	   //   alert('Index: ' + $(sender).index());
 	   //}  catch (e)
 	   //{
 	    //   alert('IndexError: ' + e.message);
 	   //}
-	  try 
-	 { 
-		  
+	  try
+	 {
+
 	   if ( $(sender).children().hasClass('removeLink'))
 		  {
 			     //alert('Дійсно видалити?');
 			     //e.stopPropagation();
-				 return;   
-		  }   
-		  
-		  
+				 return;
+		  }
+
+
 	   if ( $(sender).children().hasClass('editLink'))
 	  {
-		 //alert('Edit');  
-		 return;   
-	  }   
-	   
+		 //alert('Edit');
+		 return;
+	  }
+
 	 } catch (e)
 	 {
-		alert('ClassCheck Error' + e.message); 
+		alert('ClassCheck Error' + e.message);
 	 }
-	   
-	 
-	 
-	 
-	 
-	 
-       var res = 
+
+
+
+
+
+
+       var res =
        {
     	  datakey: $(sender).parent().attr('data-rowid'),
           //colname: $(sender).attr('cn'),
           displayvalue: $(sender).text(),
           colindex:  $(sender).index()   //  -1
        };
-       
-       
-       
-       
-       //try 
+
+
+
+
+       //try
        //{
        //  res.colindex = this.getColIndexByColName(res.colname);
        //} catch (e)
        //{
-       //	  alert(e.message); 
+       //	  alert(e.message);
        //}
-    	 
-       
+
+
        ////// alert(JSON.stringify(res));
        this.CellClicked = res;
-       
-       try 
+
+       try
        {
          var c = document.getElementById('txtFilterExpression');
          //var s = res.colname + "=" + res.displayvalue;
@@ -1220,31 +1220,31 @@ GridView.prototype.getColIndexByColName = function(aname)
          c.value = s;
        } catch (e)
        {
-    	 ;  
+    	 ;
        }
-         
+
   	   // $('td').removeClass('selected');
        this.ResetSelection();
 	   $(sender).addClass('selected');
-	   
-  	   
+
+
 	   ///// $(sender).parent().addClass('hidden');
-	   	   
+
 	   //  $(sender).parent().addClass('hidden');
-	   
+
 	   /*
 	   var dstbody = document.getElementById('tbldata');
-	   try 
+	   try
 	   {
 	   $(dstbody).children().each(
-			            function(index,a) 
+			            function(index,a)
 			                           {
 			            	             //$(this).addClass('hidden');
 			            	             //alert(JSON.stringify(item));
 			            	              var col = 4;
 			            	              ///// $(item).addClass('hidden');
 			            	              alert($(a).children('td').eq(col).text());
-			                           } 
+			                           }
 			          );
 	   } catch (e)
 	   {
@@ -1253,62 +1253,62 @@ GridView.prototype.getColIndexByColName = function(aname)
         */
    };
 
-  
-   
+
+
       GridView.prototype.searchOnClientSideNext = function()
    {
       var ptr = this;
       var value;
-      
-      try 
-     { 
+
+      try
+     {
   	  /////// alert('searchOnClientSide_F3 under construction ');
         value = ptr.CellFoundFirst.displayvalue;
         if (  this.cellsfound.length == 0)
       {
       	 this.cellsfoundindex = -1;
-    	  
+
       	 var dstbody = this.getTableBody();
       	 /////  this.Trace('Value: ' + ptr.CellFoundFirst.displayvalue);
-    	  
+
     	  var ptr = this;
     	  var bFound = false;
-    	  try 
+    	  try
     	  {
-    		  
-    	    
+
+
             $(dstbody).children().each( // scan rows
                     function(index,row)
                   {
-                    
-                    try 
+
+                    try
                     {
-                    	
-                    ////  alert('Ridx: ' + index); 	
+
+                    ////  alert('Ridx: ' + index);
                     $(row).children().each
                     (
                        function(indexa,cell)
                        {
-                    	  
-                    	 try 
+
+                    	 try
                     	 {
-                    	 
-                         //// alert('Cidx: ' + indexa);  	
+
+                         //// alert('Cidx: ' + indexa);
                     	 var s = $(cell).text();
-                    	 
+
 //                    	 if (s == value)
                     	        if (s.indexOf(value) >= 0 )
                     	       {
                                   ptr.cellsfound.push(cell);
                                      // if (!bFound)
                                      if (true)
-                                    {	   
-                    	               ////ptr.ResetSelection.call(ptr);	 
+                                    {
+                    	               ////ptr.ResetSelection.call(ptr);
                     	               ////$(cell).addClass('found');
                     	                bFound = true;
-     
+
                     	                var sender = cell;
-                                        var res = 
+                                        var res =
                                         {
                         	               datakey: $(sender).parent().attr('data-rowid'),
                                            colname: $(sender).attr('cn'),
@@ -1317,39 +1317,39 @@ GridView.prototype.getColIndexByColName = function(aname)
                                         };
                    	                    ptr.CellFoundNext = res;
                                    }
-                             } 
-                    	  } // inner catch 
+                             }
+                    	  } // inner catch
                     		 catch (e) {}
-                    		 
+
                         }  // outer of cell handler
-                       
+
                     	     );   /// outer of foreach cell
                               }
                                 catch (e)  {}
-                             }  // outer f1 
+                             }  // outer f1
                    	       // alert('CellFoundFirst: ' + JSON.stringify(this.CellFoundFirst));
-                          );             	                   	   
-                    	 
-                    	   
+                          );
+
+
                     	 } catch (e)
                     	 {
-                    		alert(e.message); 
+                    		alert(e.message);
                      	 }
-                 	_ 
-      }  // outer of  cellsfound arrat emoty	  
-  	  
+                 	_
+      }  // outer of  cellsfound arrat emoty
+
   	  var cnt = this.cellsfound.length;
   	  var idx = this.cellsfoundindex;
-  	  
+
   	  if ( (cnt > 0) && (idx + 1) < cnt )
   	  {
   		this.cellsfoundindex = ++idx;
   		var cell = this.cellsfound[idx];
- 	    ptr.ResetSelection.call(ptr);	 
+ 	    ptr.ResetSelection.call(ptr);
 	    $(cell).addClass('found');
-	   
+
 	   var sender = cell;
-       var res = 
+       var res =
        {
     	  datakey: $(sender).parent().attr('data-rowid'),
           colname: $(sender).attr('cn'),
@@ -1360,9 +1360,9 @@ GridView.prototype.getColIndexByColName = function(aname)
   	  } else
   	  {
          // alert('Знаяення ' + value  + ' не знайдено');
-  		 try 
+  		 try
   		 {
-  			 
+
   		   var pagenum =  this.pgGetNextPageWithValueIndex(value);
   		   if (pagenum > 0)
   		   {
@@ -1370,24 +1370,24 @@ GridView.prototype.getColIndexByColName = function(aname)
   		  	 this.cellsfoundindex = 0;
   			 this.pgShowPage(pagenum);
   			 this.searchOnClientSideNext();
-  		   } 	   
-  		   else 
-  		  {	 
+  		   }
+  		   else
+  		  {
             alert('Значення ' +  ptr.CellFoundFirst.displayvalue + ' не знайдено');
             return;
-  		  }  
+  		  }
   		 } catch (e)
   		 {
-  			alert('Значення ' + ' не знайдено');	 
+  			alert('Значення ' + ' не знайдено');
   		 }
 
-  	  }	  
-  	  
-  	  
-  	  
-  	 /* 
+  	  }
+
+
+
+  	 /*
   	 var sender = cell;
-     var res = 
+     var res =
      {
   	  datakey: $(sender).parent().attr('data-rowid'),
         colname: $(sender).attr('cn'),
@@ -1400,66 +1400,66 @@ GridView.prototype.getColIndexByColName = function(aname)
      }  catch (e)
      {
     	//alert('searchOnClientSideNext error: ' + e.message);
-        alert( 'Значення не знайдено '); 		
+        alert( 'Значення не знайдено ');
      }
    };
-   
+
 
    GridView.prototype.searchOnClientSide = function(value)
  {
 	  ////// alert('searchOnClientSide under construction ' + value);
 	  //return;
-	  
+
 	  var bFound = false;
 	  this.cellsfound = [];
 	  this.cellsfoundindex = 0;
-	 
-	  
-// Reset prev search results 	  
+
+
+// Reset prev search results
 	  this.CellFoundFirst = undefined;
 	  this.CellFoundNext =  undefined;
-// Implement validate!	  
-// ===========================================	  
-	    
-	  try 
+// Implement validate!
+// ===========================================
+
+	  try
 	  {
 	    value = value.trim();
-	  } catch (e) {}  
-	  
-	  
+	  } catch (e) {}
+
+
 	  var dstbody = this.getTableBody();
-	  
+
 	  var ptr = this;
-	  try 
+	  try
 	  {
         $(dstbody).children().each( // scan rows
                 function(index,row)
               {
-                try 
+                try
                 {
-                ////  alert('Ridx: ' + index); 	
+                ////  alert('Ridx: ' + index);
                 $(row).children().each
                 (
                    function(indexa,cell)
                    {
-                	 
-                	 try 
+
+                	 try
                 	 {
-                     //// alert('Cidx: ' + indexa);  	
+                     //// alert('Cidx: ' + indexa);
                 	 var s = $(cell).text();
-                	 
+
 //                	 if (s == value)
                 	 if (s.indexOf(value) >= 0 )
                 	 {
                        ptr.cellsfound.push(cell);
                         if (!bFound)
-                      {	   
-                	   ptr.ResetSelection.call(ptr);	 
+                      {
+                	   ptr.ResetSelection.call(ptr);
                 	   $(cell).addClass('found');
                 	   bFound = true;
- 
+
                 	   var sender = cell;
-                       var res = 
+                       var res =
                        {
                     	  datakey: $(sender).parent().attr('data-rowid'),
                           colname: $(sender).attr('cn'),
@@ -1467,15 +1467,15 @@ GridView.prototype.getColIndexByColName = function(aname)
                           colindex: -1
                        };
                	       ptr.CellFoundFirst = res;
-                      } 
+                      }
                	       // alert('CellFoundFirst: ' + JSON.stringify(this.CellFoundFirst));
-                	                   	   
+
                 	 }
                 	 } catch (e)
                 	 {
-                		alert(e.message); 
+                		alert(e.message);
                 	 }
-                	 
+
                 	 //  if ( indexa >= 4 )
                 	 //{
                 	  //  return false;
@@ -1485,20 +1485,20 @@ GridView.prototype.getColIndexByColName = function(aname)
                 	 {
                 		///// return false;
                 		   ;
-                	 }	   
- 
+                	 }
+
                    }
-                );      
-             	
+                );
+
                 } catch (e)
              	{
-                   alert(e.message);	
+                   alert(e.message);
              	}
                 if (bFound)
                 {
                 	/////// return false;
-                }	
-             	_ 
+                }
+             	_
               }
 
            );
@@ -1509,195 +1509,193 @@ GridView.prototype.getColIndexByColName = function(aname)
            if ( idx  >= 1 )
            {
         	  this.pgShowPage(idx);
-        	  this.searchOnClientSide(value); 
+        	  this.searchOnClientSide(value);
         	  return;
-           }	   
-           alert('Значення ' + value  + ' не знайдено');	 
+           }
+           alert('Значення ' + value  + ' не знайдено');
        }   else
        {
     	  //////// alert('FoundCount ' + this.cellsfound.length);
     	   ;
-       }	   
-    	   
+       }
+
 	  } catch (e)
 	  {
 		 //alert(' searchOnClientSide error ' + e.message );
 		 alert(' Значення не знайдено ' );
-	
-		 
+
+
 	  }
  };
-  
+
  GridView.prototype.createSearchControls = function()
  {
      this.id_mydiv = 'dv_gvPanel';
      var mydiv = $('#' + this.id_mydiv);
      var mytable = $('#' + this.id_table);
-     
+
      //return;
-     
-     try 
+
+     try
      {
-     var controls = $( 
-    		 "<div style=' margin:0; float:right;'>" + 
-    		 "<label for 'txtSearch'>Знайти:</label>" + 
-    		 "<input  type='text' class='form-control' id='txtSearch'/>" + 
+     var controls = $(
+    		 "<div style=' margin:0; float:right; margin-top: -21px;'>" +
+    		 "<input type='text' class='form-control' id='txtSearch' placeholder='Знайти'/>" +
     		 "<input  type='button' class='btn btn-sm btn-primary' id='btnapplysearch' value='Пошук'/>" +
-    		 "<span/>" + 
-    		 "<input  type='button' class='btn btn-sm btn-primary' id='btnnextsearch' value='Шукати далі'/>" +   
-    		 //"<label >Шукати далі - F3</label>"   
+    		 "<span/>" +
+    		 "<input  type='button' class='btn btn-sm btn-primary' id='btnnextsearch' value='Шукати далі'/>" +
+    		 //"<label >Шукати далі - F3</label>"
     		  +"</div>"
-    		  //+"<span/><span/><span/><span/><span/><span/><span/><span/><span/>" 
-    		 ); 
-                   
+    		  //+"<span/><span/><span/><span/><span/><span/><span/><span/><span/>"
+    		 );
+
      var myanchor = $('#'+this.id_mydiv);                       //$('#g1');
  	 myanchor.append(controls);
-     
+
  	 //.mytable.before(controls);
- 	  
+
      } catch (e)
      {
-    	alert('createSearchControls error ' + e.message); 
+    	alert('createSearchControls error ' + e.message);
      }
-	 
+
  };
 
- 
+
  GridView.prototype.createDefaultControls = function()
  {
      this.id_mydiv = 'dv_gvPanel';
      ////// this.id_table = 'ptable';
      var mydiv = $('#' + this.id_mydiv);
      var mytable = $('#' + this.id_table);
-     
-     try 
+
+     try
      {
 	 var filterbar = $(// "<div id='dv_FilterBar'> " +
-	    //"<input type='button' id='btnapplyfilter' value='застосувати фільтр' style='background-image:url(/img/filterapply.gif);'/>" + 
+	    //"<input type='button' id='btnapplyfilter' value='застосувати фільтр' style='background-image:url(/img/filterapply.gif);'/>" +
 	    //"<input type='image' id='btnresetfilter' src='/img/filteroff.gif'/> ") ;
 		//"<div id='" + this.id_mydiv + "' style='display:flex;justify-content:center;'>" +
 		"<div class='top-panel' id='" + this.id_mydiv + "'>" +
-		"<div id='g1' style='float: left;'>" +
-	    "<input type='button' class='btn btn-sm btn-primary' id='btnapplyfilter' value='Застосувати фільтр'/>" + 
+		"<div id='g1' style='float: right; margin-top: -21px; padding-left: 5px'>" +
+	    "<input type='button' class='btn btn-sm btn-primary' id='btnapplyfilter' value='Застосувати фільтр'/>" +
 	    "<input type='button' class='btn btn-sm btn-primary' id='btnresetfilter' value='Очистити фільтр'/> "
 	    + "</div>"
 	    + "</div>"
-	    ) ; 
+	    ) ;
 	    //+ "</div>");
 	mytable.before(filterbar);
-	
-	var tableheader = $("<!-- div id='dv_gvHeader' align='left'>" + 
-    "<div id='dv_PageSize' class='hidden'>" + 
-    "<label>Показывать</label>" + 
-    "<select id='sel_PageSize'  class='form-control'>" + 
+
+	var tableheader = $("<!-- div id='dv_gvHeader' align='left'>" +
+    "<div id='dv_PageSize' class='hidden'>" +
+    "<label>Показывать</label>" +
+    "<select id='sel_PageSize'  class='form-control'>" +
     "<option value=1>3</oprion> " +
     "<option value=1>10</oprion>" +
-    "<option value=1>25</oprion>" + 
-    "</select>" + 
-    "<label>строк на странице</label>" +  
-"</div-->" + 
-//"<div id='dv_Filter'>" + 
-"<label for 'txtFilterExpression'>   Фільтр:</label>" +
-" <input type='text' class='form-control' id='txtFilterExpression'/>"  
-//"</div>" + 
+    "<option value=1>25</oprion>" +
+    "</select>" +
+    "<label>строк на странице</label>" +
+"</div-->" +
+//"<div id='dv_Filter'>" +
+" <input type='text' class='form-control' id='txtFilterExpression' placeholder='Фільтр'/>"
+//"</div>" +
 //"<div>" +
-//"</div>" + 
-//"<div id='dv_Search' align='right'>" + 
+//"</div>" +
+//"<div id='dv_Search' align='right'>" +
 
 
-/////"<label for 'txtSearch'>  Знайти:</label>" + 
-/////"<input type='text' id='txtSearch'/>" + 
+/////"<label for 'txtSearch'>  Знайти:</label>" +
+/////"<input type='text' id='txtSearch'/>" +
 ////"<input type='button' id='btnapplysearch' value='Пошук'/>" +
 /////"<label>Шукати далі - F3</label>"
 
 
-); // + 
-//"</div>" + 
+); // +
+//"</div>" +
 //"</div>");
-	
-   var myanchor = $('#btnresetfilter');	
-	
+
+   var myanchor = $('#btnresetfilter');
+
    myanchor.before(tableheader);
    //mytable.before(tableheader);
-   
-   
-		
+
+
+
      } catch (e)
      {
-    	alert('createDefaultControls error ' + e.message); 
+    	alert('createDefaultControls error ' + e.message);
      }
-     
-     this.createSearchControls();  
-     
+
+     this.createSearchControls();
+
  };
- 
- 
+
+
  GridView.prototype.InitDefaults = function()
  {
 	this.ref_table = 'ptable';
 	this.ref_userform = 'userForm';
  };
- 
+
  GridView.prototype.getUserFormElements = function()
  {
 	return   document.forms[this.ref_userform].elements;
  };
- 
- 
+
+
  GridView.prototype.getUserFormElementsjq = function()
  {
-	return  $(this.ref_userform).children();	 
+	return  $(this.ref_userform).children();
  };
 
- 
- 
- 
+
+
+
  GridView.prototype.getTableBodyjq = function()
  {
-	return  $(this.ref_tbody);	 
+	return  $(this.ref_tbody);
  };
- 
+
  GridView.prototype.getTablejq = function()
  {
-	return  $(this.ref_table);	 
+	return  $(this.ref_table);
  };
- 
- 
+
+
  GridView.prototype.Init = function()
  {
 	 var bUseDataProvider =  false;    //  true;   //false;
 	 //this.bUseDataProvider = false;
 	 this.bUsePaging = false;
 	 this.bUseFilter = false;
-	 
-	 
+
+
 	 this.createDefaultControls();
- 
- 	 
+
+
 	 this.ref_table = '#' + this.id_table;
-	 this.ref_tbody = this.ref_table + ' tbody'; 
+	 this.ref_tbody = this.ref_table + ' tbody';
 	 this.ref_th  = this.ref_table + ' th';
-	 
+
 	 var ptr = this;
-	 
+
  if (  bUseDataProvider )
-   {	
-// set SubmitForm button listener 	 
+   {
+// set SubmitForm button listener
 	 $("form").submit(function (e) {
          e.preventDefault();
          ///////     alert('GridView setDataCalled');
-// Gather form values, save in DB and rerender table	         
+// Gather form values, save in DB and rerender table
          ptr.saveData.call(ptr);
 	    }
      );
-   }	 
-//	 
-	 
-   //  set column header click handler 	 
+   }
+//
+
+   //  set column header click handler
 	 //$("body").on('click','.hcell',function (e) {
 	 //$("#ptable").on('click','th',function (e) {
 	 $(this.ref_table).on('click','th',function (e) {
-		 
+
          e.preventDefault();
          var sender = this;
          ptr.HeaderCellClickListener(e, sender);
@@ -1706,10 +1704,10 @@ GridView.prototype.getColIndexByColName = function(aname)
 
 // Edit record
 if (  bUseDataProvider )
-{	
+{
 	 $(this.ref_table).on('click','.editLink',function (e) {
-		 
-		 try 
+
+		 try
 		 {
 		 var id = $(this).data("id");
 		 /////////   alert('Edit called ' + id);
@@ -1722,19 +1720,19 @@ if (  bUseDataProvider )
 				      );
 		 } catch (e)
 		 {
-			alert('EditRow error: ' + e.message); 
+			alert('EditRow error: ' + e.message);
 		 }
          //e.preventDefault();
          //var sender = this;
          //ptr.HeaderCellClickListener(e, sender);
      });
-}	 
-	 
+}
+
 // delete record
 if (  bUseDataProvider )
-{	
+{
 	 $(this.ref_table).on('click','.removeLink',function (e) {
-		 
+
 		 var id = $(this).data("id");
 		 ////////////    alert('Remove called ' + id);
 		 ptr.p.deleteRow(id,
@@ -1750,9 +1748,9 @@ if (  bUseDataProvider )
          //var sender = this;
          //ptr.HeaderCellClickListener(e, sender);
      });
-	 
-}	 
-	 
+
+}
+
 	 /*
 	 $(".hcell").hover(function (e) {
          //e.preventDefault();
@@ -1763,17 +1761,17 @@ if (  bUseDataProvider )
      });
 	 */
 
-  //  set column header hover handler 	 
+  //  set column header hover handler
 	 //$('#ptable th').each(function(col) {
 	 $(this.ref_th).each(function(col) {
 		    $(this).hover(
 		    function() { $(this).addClass('focus'); },
 		    function() { $(this).removeClass('focus'); }
-		   );	
+		   );
 	 });
-	 
 
- // set data cell click handler  handler 	 
+
+ // set data cell click handler  handler
 	 //$("body").on('click','.dcell',function (e) {
 	 //$("#ptable").on('click','td',function (e) {
 	 $(this.ref_table).on('click','td',function (e) {
@@ -1782,7 +1780,7 @@ if (  bUseDataProvider )
          ptr.DataCellClickListener(e, sender);
      });
 
-// set applyfilter handler 
+// set applyfilter handler
 	 this.applyfilterid = 'btnapplyfilter';
 	 $('#'+this.applyfilterid)
 	   .on('click',function (e)
@@ -1790,11 +1788,11 @@ if (  bUseDataProvider )
 		                         //// alert('applyFilter');  //return;
 	                             e.preventDefault();
 	                             var sender = this;
-		                         ptr.applyFilterOnClienSide();                            
+		                         ptr.applyFilterOnClienSide();
 	                           }
 	      );
-	 
- // set resetfilter handler 
+
+ // set resetfilter handler
 	 this.resetfilterid = 'btnresetfilter';
 	 $('#'+this.resetfilterid)
 	   .on('click',function (e)
@@ -1802,81 +1800,81 @@ if (  bUseDataProvider )
                                  //alert('resetFilter'); return;
 	                             e.preventDefault();
 	                             var sender = this;
-		                         ptr.resetFilterOnClienSide();                            
+		                         ptr.resetFilterOnClienSide();
 	                           }
 	      );
-	 
+
  	 this.txtsearchid = 'txtSearch';
 	 this.applysearchid = 'btnapplysearch';
-	 
+
 	 $('#'+this.applysearchid)
 	   .on('click',function (e)
 			                   {
-		                         //var pattern = 
-		                         //$('#'+this.txtsearchid).attr('value'); 
-		                         
-           var pattern = 
-           document.getElementById('txtSearch').value; 
-		                         
+		                         //var pattern =
+		                         //$('#'+this.txtsearchid).attr('value');
+
+           var pattern =
+           document.getElementById('txtSearch').value;
+
                                  ///////   alert('Search: ' + pattern);
                                  //return;
-		                   
+
 	                             e.preventDefault();
 	                             var sender = this;
-		                         ptr.searchOnClientSide(pattern);                            
+		                         ptr.searchOnClientSide(pattern);
 	                           }
 	      );
 
 	 this.nextsearchid = 'btnnextsearch';
-	 
+
 	 $('#'+this.nextsearchid)
 	   .on('click',function (e)
 			                   {
-		                         //var pattern = 
-		                         //$('#'+this.txtsearchid).attr('value'); 
-		      try 
+		                         //var pattern =
+		                         //$('#'+this.txtsearchid).attr('value');
+		      try
 		      {
 		      ptr.searchOnClientSideNext();
 		      } catch (e1)
 		      {
-		    	//alert( 'searchOnClientSideNext error: ' + e1.message ); 
-				alert( 'Значення не знайдено '); 
+		    	//alert( 'searchOnClientSideNext error: ' + e1.message );
+				alert( 'Значення не знайдено ');
 		      }
 			                   }
 	     );
-	 
-	 
+
+
  // keypress handlers
 	    $( 'body' ).keypress(function( event ) {
-	    	
-	      ///////   alert('KeyCode: ' + event.keyCode);	
+
+	      ///////   alert('KeyCode: ' + event.keyCode);
 		  if ( event.which == 13 ) {
 		     event.preventDefault();
 		  }
-		  
+
 		  switch ( event.keyCode  )
 		  {
-// Find Next  ( F3 pressed handler ) 		  
+// Find Next  ( F3 pressed handler )
 		    case 114:  // 'F3' keycode
 		      event.preventDefault();
-		      ///////  alert('F3 pressed!');	
-		      try 
+		      ///////  alert('F3 pressed!');
+		      try
 		      {
 		        ptr.searchOnClientSideNext();
 		      } catch (e)
 		      {
-		    	 //alert( 'searchOnClientSideNext error: ' + e.message ); 
-				 alert( 'Значення не знайдено'); 
-				 
+		    	 //alert( 'searchOnClientSideNext error: ' + e.message );
+				 alert( 'Значення не знайдено');
+
 		      }
 		    break;
-		    
+
 		    default:
-		    break;	
-		  
+		    break;
+
 		  }
-		  
-		  
+
+
 		  //var xTriggered = 1;
 		  //alert(event.which + '#' + event.keyCode);
 		  //var msg = "Handler for .keypress() called " + xTriggered + " time(s).";
@@ -1884,81 +1882,81 @@ if (  bUseDataProvider )
 		  //$.print( msg, "html" );
 		  //$.print( event );
 		});
-	 
+
  };
- 
+
 
 
    GridView.prototype.setVisible = function(dst , bVisible)
- { 
-	try 
+ {
+	try
 	{
-	var p = $(dst);   
-		
+	var p = $(dst);
+
     if (  bVisible )
-    { 
+    {
       p.removeClass('hidden');
     }
-    else 
+    else
     {
-      p.addClass('hidden');	
+      p.addClass('hidden');
     }
 	} catch (e)
 	{
-	  alert('setrVisibleError: ' + e.message);	
+	  alert('setrVisibleError: ' + e.message);
 	}
- };   
- 
+ };
 
- 
+
+
    GridView.prototype.getTableBody = function()
- { 
-   //this.tbodyid = 'tbldata';	   
+ {
+   //this.tbodyid = 'tbldata';
    var dstbody =  this.ref_tbody; //    document.getElementById(this.tbodyid);
    return dstbody;
- };   
-    
- 
- 
+ };
+
+
+
     GridView.prototype.getFilter = function()
  {
-     var p = this.CellClicked; 	
+     var p = this.CellClicked;
      var colindex = p.colindex;
      var value    = p.displayvalue;
-          
-     var res = 
+
+     var res =
     {
       colindex: colindex,
-      value:    value, 		 
-      op: 1		 
-    }; 	 
-   	
+      value:    value,
+      op: 1
+    };
+
    	  return res;
- };  
- 
+ };
+
 
  // Method to get filter conditions
- // and call appropriate filtering method   
+ // and call appropriate filtering method
     GridView.prototype.applyFilterOnClienSide = function()
   {
-    try 
+    try
     {
     var filter = this.getFilter();    // Get filter to apply
     //// alert('Filter: ' + JSON.stringify(filter));
-    
+
     this.SetFilter(filter);
-    
-    
+
+
     var colindex = filter.colindex;
     var value = filter.value;
     var op = filter.op;
     this.filterByColumn(colindex,value,op);
     } catch (e)
     {
-       alert('applyFilterOnClienSide error: ' + e.message)	
+       alert('applyFilterOnClienSide error: ' + e.message)
     }
-  };  
-  
+  };
+
     GridView.prototype.showAllRows = function()
   {
         var dstbody = this.getTableBody();
@@ -1966,34 +1964,34 @@ if (  bUseDataProvider )
         $(dstbody).children().each( // scan rows
         		                       function(index,row)
         		                     {
-        		                        ptr.setVisible(row,true);	   
+        		                        ptr.setVisible(row,true);
         		                     }
-        		                   );    
-  };  
- 
-    
+        		                   );
+  };
+
+
     GridView.prototype.resetFilterOnClienSide = function()
   {
-    this.ResetFilter();	
-    // do something with context 
-	// and show all rows   
+    this.ResetFilter();
+    // do something with context
+	// and show all rows
     var c = document.getElementById('txtFilterExpression');
     c.value = '';
-    this.showAllRows();	
-  };  
-  
-  
-  
-  
+    this.showAllRows();
+  };
+
+
+
+
    GridView.prototype.filterByColumn = function(col,value,op)
  {
-	   
-	///// alert('Col: ' + col + ' Value: ' + value + 'Op: ' + op);   
-	   
-   // get tbody element  	
+
+	///// alert('Col: ' + col + ' Value: ' + value + 'Op: ' + op);
+
+   // get tbody element
     var dstbody = this.getTableBody();
     var ptr = this;
-    
+
     $(dstbody).children().each( // scan rows
     		                       function(index,row)
     		                     {
@@ -2001,42 +1999,42 @@ if (  bUseDataProvider )
     		                    	var s = $(row).children().eq(col).text();
     		                    	//// alert('S= ' + s);
     		                    	///// alert (s==value);
-    		                    	
+
     		                    	if ( s==value)
     		                    	{ ; }
     		                    	else
     		                    	{
-    		                    	  $(row).addClass('hidden');	
-    		                    	}	
+    		                    	  $(row).addClass('hidden');
+    		                    	}
     		                    	return;
-    		                    	
+
     		                    	var bFiltered = false;
     		                    	switch (op)
     		                    	{
-    		                    	  // == 
+    		                    	  // ==
     		                    	  case 1:
     		                    	  case "1":
     		                    		 if (  s == value )
-    		                    		 { 
+    		                    		 {
     		                    		   bFiltered = true;
-    		                    		 }	 
+    		                    		 }
     		                    	  break;
-    		                    	  
+
     		                    	  default:  // yet not implemented operations
-    		                    	  bFiltered = true;	  
+    		                    	  bFiltered = true;
     		                    	  break;
-    		                    	  
-    		                    	}  
-    		                    	  
+
+    		                    	}
+
     		                    	  if (!bFiltered)
     		                    	  {
     		                    		//$(row).addClass('hidden');
     		                    		ptr.setVisible(row,false);
-    		                    	  }	  
-    		                    	  
-    		                    	_ 
+    		                    	  }
+
+    		                    	_
     		                     }
-    		
+
     		                  );
  };
 
@@ -2044,35 +2042,35 @@ if (  bUseDataProvider )
    GridView.prototype.pgUpdatePaging = function()
  {
 	  ///// alert('pgUpdatePaging called');
-	  
+
 	try
 	{
-	   
+
 	  if ( this.bUsePaging )
 	{
 		  ////// alert('pgUpdateValues called');
-		  
-		    // set row count   
+
+		    // set row count
 		    var rowcount = this.dsGetRowCount()    //  this.pgGetPageSize();
 		    $("#"+this.ref_PageNavigatorCountRow).attr("value",rowcount);
-		  
-		    // set page num   
+
+		    // set page num
 		    var pagesize = this.pgGetPageSize();
 		    //alert('pagesize: ' + pagesize);
 		    $("#"+this.ref_PageNavigatorSize).attr("value",pagesize);
-		    		    
-		    
-		    // set page count   
+
+
+		    // set page count
 		    pagecount = this.pgGetPageCount();     //  this.pgGetPageSize();
 		    $("#"+this.ref_PageNavigatorCountPage).attr("value",pagecount);
-		    
-		    // set page num   
+
+		    // set page num
 		    var pagenum = this.pgGetPageNum();    //  this.pgGetPageSize();
 		    $("#"+this.ref_PageNavigatorCurPage).attr("value",pagenum);
-		    
-		    
-		    		    
-		  
+
+
+
+
 	}
 	} catch (e)
 	{
@@ -2080,135 +2078,135 @@ if (  bUseDataProvider )
 		alert('Не достатьня швидкість мережі!');
 	}
  };
-  
- 
+
+
  GridView.prototype.InitPaging = function(amode,apagesize)
  {
 	// alert('InitPaging started');
-	try 
+	try
 	{
 	if (amode)
    {
-	 this.bUsePaging = true; 	
-	 this.pgSetPageSize(apagesize); 
-	 this.pgCreatePagingControlsB(true);	 
+	 this.bUsePaging = true;
+	 this.pgSetPageSize(apagesize);
+	 this.pgCreatePagingControlsB(true);
 	 this.pgUpdatePaging();
    }
 	} catch (e)
 	{
-	  alert('InitPaging Error ' + e.message);	
+	  alert('InitPaging Error ' + e.message);
 	}
 	//this.createSearchControls();
  };
- 
+
 
  GridView.prototype.RefreshGrid = function()
  {
-   this.pgValidateNavigatorButtons();	 
-   this.pgValidatePageNum();	 
+   this.pgValidateNavigatorButtons();
+   this.pgValidatePageNum();
    this.renderTableBody();
  };
 
  GridView.prototype.pgShowPage = function(anum)
  {
-	///// alert('pgShowPage called ' + anum);  
+	///// alert('pgShowPage called ' + anum);
 	var pagenum = 1;
 	var pagecount = this.pgGetPageCount();
-	////// alert('anum= ' + anum +  'pagenum= ' + pagenum + ' pagecount ' + pagecount);  
+	////// alert('anum= ' + anum +  'pagenum= ' + pagenum + ' pagecount ' + pagecount);
 		if ( (anum >= pagenum)  && (anum <= pagecount))
-		{	
+		{
 	      this.pgSetPageNum(anum);
 	      this.RefreshGrid();
-		}  
+		}
  };
- 
- 
+
+
  GridView.prototype.pgShowFirstPage = function()
  {
     var pagenum = 1;
     this.pgShowPage(pagenum);
  };
 
- 
+
  GridView.prototype.pgShowNextPage = function()
  {
 	var pagenum = this.pgGetPageNum();
     this.pgShowPage(++pagenum);
  };
- 
- 
+
+
  GridView.prototype.pgShowPrevPage = function(anum)
  {
 	var pagenum = this.pgGetPageNum();
     this.pgShowPage(--pagenum);
  };
- 
+
  GridView.prototype.pgShowLastPage = function(anum)
  {
 	var pagenum = this.pgGetPageCount();
     this.pgShowPage(pagenum);
  };
 
- 
+
  GridView.prototype.pgGetNextPageWithValueIndex = function(avalue)
  {
-	var res = 0; 
+	var res = 0;
 	var anum  = this.pgGetPageNum();
 	anum ++;
 	//////////this.Trace('Page: ' + anum);
 	//////////this.Trace('Value: ' + avalue);
 	//var count = this.pgGetPageCount();
 	//if (pagenum < count)
-    //{ res = pagenum + 1; }		
-	
+    //{ res = pagenum + 1; }
+
 	var pagenum = 1;
 	var pagecount = this.pgGetPageCount();
 	////// alert('anum= ' + anum +  'pagenum= ' + pagenum + ' pagecount ' + pagecount);
-	
+
 	    if ( anum > pagecount )
-	    {   return res;    }	
-	
+	    {   return res;    }
+
 		//if ( (anum >= pagenum)  && (anum <= pagecount))
 	      while (  anum <= pagecount  )
-		{	
-	       //////   return anum;	  
+		{
+	       //////   return anum;
 	      //this.pgSetPageNum(anum);
 	      //this.RefreshGrid();
 		  // var ds = this.GetPageDataStore();
-			 var bounds = {};   
+			 var bounds = {};
 			   if ( this.IsPaging())
 			   {
-				  var size = this.pgGetPageSize();  
+				  var size = this.pgGetPageSize();
 				  // var from = (this.pgGetPageNum()-1)*size;
 				  var from = (anum-1)*size;
 				  bounds.start =  from;
 				  bounds.limit =  size;
-			    } 
+			    }
 			 var ds =  this.dsGetPageDataSource(bounds);
-			 
+
 			 ///////////////this.Trace('DS: ' + JSON.stringify(ds));
-	
+
 			 var ptr = this;
-			try 
+			try
 			{
 			   var f = function(a)
 			 {
 			   //var res1 = true;
-			  
-			     ////////ptr.Trace('A ' + JSON.stringify(a));	 
-			     var res = false;	 
+
+			     ////////ptr.Trace('A ' + JSON.stringify(a));
+			     var res = false;
 			     for ( p in a)
 			   {
 				 var t = a[p];
-			     ////////////ptr.Trace('T ' + t);	 
-				 
+			     ////////////ptr.Trace('T ' + t);
+
 				 if ( t == avalue)
 				 {
 				   res = true;
 				   break;
 				 }
-				 
-				 try 
+
+				 try
 				 {
 				 if ( t.indexOf(avalue) >= 0)
 				 {
@@ -2220,99 +2218,99 @@ if (  bUseDataProvider )
 			   }
 			    return res;
 			};
-			 
-			
+
+
 		  if ( ds.find(f) != undefined )
 		   {
 			  res = anum;
 			  return res;
-		   } 
+		   }
 		 } catch (e)
 		 {
-			this.handleError(e,'pgGetNextPageWithValueIndex '); 
+			this.handleError(e,'pgGetNextPageWithValueIndex ');
 		 }
 			 anum++;
-		}  
-	return res; 
+		}
+	return res;
  };
-  
- 
+
+
  GridView.prototype.pgResetNavigatorButtons = function()
  {
-	 try 
+	 try
 	 {
-	 $('#'+this.ref_PageNavigatorFirst).css('visibility','visible');	
-	 $('#'+this.ref_PageNavigatorPrev).css('visibility','visible');	
-	 $('#'+this.ref_PageNavigatorNext).css('visibility','visible');	
+	 $('#'+this.ref_PageNavigatorFirst).css('visibility','visible');
+	 $('#'+this.ref_PageNavigatorPrev).css('visibility','visible');
+	 $('#'+this.ref_PageNavigatorNext).css('visibility','visible');
 	 $('#'+this.ref_PageNavigatorLast).css('visibility','visible');
 	 } catch (e)
 	 {
-// non critical error		 
+// non critical error
 		 ;
 	 }
  };
- 
- 
+
+
  GridView.prototype.pgValidateNavigatorButtons = function()
  {
 	/// this.Trace('pgValidateNavigatorButtons called');
-	// In AIS hidden! 
-	return; 
-	 
-	try 
+	// In AIS hidden!
+	return;
+
+	try
 	{
     var pagenum = this.pgGetPageNum();
 	var count   = this.pgGetPageCount();
 	this.pgResetNavigatorButtons();
-	
+
 	if (  pagenum == 1 )
     {
-		
-	 $('#'+this.ref_PageNavigatorFirst).css('visibility','hidden');	
-	 $('#'+this.ref_PageNavigatorPrev).css('visibility','hidden');	
-    }	
+
+	 $('#'+this.ref_PageNavigatorFirst).css('visibility','hidden');
+	 $('#'+this.ref_PageNavigatorPrev).css('visibility','hidden');
+    }
 	if (  pagenum == count )
 	{
-	   $('#'+this.ref_PageNavigatorLast).css('visibility','hidden');	
-	   $('#'+this.ref_PageNavigatorNext).css('visibility','hidden');	
+	   $('#'+this.ref_PageNavigatorLast).css('visibility','hidden');
+	   $('#'+this.ref_PageNavigatorNext).css('visibility','hidden');
 	}
 	} catch (e)
 	{
 		;
 	}
  };
- 
+
  GridView.prototype.pgValidatePageNum = function()
  {
     var pagenum = this.pgGetPageNum();
     $("#"+this.ref_PageNavigatorCurPage).attr("value",pagenum);
  };
- 
- 
+
+
  GridView.prototype.pgGetPageNum = function()
  {
 	if ( this.pageNum == undefined )
 	{
-		this.pageNum = 1;	 
+		this.pageNum = 1;
 	}
 	   return this.pageNum;
  };
- 
+
 
   GridView.prototype.pgSetPageNum = function(anum)
  {
-	////// alert('pgSetPageNum called ' + anum);  
+	////// alert('pgSetPageNum called ' + anum);
 	var pagenum = this.pgGetPageNum();
 	var pagecount = this.pgGetPageCount();
 	if  ( anum < 1) return pagenum;
 	if  ( anum > pagecount) return pagenum;
 	pagenum = anum;
-	this.pageNum = pagenum;	
-	
-	return pagenum;	 
+	this.pageNum = pagenum;
+
+	return pagenum;
  };
- 
- 
+
+
  GridView.prototype.pgSetPageSize = function(asize)
  {
 	 this.pageSize = asize;
@@ -2322,57 +2320,57 @@ if (  bUseDataProvider )
  {
 	 return this.pageSize;
  };
- 
+
  GridView.prototype.pgGetPageCount = function()
  {
 	 // return this.pageSize;
 	 var res = 1;
 	 var pagesize = this.pgGetPageSize();
 	 var rowcount = this.dsGetRowCount();
-	 
+
 	 ////////  alert('Pagesize: ' + pagesize + ' Rowcount: ' + rowcount);
-	 
+
 	 res = Math.floor(rowcount/pagesize);
 	 var remainder = rowcount % pagesize;
-	 
+
 	 if ( remainder > 0)
 	 {
 		 res++;
-	 }	 
-	 
+	 }
+
 	 return res;
  };
 
- 
- 
+
+
  GridView.prototype.pgShowPagingControls = function(astate)
  {
-	 
+
  };
- 
- 
+
+
  GridView.prototype.dsGetRowCount = function()
  {
    ////// alert('dsGetRowCount called ' + this.datastore.length);
    if ( this.IsFilter())
-   {	   
+   {
       return  this.datastoref.length;
    }  else
    {
 	 return  this.datastore.length;
-   }   
+   }
  };
 
- 
+
  GridView.prototype.pgCreatePagingControls = function(astate)
  {
-	
-	
+
+
      var mytable = this.getTablejq();
-     
-     try 
+
+     try
      {
-	
+
 	this.ref_PageNavigatorDiv = 'ptable_dv_pagenavigator';
 	this.ref_PageNavigatorFirst = 'ptable_btn_firstpage';
 	this.ref_PageNavigatorNext = 'ptable_btn_nextpage';
@@ -2386,98 +2384,98 @@ if (  bUseDataProvider )
 	this.ref_PageNavigatorCountPage  = 'ptable_lbl_countpagenum';
 	this.ref_PageNavigatorCountRowLbl  = 'ptable_lbl_countrow';
 	this.ref_PageNavigatorCountRow  = 'ptable_lbl_countrownum';
-	
+
 	var pagenavigator = $(
-	//	"<div style='width:100%' id='" + this.ref_PageNavigatorDiv + "'>" +   
+	//	"<div style='width:100%' id='" + this.ref_PageNavigatorDiv + "'>" +
     ///// "<span/><span/><span/><span/><span/><span/><span/><span/><span/>" +
 
         // +
     //"<span/><span/><label id='" +  this.ref_PageNavigatorSizeLbl + "' " +
     //" for '" +  this.ref_PageNavigatorSize + "'>"  +
-    //"Розмір"  + "</label>" +  
+    //"Розмір"  + "</label>" +
     //"<input disabled='true' style='width:40px'  type=text id='" +  this.ref_PageNavigatorSize + "' value='2' />" +
     //"<span/><label id='" +  this.ref_PageNavigatorCountPageLbl + "' " +
     //" for '" +  this.ref_PageNavigatorCountPage + "'>"  +
-    //"Сторінок"  + "</label>" +  
+    //"Сторінок"  + "</label>" +
     //"<input disabled='true' style='width:60px' type=text id='" +  this.ref_PageNavigatorCountPage + "' value='10' />" +
     //"<span/><span/><label id='" +  this.ref_PageNavigatorCountRowLbl + "' " +
     //" for '" +  this.ref_PageNavigatorCountRow + "'>"  +
-    //" Рядків"  + "</label>" +  
-    //"<input disabled='true' style='width:80px' type=text id='" +  this.ref_PageNavigatorCountRow + "' value='100' />" 
+    //" Рядків"  + "</label>" +
+    //"<input disabled='true' style='width:80px' type=text id='" +  this.ref_PageNavigatorCountRow + "' value='100' />"
     //"</div>"
     );
-	
-	
+
+
      mytable.before(pagenavigator);
 
 
-	
+
     var myanchor = $('#'+'g1');
     //myanchor.after(pagenavigator);
     //myanchor.before(pagenavigator);
-    
+
     myanchor = $('#'+this.id_mydiv);
 	//myanchor.before(pagenavigator);
 
 
 	myanchor.append(pagenavigator);
-    
-    
-    
-    
-    var pagefooter = $( 
-	
-	"<div id='pages-control'>"  + 		
-    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorFirst + "' src='img/DataContainer_MoveFirstHS.png' />" +  
-    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorPrev + "' src='img/DataContainer_MovePreviousHS.png' />" +  
+
+
+
+
+    var pagefooter = $(
+
+	"<div id='pages-control'>"  +
+    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorFirst + "' src='img/DataContainer_MoveFirstHS.png' />" +
+    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorPrev + "' src='img/DataContainer_MovePreviousHS.png' />" +
     "<input disabled='true' class='form-control' type=text id='" +  this.ref_PageNavigatorCurPage + "' value='1' />" +
-    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorNext + "' src='img/DataContainer_MoveNextHS.png' />" +  
-    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorLast + "' src='img/DataContainer_MoveLastHS.png' />"  
-+		
+    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorNext + "' src='img/DataContainer_MoveNextHS.png' />" +
+    "<input type=image class='btn btn-outline btn-default' id='" +  this.ref_PageNavigatorLast + "' src='img/DataContainer_MoveLastHS.png' />"
++
       "<span/><span/><label id='" +  this.ref_PageNavigatorSizeLbl + "' " +
      " for '" +  this.ref_PageNavigatorSize + "'>"  +
-     "Розмір"  + "</label>" +  
+     "Розмір"  + "</label>" +
      "<input disabled='true' class='form-control'  type=text id='" +  this.ref_PageNavigatorSize + "' value='2' />" +
      "<span/><label id='" +  this.ref_PageNavigatorCountPageLbl + "' " +
      " for '" +  this.ref_PageNavigatorCountPage + "'>"  +
-     "Сторінок"  + "</label>" +  
+     "Сторінок"  + "</label>" +
      "<input disabled='true' class='form-control' type=text id='" +  this.ref_PageNavigatorCountPage + "' value='10' />" +
      "<span/><span/><label id='" +  this.ref_PageNavigatorCountRowLbl + "' " +
      " for '" +  this.ref_PageNavigatorCountRow + "'>"  +
-     " Рядків"  + "</label>" +  
+     " Рядків"  + "</label>" +
      "<input disabled='true' class='form-control' type=text id='" +  this.ref_PageNavigatorCountRow + "' value='100' />"
      + "</div>"
      );
-    
-        
+
+
     //mytable.after(pagefooter);
-    
+
     mytable.after(pagefooter);
-    	
-    	
-    	
-    
+
+
+
+
     //
     /*
-    // set page num   
+    // set page num
     var pagesize = this.pgGetPageSize();
     //alert('pagesize: ' + pagesize);
     $("#"+this.ref_PageNavigatorSize).attr("value",pagesize);
 
-    
-    // set page num   
+
+    // set page num
     var pagenum = 11;    //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCurPage).attr("value",pagenum);
-    
-    // set page count   
+
+    // set page count
     var pagecount = this.dsGetRowCount();     //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCountPage).attr("value",pagecount);
-    
-    // set row count   
+
+    // set row count
     var rowcount = 1230;    //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCountRow).attr("value",rowcount);
     */
-    
+
     var ptr = this;
     $("#"+this.ref_PageNavigatorFirst).click(
     		                                    function()
@@ -2486,12 +2484,12 @@ if (  bUseDataProvider )
     		                                	ptr.pgShowFirstPage.call(ptr);
     		                                  }
     		                                );
-       
-    
+
+
     $("#"+this.ref_PageNavigatorNext).click(
             function()
           {
-        	//alert('Next!');  
+        	//alert('Next!');
         	ptr.pgShowNextPage.call(ptr);
           }
         );
@@ -2499,36 +2497,36 @@ if (  bUseDataProvider )
     $("#"+this.ref_PageNavigatorPrev).click(
             function()
           {
-        	//alert('Prev');  
+        	//alert('Prev');
         	ptr.pgShowPrevPage.call(ptr);
           }
         );
-    
+
     $("#"+this.ref_PageNavigatorLast).click(
             function()
           {
-        	//alert('Last!');  
+        	//alert('Last!');
         	ptr.pgShowLastPage.call(ptr);
           }
         );
-    
-		
+
+
      } catch (e)
      {
-    	alert('createPagingControls error ' + e.message); 
+    	alert('createPagingControls error ' + e.message);
      }
-	 
+
  };
- 
- 
+
+
  GridView.prototype.pgCreatePagingControlsB = function(astate)
  {
-	 
+
      var mytable = this.getTablejq();
-     
-     try 
+
+     try
      {
-	
+
 	this.ref_PageNavigatorDiv = 'ptable_dv_pagenavigator';
 	this.ref_PageNavigatorFirst = 'ptable_btn_firstpage';
 	this.ref_PageNavigatorNext = 'ptable_btn_nextpage';
@@ -2542,50 +2540,50 @@ if (  bUseDataProvider )
 	this.ref_PageNavigatorCountPage  = 'ptable_lbl_countpagenum';
 	this.ref_PageNavigatorCountRowLbl  = 'ptable_lbl_countrow';
 	this.ref_PageNavigatorCountRow  = 'ptable_lbl_countrownum';
-	
+
 	var pagenavigator = $(
-		"<div style='width:100%'  id='" + this.ref_PageNavigatorDiv + "'>" + "<br><center>" +  
-    "<span/><span/><span/><span/><span/><span/><span/><span/><span/><input type=image id='" +  this.ref_PageNavigatorFirst + "' src='img/DataContainer_MoveFirstHS.png' />" + 
-    "<input type=image id='" +  this.ref_PageNavigatorPrev + "' src='img/DataContainer_MovePreviousHS.png' />" +  
+		"<div style='width:100%'  id='" + this.ref_PageNavigatorDiv + "'>" + "<br><center>" +
+    "<span/><span/><span/><span/><span/><span/><span/><span/><span/><input type=image id='" +  this.ref_PageNavigatorFirst + "' src='img/DataContainer_MoveFirstHS.png' />" +
+    "<input type=image id='" +  this.ref_PageNavigatorPrev + "' src='img/DataContainer_MovePreviousHS.png' />" +
     "<span/><input disabled='true' style='width:40px' type=text id='" +  this.ref_PageNavigatorCurPage + "' value='1' />" +
-    "<input type=image id='" +  this.ref_PageNavigatorNext + "' src='img/DataContainer_MoveNextHS.png' />" +  
+    "<input type=image id='" +  this.ref_PageNavigatorNext + "' src='img/DataContainer_MoveNextHS.png' />" +
     "<input type=image id='" +  this.ref_PageNavigatorLast + "' src='img/DataContainer_MoveLastHS.png' />" +
     "<span/><span/><label id='" +  this.ref_PageNavigatorSizeLbl + "' " +
     " for '" +  this.ref_PageNavigatorSize + "'>"  +
-    "Розмір"  + "</label>" +  
+    "Розмір"  + "</label>" +
     "<input disabled='true' style='width:40px'  type=text id='" +  this.ref_PageNavigatorSize + "' value='2' />" +
     "<span/><label id='" +  this.ref_PageNavigatorCountPageLbl + "' " +
     " for '" +  this.ref_PageNavigatorCountPage + "'>"  +
-    "Сторінок"  + "</label>" +  
+    "Сторінок"  + "</label>" +
     "<input disabled='true' style='width:60px' type=text id='" +  this.ref_PageNavigatorCountPage + "' value='10' />" +
     "<span/><span/><label id='" +  this.ref_PageNavigatorCountRowLbl + "' " +
     " for '" +  this.ref_PageNavigatorCountRow + "'>"  +
-    " Рядків"  + "</label>" +  
-    "<input disabled='true' style='width:80px' type=text id='" +  this.ref_PageNavigatorCountRow + "' value='100' />" 
+    " Рядків"  + "</label>" +
+    "<input disabled='true' style='width:80px' type=text id='" +  this.ref_PageNavigatorCountRow + "' value='100' />"
     //"</div>"
     );
     mytable.before(pagenavigator);
     //
     /*
-    // set page num   
+    // set page num
     var pagesize = this.pgGetPageSize();
     //alert('pagesize: ' + pagesize);
     $("#"+this.ref_PageNavigatorSize).attr("value",pagesize);
 
-    
-    // set page num   
+
+    // set page num
     var pagenum = 11;    //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCurPage).attr("value",pagenum);
-    
-    // set page count   
+
+    // set page count
     var pagecount = this.dsGetRowCount();     //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCountPage).attr("value",pagecount);
-    
-    // set row count   
+
+    // set row count
     var rowcount = 1230;    //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCountRow).attr("value",rowcount);
     */
-    
+
     var ptr = this;
     $("#"+this.ref_PageNavigatorFirst).click(
     		                                    function()
@@ -2594,12 +2592,12 @@ if (  bUseDataProvider )
     		                                	ptr.pgShowFirstPage.call(ptr);
     		                                  }
     		                                );
-       
-    
+
+
     $("#"+this.ref_PageNavigatorNext).click(
             function()
           {
-        	//alert('Next!');  
+        	//alert('Next!');
         	ptr.pgShowNextPage.call(ptr);
           }
         );
@@ -2607,37 +2605,37 @@ if (  bUseDataProvider )
     $("#"+this.ref_PageNavigatorPrev).click(
             function()
           {
-        	//alert('Prev');  
+        	//alert('Prev');
         	ptr.pgShowPrevPage.call(ptr);
           }
         );
-    
+
     $("#"+this.ref_PageNavigatorLast).click(
             function()
           {
-        	//alert('Last!');  
+        	//alert('Last!');
         	ptr.pgShowLastPage.call(ptr);
           }
         );
-    
-		
+
+
      } catch (e)
      {
-    	alert('createPagingControls error ' + e.message); 
+    	alert('createPagingControls error ' + e.message);
      }
-	 
+
  };
- 
- 
- 
+
+
+
  GridView.prototype.pgCreatePagingControlsA = function(astate)
  {
-	 
+
      var mytable = this.getTablejq();
-     
-     try 
+
+     try
      {
-	
+
 	this.ref_PageNavigatorDiv = 'ptable_dv_pagenavigator';
 	this.ref_PageNavigatorFirst = 'ptable_btn_firstpage';
 	this.ref_PageNavigatorNext = 'ptable_btn_nextpage';
@@ -2651,51 +2649,51 @@ if (  bUseDataProvider )
 	this.ref_PageNavigatorCountPage  = 'ptable_lbl_countpagenum';
 	this.ref_PageNavigatorCountRowLbl  = 'ptable_lbl_countrow';
 	this.ref_PageNavigatorCountRow  = 'ptable_lbl_countrownum';
-	
-	var pagenavigator = $("<div style='width:100%' id='" + this.ref_PageNavigatorDiv + "'>" +    
-    "<span/><span/><input type=button id='" +  this.ref_PageNavigatorFirst + "' value='First' />" +  
-    "<input type=button id='" +  this.ref_PageNavigatorNext + "' value='Next' />" +  
-    "<input type=button id='" +  this.ref_PageNavigatorPrev + "' value='Prev' />" +  
+
+	var pagenavigator = $("<div style='width:100%' id='" + this.ref_PageNavigatorDiv + "'>" +
+    "<span/><span/><input type=button id='" +  this.ref_PageNavigatorFirst + "' value='First' />" +
+    "<input type=button id='" +  this.ref_PageNavigatorNext + "' value='Next' />" +
+    "<input type=button id='" +  this.ref_PageNavigatorPrev + "' value='Prev' />" +
     "<input type=button id='" +  this.ref_PageNavigatorLast + "' value='Last' />" +
     "<span/><span/><label id='" +  this.ref_PageNavigatorSizeLbl + "' " +
     " for '" +  this.ref_PageNavigatorSize + "'>"  +
-    "PageSize"  + "</label>" +  
+    "PageSize"  + "</label>" +
     "<input disabled='true' style='width:40px'  type=text id='" +  this.ref_PageNavigatorSize + "' value='2' />" +
     "<span/><label id='" +  this.ref_PageNavigatorCurPageLbl + "' " +
     " for '" +  this.ref_PageNavigatorCurPage + "'>"  +
-    "Page"  + "</label>" +  
+    "Page"  + "</label>" +
     "<input disabled='true' style='width:40px' type=text id='" +  this.ref_PageNavigatorCurPage + "' value='1' />" +
     "<label id='" +  this.ref_PageNavigatorCountPageLbl + "' " +
     " for '" +  this.ref_PageNavigatorCountPage + "'>"  +
-    "Pages"  + "</label>" +  
+    "Pages"  + "</label>" +
     "<input disabled='true' style='width:60px' type=text id='" +  this.ref_PageNavigatorCountPage + "' value='10' />" +
     "<span/><span/><label id='" +  this.ref_PageNavigatorCountRowLbl + "' " +
     " for '" +  this.ref_PageNavigatorCountRow + "'>"  +
-    " Rows"  + "</label>" +  
+    " Rows"  + "</label>" +
     "<input disabled='true' style='width:80px' type=text id='" +  this.ref_PageNavigatorCountRow + "' value='100' />" +
     "</div>"  );
     mytable.before(pagenavigator);
     //
     /*
-    // set page num   
+    // set page num
     var pagesize = this.pgGetPageSize();
     //alert('pagesize: ' + pagesize);
     $("#"+this.ref_PageNavigatorSize).attr("value",pagesize);
 
-    
-    // set page num   
+
+    // set page num
     var pagenum = 11;    //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCurPage).attr("value",pagenum);
-    
-    // set page count   
+
+    // set page count
     var pagecount = this.dsGetRowCount();     //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCountPage).attr("value",pagecount);
-    
-    // set row count   
+
+    // set row count
     var rowcount = 1230;    //  this.pgGetPageSize();
     $("#"+this.ref_PageNavigatorCountRow).attr("value",rowcount);
     */
-    
+
     var ptr = this;
     $("#"+this.ref_PageNavigatorFirst).click(
     		                                    function()
@@ -2704,12 +2702,12 @@ if (  bUseDataProvider )
     		                                	ptr.pgShowFirstPage.call(ptr);
     		                                  }
     		                                );
-       
-    
+
+
     $("#"+this.ref_PageNavigatorNext).click(
             function()
           {
-        	//alert('Next!');  
+        	//alert('Next!');
         	ptr.pgShowNextPage.call(ptr);
           }
         );
@@ -2717,51 +2715,50 @@ if (  bUseDataProvider )
     $("#"+this.ref_PageNavigatorPrev).click(
             function()
           {
-        	//alert('Prev');  
+        	//alert('Prev');
         	ptr.pgShowPrevPage.call(ptr);
           }
         );
-    
+
     $("#"+this.ref_PageNavigatorLast).click(
             function()
           {
-        	//alert('Last!');  
+        	//alert('Last!');
         	ptr.pgShowLastPage.call(ptr);
           }
         );
-    
-		
+
+
      } catch (e)
      {
-    	alert('createPagingControls error ' + e.message); 
+    	alert('createPagingControls error ' + e.message);
      }
-	 
+
  };
- 
- 
- 
- 
+
+
+
+
  ///var g = new GridView();
- 
+
  ////g.Init();
- 
- 
- 
+
+
+
  /*
  $("body").on('click','.hcell',function (e) {
- 
+
             e.preventDefault();
             alert('THClicked!');
             alert(JSON.stringify(this));
-            this.sortorder = 'desc'; 
+            this.sortorder = 'desc';
         });
- 
+
  $("body").on('click','.dcell',function (e) {
- 
+
             e.preventDefault();
             alert('TDClicked!');
             alert(JSON.stringify(this));
 });
  */
- 
- 
+

@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<link rel="stylesheet" type="text/css" href="gridview.css" />
 	<link rel="stylesheet" type="text/css" href="bootstrap-datepicker.css" />
+    <link rel="stylesheet" type="text/css" href="Chart.min.css">
 	<script type="text/javascript" src="tcal.js"></script>
 	<script src="gridview.js"></script>
 	<script src="jquery.js"></script>
@@ -51,38 +52,24 @@
 			display: block;
 		}
 
-		.close {
-			display: inline-block;
-			border: 1px solid #0000cc;
-			color: #0000cc;
-			padding: 0 12px;
-			margin: 10px;
-			text-decoration: none;
-			background: #f2f2f2;
-			font-size: 14pt;
-			cursor: pointer;
-		}
-
-		.close:hover {
-			background: #e6e6ff;
-		}
 	</style>
 
 </head>
 
 <body>
-	
+    {{> loader}}
 	{{> menu}}
 	{{> header}}
+    {{> modalLegend}}
 	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="10">
-
 
 	<div class="modal">
 		<!-- Place at bottom of page -->
 	</div>
-	<div id="wrapper_form">
-		<label for="dateCreate"> </label>
+
+    <div class="external-borders">
+        <label for="dateCreate"> </label>
 		<div class="form-group" style="float: left">
 			<select name="rezs" id="rezs" onchange="addChange()" class="form-control" style="width:300px;">
 				{{#each repps}}
@@ -101,7 +88,7 @@
 		<!--<label style="background-color:#D3D3D3">( наявні проблеми )</label>-->
 		<!--<label style="background-color:#FF7F00">( потребує огляду )</label>-->
 
-		
+
 		<div id="ten_2">
 			<table id="col" class="table table-condensed table-striped table-bordered">
 				<thead>
@@ -118,16 +105,17 @@
 						<th>Рейс</th>
 						<th>Валідацій</th>
 						<th>Обладнання</th>
-						<th>Стан оплати</th>
-						<!--<th>Валідатори</th>-->
+                        <!--<th>Стан оплати</th>-->
+                        <!--<th>Валідатори</th>-->
 						<!--<th>Термінал</th>-->
-						<th>Статус</th>
+                        <!--<th>Статус</th>-->
 					</tr>
 				</thead>
 				<tbody>
 				</tbody>
 			</table>
 		</div>
+    </div>
 		<script>
 			//Ожидание списка формуляров :)
 			var gCheck = true;
@@ -137,7 +125,7 @@
 			var date = new Date();
 			var DateNow = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
 			document.getElementById('datebegin').value = DateNow;
-			GetUsers();//Получение списка формуляров			
+			GetUsers();//Получение списка формуляров
 			var gCheck = true;
 			$body = $("body"); $(document).on({ ajaxStart: function () { if (gCheck) { $body.addClass("loading"); } }, ajaxStop: function () { $body.removeClass("loading"); } });
 
@@ -145,6 +133,7 @@
 			function GetUsers() {
 				//GetMed();
 				//GetVtk();
+                document.getElementById("loader").style.display = "block";
 				var tDate = document.getElementById('datebegin').value;
 				var data4 = document.getElementById('selRep').value; //текущая филия
 				var tempDateH = new Date();
@@ -181,18 +170,19 @@
 									//alert(user.factWorkHeaderEnd);
 								} else {
 									tempEnd = Number(user.factWorkHeaderEnd.substr(11, 2));
-									//alert(user.factWorkHeaderEnd);						  
+									//alert(user.factWorkHeaderEnd);
 								};
 								//var dutyEnd = 60*user.factWorkHeaderEnd.substr(11,2)+Number(user.factWorkHeaderEnd.substr(14,2));
 								var dutyEnd = 60 * tempEnd + Number(user.factWorkHeaderEnd.substr(14, 2));
 								//alert(tempDate.getHours()+" - "+user.factWorkHeaderBegin.substr(11,5)+" - "+ user.factWorkHeaderEnd.substr(11,5));
 								//alert(tempTime+" - "+dutyBeg+" - "+ dutyEnd);
-								// только открытые работающие формуляры 
+								// только открытые работающие формуляры
 								if (tempTime > dutyBeg - 1 && tempTime < dutyEnd + 1 && user.factWorkHeaderisClosed == 0) {
 									rows += row(user)
 								};
 							})
 							$("#col").append(rows);
+                            document.getElementById("loader").style.display = "none";
 						}
 					},
 					error: function (error) { alert("Невідома помилка...") }
@@ -248,7 +238,7 @@
 					contentType: "application/json",
 					success: function (user) {
 						//alert("qqq");
-						//alert(user.route);					
+						//alert(user.route);
 					}
 				});
 				//alert("error");
@@ -354,7 +344,7 @@
 
 				//Проверка работы по формулярe
 
-				var strTD = " bgcolor='#D3D3D3'";//подсвечиваем серым  	#D3D3D3 #adadad	
+				var strTD = " bgcolor='#D3D3D3'";//подсвечиваем серым  	#D3D3D3 #adadad
 
 				if (user.A2 == 0)
 					strTD = " bgcolor='#87F630'";//подсвечиваем зеленым;
@@ -369,12 +359,12 @@
 						//strTD = " bgcolor='#D4EDBB39'"; //подсвечиваем красный #D4EDBB39;
 					} else {
 						var duty1 = user.smenTripCount.substr(0, 10);
-						console.log(duty1);
-						console.log(ndate);
+						//console.log(duty1);
+						//console.log(ndate);
 						if (!(duty1 == ndate)) {
 							strTD = " bgcolor='#EDBB39'";
-							//strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;	
-							//strTD = " bgcolor='#D4EDBB39'"; //подсвечиваем красный;	
+							//strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;
+							//strTD = " bgcolor='#D4EDBB39'"; //подсвечиваем красный;
 						}
 					}
 				};
@@ -415,19 +405,19 @@
 					descrF + user.factWorkHeaderID + "</td>" +
 					"<td" + strTD + ">" + user.PENumPe + "</td>" +
 					"<td" + strTD + ">" + user.driversTabNum + "</td> <td" + strTD + ">" + user.marNum + "-" + user.vipNum + "-" + user.smenNum + "</td>" +
-					//"<td" + strTD + ">" + user.factWorkHeaderDate + 
-					"</td>" + "<td" + strTD + ">" + strBegin + "</td>" +
-					"<td" + strTD + ">" + strEnd + "</td>" +
+					//"<td" + strTD + ">" + user.factWorkHeaderDate +
+					"</td>" + "<td" + strTD + ">" + strBegin.slice(0, -3) + "</td>" +
+					"<td" + strTD + ">" + strEnd.slice(0, -3) + "</td>" +
 					"<td" + strTD + ">" + user.driversName + "</td>" +
 					//"<td" + strTD + ">" + descr + "</td>" +
 					"<td" + strTD + ">" + user.smenTripCount + "</td>" +
-					"<td" + strValid + ">" + user.validation + "</td>" +					
-					"<td" + strTD + ">" + user.obtime + "<br>" + validatorBad + "<br>" + monitorBad + "</td>" +
-					"<td" + strTD + ">" + descr + "</td>" +
-					"<td" + " id=" + user.id + " " + strTD + "><a href='#' class='close'" + "data-loc='" + user.id + "'" + " data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
+					"<td" + strValid + ">" + user.validation.replace(/T/g, " ").slice(0, -3) + "</td>" +
+					"<td class='close'" +  "data-loc='" + user.id + "'" + " data-id='" + user.info + "'" + strTD + ">" + user.obtime.replace(/T/g, " ").slice(0, -3) + "<br>" + validatorBad + "<br>" + monitorBad + "</td></tr>"
+					//"<td" + strTD + ">" + descr + "</td>" +
+					//"<td" + " id=" + user.id + " " + strTD + "><a href='#' class='close'" + "data-loc='" + user.id + "'" + " data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
 			}
 
-			// нажимаем на ссылку показать оборудование		
+			// нажимаем на ссылку показать оборудование
 			$("body").on("click", ".close", function () {
 				window.location = "#zatemnenie";
 				var data2 = $(this).data("id");//время  посылки оборудования
@@ -439,7 +429,7 @@
 
 			// нажимаем на ссылку Изменить (переход к ЕШЛ)
 			$("body").on("click", ".editLink", function () {
-				var data2 = $(this).data("id");//табельный			
+				var data2 = $(this).data("id");//табельный
 				var data3 = document.getElementById('datebegin').value;//текущая дата расчёта
 				var data4 = document.getElementById('selRep').value;//текущая филия
 				//alert(data4);
