@@ -1,11 +1,18 @@
 {
   "ServerPort": 3000,
   "urldb": "mongodb://localhost:27017/fueldb",
+  "asop_auth": "mongodb://localhost:27017/asop-auth",
   "urls_services": {
     "hostGetAwp": "http://test.asotr.ttc.net.ua/",
     "hostGetAsdu": "http://gpsapi.kpt.kiev.ua/"
   },
   "local_api_services": {
     "patch_zero_ways": "data/trip0.json"
+  },
+  "email":{
+    "smtp_host": "smtp.kpt.kiev.ua",
+    "port": 587,
+    "user": "support_sataz@kpt.kiev.ua",
+    "pass": "acotp17"
   }
 }

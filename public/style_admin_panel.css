@@ -1,0 +1,238 @@
+body {
+	padding-top: 10px;
+	padding-bottom: 20px;
+	height: 100%;
+}
+#wrapper {
+	margin: 30px;
+}
+
+#wrapper_form {
+	margin: 0px;
+}
+
+.addBorderTop {
+	border-top: 6px solid #6da8dc;
+	padding: 0px;
+}
+
+.addBorderBottom {
+	border-bottom: 6px solid #6da8dc;
+	padding: 0px;
+}
+
+h1 {
+	margin-bottom: 10px;
+	font-size: 25px;
+	text-align: center;
+}
+
+h2 {
+	margin-bottom: 0px;
+	font-size: 25px;
+	color: #116cc9;
+}
+
+h3 {
+	color: #116cc9;
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
+
+nav.navbar-fixed-top {
+	background-color: #E0fffE;
+	height: 32px;
+	overflow: auto;
+}
+
+/*All shedule modal change style*/
+.changeWindow {
+	width: 400px;
+	align-content: center;
+}
+
+/*Google map styles API*/
+.googleMap {
+	width: 600px;
+	align-content: center;
+}
+#map {
+	height: 600px;  /* The height is 400 pixels */
+	width: 100%;  /* The width is the width of the web page */
+}
+
+/*Mapon data info lables colors*/
+#DateFuelMapOn, #DateFuelIAZS{
+	color: #3c763d;
+}
+
+#WeekOutFuel{
+	color: #760900;
+}
+
+#FuelMapOnFormulars{
+	color: #3079ed;
+}
+
+.input-w label {
+	display: inline-block; width: 140px; text-align: right;
+}
+
+.input-w input {
+	display: inline-block;
+	text-align: center;
+	horiz-align: right;
+}
+
+.navbar-fixed-top a {
+	float: left;
+	background-color: #F4F8C0;
+	border: 1px outset #d4d4d4;
+	color: black;
+	height: 32px;
+	line-height: 32px;
+	padding-top: 0;
+}
+
+thead {
+
+	background-color: #116cc9;
+	color: #fff;
+	font-weight: bold;
+}
+#ten {
+	height: 440px;
+	min-width: 1024px;
+}
+
+#ten_2 {
+	height: auto;
+	min-width: 1024px;
+}
+
+.top-panel {
+	padding: 0 0 25px 0;
+}
+
+#ptable {
+	margin: 20px 0 0 0;
+}
+
+
+.table-child {
+	width: 80%;
+	margin-top: auto;
+	margin: auto;
+}
+
+#ten_reports {
+	width: 65%;
+	margin-top: auto;
+	margin: auto;
+}
+
+.table-child td {
+	background-color: white;
+}
+
+
+.datefuelpicker {
+	width: 300px;
+	margin-bottom: 15px;
+	cursor: pointer;
+	padding-top: 12px;
+}
+
+
+.datepicker {
+	z-index: 1035 !important;
+}
+
+.datepicker tr {
+	background: none !important;
+}
+
+#pages-control {
+	position: absolute;
+	top: 545px;
+}
+
+#pages-control input {
+	height: 25px;
+	display: inline;
+	margin: 0 0 -1px 0;
+}
+
+#pages-control input[type=text] {
+	width: 50px;
+}
+
+nav {
+	width: 100%;
+	height: 40px;
+	background-color: #116CC9;
+	display: block;
+}
+
+footer {
+	width: 100%;
+	height: 100px;
+	background-color: #116CC9;
+	display: block;
+}
+
+nav a {
+	display: block;
+	font-size: 15px;
+	float: left;
+	color: white;
+	padding: 10px 20px;
+
+}
+
+nav a:hover {
+	background-color: #fff;
+	text-decoration: none;
+	color: #116CC9;
+}
+
+footer {
+	color: #FFF;
+	padding-bottom: 40px;
+
+}
+
+
+
+.protokol {
+    color: #b7b7b7;
+    margin-top: 15px;
+}
+
+.btn-primary {
+    background-color: #116cc9;
+    border-color: #116cc9;
+    height: 32px;
+	padding: 0 10px 0 10px;
+}
+
+.btn {
+
+	padding: 5px 10px;
+}
+
+.total-row {
+	font-weight: bold;
+	background-color: #e3ffe5;
+}
+
+.total-row td {
+	border-top: 2px solid #efefef;
+}
+
+
+html {
+	height: 100%;
+}
+
+/* Start by setting display:none to make this hidden.   Then we position it in relation to the viewport window   with position:fixed. Width, height, top and left speak   for themselves. Background we set to 80% white with   our animation centered, and no-repeating */.modal {    display:    none;    position:   fixed;    z-index:    1000;    top:        0;    left:       0;    height:     100%;    width:      100%;    background: rgba( 255, 255, 255, .8 )                 url('img/ajax-loader.gif')                 50% 50%                 no-repeat;}/* When the body has the loading class, we turn   the scrollbar off with overflow:hidden */body.loading {    overflow: hidden;   }/* Anytime the body has the loading class, our   modal element will be visible */body.loading .modal {    display: block;}

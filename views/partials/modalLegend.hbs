@@ -27,12 +27,28 @@
             margin: auto;
             padding: 0;
             border: 1px solid #888;
-            width: 80%;
+            width: 45%;
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
             -webkit-animation-name: animatetop;
             -webkit-animation-duration: 0.4s;
             animation-name: animatetop;
             animation-duration: 0.4s
+        }
+
+        /* Modal Content */
+        .modal-content-sign {
+            position: relative;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 0;
+            border: 1px solid #888;
+            width: 70%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            padding-bottom: 10px;
         }
 
         /* Add Animation */
@@ -83,6 +99,12 @@
             padding: 2px 16px;
             background: linear-gradient(90deg, #7A7E7C 5.56%, rgba(122, 126, 124, 0.12) 76.07%);
             color: white;
+        }
+
+        .modal-header-sign {
+            padding: 2px 16px;
+            background: linear-gradient(180deg, rgba(25, 190, 244, 0.56) 11.49%, rgba(50, 79, 184, 0.17) 89.08%);
+            color: black;
         }
 
         .modal-body {padding: 2px 16px;}
@@ -210,51 +232,74 @@
     </div>
 </div>
 
+<!-- The Modal green -->
+<div id="myModalSign" class="modalSign">
+    <!-- Modal content -->
+    <div class="modal-content-sign">
+        <div class="modal-header-sign">
+            <span class="closeLegend" style="color: black;">&times;</span>
+            <h2 style="color: black">Register on system</h2>
+        </div>
+        <div class="modal-body">
+            <p>На разі функція автоматичної реєстрації вимкнена.<br>Для реєстрації зверніться до адміністратора системи.</p>
+        </div>
+    </div>
+</div>
+
 <script>
     // Get the modal
     var modalGreen = document.getElementById("myModalGreenLegend");
     var modalYellow = document.getElementById("myModalYellowLegend");
     var modalOrange = document.getElementById("myModalOrangeLegend");
     var modalGrey = document.getElementById("myModalGreyLegend");
+    var modalSign = document.getElementById("myModalSign");
+    modalSign.style.display = "none";
 
 
 
-    $( "#greenLegend" ).hover(function() {
+    $( "#greenLegend" ).click(function() {
                 modalGreen.style.display = "block"
             }
     );
 
-    $( "#yellowLegend" ).hover(function() {
+    $( "#yellowLegend" ).click(function() {
                 modalYellow.style.display = "block"
             }
     );
 
-    $( "#orangeLegend" ).hover(function() {
+    $( "#orangeLegend" ).click(function() {
                 modalOrange.style.display = "block"
             }
     );
 
-    $( "#greyLegend" ).hover(function() {
+    $( "#greyLegend" ).click(function() {
                 modalGrey.style.display = "block"
             }
     );
 
-    $( ".closeLegend" ).hover(function() {
+    $( "#modalSign" ).click(function() {
+                modalSign.style.display = "block"
+            }
+    );
+
+    $( ".closeLegend" ).click(function() {
             modalGreen.style.display = "none";
             modalYellow.style.display = "none";
             modalOrange.style.display = "none";
             modalGrey.style.display = "none";
+            modalSign.style.display = "none";
         }
     );
 
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-        if (event.target == modalGreen || event.target == modalYellow || event.target == modalOrange || event.target == modalGrey) {
+        if (event.target == modalGreen || event.target == modalYellow || event.target == modalOrange || event.target == modalGrey  || event.target == modalSign) {
             modalGreen.style.display = "none";
             modalYellow.style.display = "none";
             modalOrange.style.display = "none";
             modalGrey.style.display = "none";
+            modalSign.style.display = "none";
         }
     }
 </script>

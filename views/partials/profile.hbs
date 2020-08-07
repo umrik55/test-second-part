@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<title>ABU TALHA</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        background-color: white;
+        max-width: 300px;
+        margin: auto;
+        text-align: center;
+        font-family: arial;
+        border: 2px solid;
+        border-radius: 16px;
+        border-color: #116cc9;
+        z-index: 9999;
+    }
+
+    .title {
+        color: grey;
+        font-size: 18px;
+    }
+
+    .card-button-admin {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background: linear-gradient(to left, #87defa, #116cc9);
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .card-button-logout {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background: linear-gradient(to left, #87defa, #c92825);
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .card-button-logout:hover {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background: linear-gradient(to right, #87defa, #c92825);
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .card-button-admin:hover {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background: linear-gradient(to right, #87defa, #116cc9);
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+</style>
+</head>
+
+<body>
+<div class="card" id="user-profile" hidden>
+    <img src="img/user.png" alt="John" style="width:25%">
+    <br>
+    <p class="title">Користувач: </p><h3><b>   {{username}}  </b></h3>
+    <p class="title">Роль: </p><h3><b>   {{role}}  </b></h3>
+    {{#if notUser}}
+        <p><a href="/admin" class="card-button-admin">Панель адміністратора</a></p>
+    {{/if}}
+    <p><a href="/logout" class="card-button-logout">Вийти</a></p>
+</div>
+
+</body>
+<script>
+    //Show about user
+    var userImg = document.getElementById("profile-preview");
+    $("#user-profile").hide();
+    $('#profile-preview').click(function (e) {
+        $("#user-profile").css({
+            'position': 'absolute',
+            'left': $(this).offset().left  - 125,
+            'top': $(this).offset().top + $(this).height() + 15
+        }).show("slow")
+    });
+    //Close about user
+    window.onclick = function(event) {
+        //console.log($('#user-profile').is('visible'))
+        if ( event.target != userImg)
+            $("#user-profile").hide();
+    }
+</script>
+</html>
+
+

@@ -61,7 +61,10 @@
 	{{> menu}}
 	{{> header}}
     {{> modalLegend}}
-	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
+
+    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+    {{> profile}}
+	<h2 id="DateInfo" align="center"></h2>
 	<input type="hidden" name="selectReport" id="selRep" value="10">
 
 	<div class="modal">
@@ -101,11 +104,10 @@
 						<th>Початок</th>
 						<th>Кінець</th>
 						<th>Водій</th>
-						<!--<th>Стан оплати</th>-->
+						<th>Стан системи</th>
 						<th>Рейс</th>
 						<th>Валідацій</th>
 						<th>Обладнання</th>
-                        <!--<th>Стан оплати</th>-->
                         <!--<th>Валідатори</th>-->
 						<!--<th>Термінал</th>-->
                         <!--<th>Статус</th>-->
@@ -129,6 +131,8 @@
 			var gCheck = true;
 			$body = $("body"); $(document).on({ ajaxStart: function () { if (gCheck) { $body.addClass("loading"); } }, ajaxStop: function () { $body.removeClass("loading"); } });
 
+            document.getElementById('name-menu-section').innerHTML = "Моніторинг стану оплати";
+
 			// Получение всех формуляров
 			function GetUsers() {
 				//GetMed();
@@ -138,7 +142,7 @@
 				var data4 = document.getElementById('selRep').value; //текущая филия
 				var tempDateH = new Date();
 				var tempTimeH = tempDateH.getHours() + ":" + (tempDateH.getMinutes() < 10 ? "0" + tempDateH.getMinutes() : tempDateH.getMinutes());
-				document.getElementById('DateInfo').innerHTML = " Оперативний моніторинг РО на лінії на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH) + ":";
+				document.getElementById('DateInfo').innerHTML = " Оперативний моніторинг стану оплати на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH) + ":";
 				$.ajax({
 					url: "/api/formulars_form/",
 					type: "POST",
@@ -302,10 +306,22 @@
 				} else {
 					var strEnd = user.factWorkHeaderEnd.replace(/1900-01-01T|:00.000Z/g, "");
 				};
-				var yesIco = '<span class="text-success glyphicon glyphicon-plus-sign" title="Виїзд дозволено"></span>';//Иконка 'разрешено'
-				var noIco = '<span class="text-danger glyphicon glyphicon-minus-sign" title="Виїзд заборонено"></span>';//Иконка 'зарещенно'
-				var strMed = "<td>Нема даних</td>";//инициализация строки с данными по медицине
-				var strVtk = "<td>Нема даних</td>";//инициализация строки с данными по медицине
+
+                if(strBegin.length > 3)
+                    strBegin=strBegin.slice(0, -3);
+
+				var userValidation = user.validation;
+
+				if(userValidation)
+				    if(userValidation.length > 3)
+                        userValidation=userValidation.replace(/T/g, " ").slice(0, -3);
+
+                var obTime = user.obtime;
+
+                if(obTime)
+                    if(obTime.length > 3)
+                        obTime=obTime.replace(/T/g, " ").slice(0, -3);
+
 
 				var rez = user.vipFilialID;
 				var descrF = "";
@@ -409,10 +425,10 @@
 					"</td>" + "<td" + strTD + ">" + strBegin.slice(0, -3) + "</td>" +
 					"<td" + strTD + ">" + strEnd.slice(0, -3) + "</td>" +
 					"<td" + strTD + ">" + user.driversName + "</td>" +
-					//"<td" + strTD + ">" + descr + "</td>" +
+					"<td" + strTD + ">" + descr + "</td>" +
 					"<td" + strTD + ">" + user.smenTripCount + "</td>" +
-					"<td" + strValid + ">" + user.validation.replace(/T/g, " ").slice(0, -3) + "</td>" +
-					"<td class='close'" +  "data-loc='" + user.id + "'" + " data-id='" + user.info + "'" + strTD + ">" + user.obtime.replace(/T/g, " ").slice(0, -3) + "<br>" + validatorBad + "<br>" + monitorBad + "</td></tr>"
+					"<td" + strValid + ">" + userValidation + "</td>" +
+					"<td class='close'" +  "data-loc='" + user.id + "'" + " data-id='" + user.info + "'" + strTD + ">" + obTime + "<br>" + validatorBad + "<br>" + monitorBad + "</td></tr>"
 					//"<td" + strTD + ">" + descr + "</td>" +
 					//"<td" + " id=" + user.id + " " + strTD + "><a href='#' class='close'" + "data-loc='" + user.id + "'" + " data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
 			}

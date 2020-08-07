@@ -25,7 +25,9 @@
 	{{> menu}}
 	{{> header_2}}
     {{> modalLegend}}
-	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
+    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+    {{> profile}}
+	<h2 id="DateInfo" align="center">Формуляри за добу на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="10">
 	<div class="modal">
 		<!-- Place at bottom of page -->
@@ -64,7 +66,7 @@
 						<th>Початок</th>
 						<th>Кінець</th>
 						<th>Водій</th>
-						<!--<th>Стан оплати</th>-->
+						<th>Стан системи</th>
 						<th>Рейс</th>
 						<th>Валідацій</th>
 						<th>Обладнання</th>
@@ -90,6 +92,8 @@
 				var DateNow = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
 			};
 			document.getElementById('datebegin').value = DateNow;
+
+            document.getElementById('name-menu-section').innerHTML = "Формуляри за добу";
 			GetUsers();//Получение списка формуляров
 			var gCheck = true;
 			$body = $("body"); $(document).on({ ajaxStart: function () { if (gCheck) { $body.addClass("loading"); } }, ajaxStop: function () { $body.removeClass("loading"); } });
@@ -100,7 +104,7 @@
 				var data4 = document.getElementById('selRep').value; //текущая филия
 				var tempDateH = new Date();
 				var tempTimeH = tempDateH.getHours() + ":" + (tempDateH.getMinutes() < 10 ? "0" + tempDateH.getMinutes() : tempDateH.getMinutes());
-				document.getElementById('DateInfo').innerHTML = "Транспортна робота філії на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH) + ":";
+				document.getElementById('DateInfo').innerHTML = "Формуляри за добу на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH) + ":";
 				$.ajax({
 					url: "/api/formulars_form/",
 					type: "POST",
@@ -246,10 +250,24 @@
 				} else {
 					var strEnd = user.factWorkHeaderEnd.replace(/1900-01-01T|:00.000Z/g, "");
 				};
-				var yesIco = '<span class="text-success glyphicon glyphicon-plus-sign" title="Виїзд дозволено"></span>';//Иконка 'разрешено'
-				var noIco = '<span class="text-danger glyphicon glyphicon-minus-sign" title="Виїзд заборонено"></span>';//Иконка 'зарещенно'
-				var strMed = "<td>Нема даних</td>";//инициализация строки с данными по медицине
-				var strVtk = "<td>Нема даних</td>";//инициализация строки с данными по медицине
+                if(strBegin.length > 3)
+                    strBegin=strBegin.slice(0, -3);
+
+                if(strEnd.length > 3)
+                    strEnd=strEnd.slice(0, -3);
+
+                var userValidation = user.validation;
+
+                if(userValidation)
+                    if(userValidation.length > 3)
+                        userValidation=userValidation.replace(/T/g, " ").slice(0, -3);
+
+                var obTime = user.obtime;
+
+                if(obTime)
+                    if(obTime.length > 3)
+                        obTime=obTime.replace(/T/g, " ").slice(0, -3);
+
 				var rez = user.vipFilialID;
 				var descrF = "";
 				switch (true) {
@@ -332,13 +350,13 @@
 					"<td" + strTD + ">" + user.PENumPe + "</td>" +
 					"<td" + strTD + ">" + user.driversTabNum + "</td> <td" + strTD + ">" + user.marNum + "-" + user.vipNum + "-" + user.smenNum + "</td>" +
 					//"<td" + strTD + ">" + user.factWorkHeaderDate + "</td>" +
-					"<td" + strTD + ">" + strBegin.slice(0, -3) + "</td>" +
-					"<td" + strTD + ">" + strEnd.slice(0, -3) + "</td>" +
+					"<td" + strTD + ">" + strBegin + "</td>" +
+					"<td" + strTD + ">" + strEnd + "</td>" +
 					"<td" + strTD + ">" + user.driversName + "</td>" +
-					//"<td" + strTD + ">" + descr + "</td>" +
+					"<td" + strTD + ">" + descr + "</td>" +
 					"<td" + strTD + ">" + user.smenTripCount + "</td>" +
-					"<td" + strValid + ">" + user.validation.replace(/T/g, " ").slice(0, -3) + "</td>" +
-					"<td" + strTD + ">" + user.obtime.replace(/T/g, " ").slice(0, -3) + "</td>" +
+					"<td" + strValid + ">" + userValidation + "</td>" +
+					"<td" + strTD + ">" + obTime + "</td>" +
 					//"<td" + strTD + "><a class='editLink' data-id='" + user.PENumPe + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>" +
 					"</tr>";
 			}

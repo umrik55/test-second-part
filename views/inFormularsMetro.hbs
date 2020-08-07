@@ -60,7 +60,8 @@
 	{{> menu_metro}}
 	{{> header}}
     {{> modalLegend}}
-
+    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+    {{> profile}}
 	<h2 id="DateInfo" align="center" > Транспортна робота філії на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="M1">
 	<div class="modal">
@@ -267,6 +268,18 @@
 			var row = function (user) {
 				if (!user.validation) user.validation = "-";
 				if (user.obtime == 0) user.obtime = "-";
+
+                var userValidation = user.validation;
+
+                if(userValidation)
+                    if(userValidation.length > 3)
+                        userValidation=userValidation.replace(/T/g, " ").slice(0, -3);
+
+                var obTime = user.obtime;
+
+                if(obTime)
+                    if(obTime.length > 3)
+                        obTime=obTime.replace(/T/g, " ").slice(0, -3);
 	/*
 				var strTD = "";
 				var strTD1 = "";
@@ -301,6 +314,8 @@
 					};
 
 				};
+
+
 */
 				var strTD = " bgcolor='#D3D3D3'";
 				var strTD1 = " bgcolor='#D3D3D3'";
@@ -347,8 +362,8 @@
 				return "<tr data-rowid='" + user.id + "'><td" + ">" + user.id + "</td>" +
 					// "<td"+strTD+">"  + user.name + "</td>" +
 					"<td" + ">" + user.name + "</td>" +
-					"<td" + strTD1 + ">" + user.validation.replace(/T/g, " ").slice(0, -3) + "</td>" +
-					"<td class='close'" + strTD + "data-id='" + user.info + "'>" + user.obtime.replace(/T/g, " ").slice(0, -3) + "</td></tr>"// +
+					"<td" + strTD1 + ">" + userValidation + "</td>" +
+					"<td class='close'" + strTD + "data-id='" + user.info + "'>" + obTime + "</td></tr>"// +
 					//"<td" + strTD + "><a href='#' class='close' data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
 			}
 

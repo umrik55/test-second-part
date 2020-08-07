@@ -1,0 +1,206 @@
+FORMAT: 1A
+HOST: http://gpsapi.kpt.kiev.ua/asdu/api/FactWorkHeader
+
+# ASDU geting gormulars service
+Introduction to integration with asdu formulars service
+
+
+### Dictionary data for filial param
++ `"2" - Автобусний парк #2`
++ `"5" - Автобусний парк #5`
++ `"6" - Автобусний парк #6`
++ `"8" - Автобусний парк #8`
++ `"9" - Тролейбусне депо #1`
++ `"10" - Тролейбусне депо #2`
++ `"11" - Тролейбусне депо #3`
++ `"12" - Куренівське тролейбусне депо`
++ `"13" - Подільске трамвайне депо`
++ `"14" - Трамвайне депо ім. Шевченка`
++ `"15" - Дарницьке трамвайне депо`
+
+# Data Structures
+
+
+## Successful response (object)
+
+
+### Properties
++ `ID`: `2558980` (number, required) - ID formular from ASDU [key]
++ `T`: `2` (number, required) - Transport ID ASDU
++ `F`: `10` (number, required) -  ID filial
++ `D`: `"2020-04-22"` (string, required) -  Date formular
++ `Dt`: `1` (number, required)  
++ `MiD`: `25` (number, required) - ID Route ASDU
++ `M`: `"25"` (string, required) -  Route
++ `MN`: `"пр. Свободи - м. Петрівка"` (string, required) -  Direction
++ `V`: `3` (number, required) -  Graph
++ `S`: `1` (number, required) -  Number
++ `Pe`: `2664` (number, required) - Board number vehicle
++ `Cond`: `0` (number, required) - ? 
++ `SN`: `"2664"` (string, required) - State number of vehicle
++ `PN`: `"ЛАЗ-Е301D1"` (string, required) - Model name of vehicle
++ `TN`: `1144` (number, required) -  Driver's personnel number
++ `Dr`: `"Ситник В.М."` (string, required) - Driver's full name
++ `DC`: `2` (number, required) 
++ `B`: `"1900-01-01T05:46:00"` (string, required) -  Time begin
++ `E`: `"1900-01-01T13:42:00"` (string, required) -  Time end
++ `L`: `"7:56"` (string, required) -  How long work time
++ `Delta`: `0` (number, required) - Delta triss
++ `Fd` (array[Dinners]) - Dinners
++ `Pr` (array[Stays]) - Stand still on trips
++ `CW` (array[Trips]) - Trips
++ `Cn`: `1` (number, required) - Boolean if is closed formular
++ `Out`: `1` (number, required) - Attribute if zero trips In or Out type
++ `In`: `"null" (string, optional) - 
++ `Pe2`: `""` (string, optional) If vehicle has two section - not empty
+
+
+## Dinners (object)
+
+
+### Properties
++ `N`: `1` (number, required) - id number
++ `B`: `"10:12"` (string, required) - Begin time
++ `L`: `58` (number, required) - Long minutes
+
+
+## Stays (object)
+
+
+### Properties
++ `CID`: `1` (number, required) - id number
++ `B`: `"1900-01-01T15:47:00"` (string, required) - Begin time
++ `L`: `56` (number, required) - Long minutes
++ `TC`: `"1.00"` (string, required) - Id name
++ `N`: `"Простій техн."` (string, required) - Name
+
+## Trips(object)
+
+
+### Properties
+
+
+## Get formulars by date [/?&date={datetime}&filialID={filialid}]
+
++ Parameters
+    + datetime 
+        **date time value** by yyyy-mm-dd&Thh:mm:ss.000Z format. [required]
+        + Sample: 2020-07-30&T12:00:00.000Z
+    + filialid
+        **ID of filial** number filial from dictionary. [required]
+        + Sample: 5
+        + Members
+            + `2`
+            + `5`
+            + `6`
+            + `8`
+            + `9`
+            + `10`
+            + `11`
+            + `12`
+            + `13`
+            + `14`
+            + `15`
+            
+
+### Show query examples [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+    
+            Charset: utf-8;
+            Server:  Microsoft-IIS/10.0;
+            X-AspNet-Version: 4.0.30319;
+            X-Powered-By: ASP.NET
+            
+    + Attributes (Successful response)
+            
+    + Body        
+
+            [
+                {
+                    "ID": 2229469,
+                    "T": 3,
+                    "F": 5,
+                    "D": "2020-07-30",
+                    "Dt": 1,
+                    "MiD": 39,
+                    "M": "2",
+                    "MN": "вул.Булгакова - вул.Шолуденка",
+                    "V": 1,
+                    "S": 1,
+                    "Pe": 2576,
+                    "Cond": 0,
+                    "SN": "АА  0176  АА",
+                    "PN": "Богдан А-144.5",
+                    "TN": 2020,
+                    "Dr": "МЕЛЬНИК.В.",
+                    "DC": 3,
+                    "B": "1900-01-01T06:02:00",
+                    "E": "1900-01-01T09:51:00",
+                    "L": "3:49",
+                    "Delta": 0,
+                    "Fd": [ ],
+                    "Pr": [ ],
+                    "CW": [
+                        {
+                            "TT": -1,
+                            "TC": 2,
+                            "W": 0,
+                            "TCB": 0
+                        },
+                        {
+                            "TT": 1,
+                            "TC": 4,
+                            "W": 0,
+                            "TCB": 0
+                        },
+                        {
+                            "TT": 2,
+                            "TC": 0,
+                            "W": 0,
+                            "TCB": 0
+                        }
+                    ],
+                    "HC": 0,
+                    "Cn": 1,
+                    "A2": 0,
+                    "Out": 1,
+                    "In": 1,
+                    "FWC": [ ],
+                    "Pe2": 0
+                }
+                ...
+            ]
+     
+        
++ Response 500 (application/json)
+    + if set invalid param data
+    + Headers
+    
+            Charset: utf-8;
+            Server:  Microsoft-IIS/10.0;
+            X-AspNet-Version: 4.0.30319;
+            X-Powered-By: ASP.NET
+    
+    + Body
+    
+            "The ConnectionString property has not been initialized."
+            
++ Response 400 ()
+    + if set invalid uri query
+    + Headers
+    
+            Charset: utf-8;
+            Server:  Microsoft-IIS/10.0;
+            X-AspNet-Version: 4.0.30319;
+            X-Powered-By: ASP.NET
+    
+    + Body
+
+    
+        
+
+
+

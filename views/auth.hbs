@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Login with Authentication</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="style_auth.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="jquery.js"></script>
+</head>
+<body>
+<center><img style="padding-top: 20px" src="/img/header_auth.png" width="30%"></center>
+<div class="main">
+    <div class="w3">
+        <div class="signin-form profile">
+            <h3>Sign In</h3>
+            <div class="login-form">
+                <form action="/auth" method="post">
+                    <input type="text" name="logemail" placeholder="E-mail" required=""><br>
+                    <label class="not-member">not a member?<label id="modalSign" class="not-member-link"> Sign up</label></label><br>
+                    <input type="password" name="logpassword" placeholder="Password" required=""><br>
+                    <div class="tp">
+                        <input type="submit" value="Sign in">
+                    </div>
+                    <label class="not-member">or login with<br>
+                        <img style="cursor: pointer" src="img/google.png" width="70%">
+                </form>
+                {{> modalLegend}}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <center><img src="img/footer_auth.png" width="7%"></center>
+</div>
+
+
+<script type="text/javascript">
+    var passWordField = document.getElementById('password')
+    function validateMyForm(){
+        if(passWordField.value != passWordConfirmField.value){
+            alert("Passwords do not match. Please try again.");
+        } else {
+            form.submit()
+        }
+    }
+</script>
+
+</body>
+</html>

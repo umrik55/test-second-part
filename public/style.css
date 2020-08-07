@@ -213,6 +213,17 @@ body {
 }
 
 .close:hover {
-	background: #e6e6ff;
 	font-size: 14pt;
 }
+
+.headerMain img {
+	float: right;
+	width: 50px;
+	height: 50px;
+}
+
+.headerMain h2 {
+	position: relative;
+}
+
+
