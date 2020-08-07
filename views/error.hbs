@@ -14,23 +14,18 @@
 
 <body>
     {{> loader}}
-	{{> menu}}
 	{{> header_2}}
-    {{> modalLegend}}
-    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
-    {{> profile}}
 	<div class="clearfix"></div>
-	<div class="container">
-		<div class="row">
-			<h1>Помилка при виконанні</h1>
+    <center>
+    <h1 style="padding-top: 100px">Помилка при виконанні</h1>
+			<div>{{error}}</div></center>
 
-			Більш детально:
-			<div>{{errit}}</div>
-
-			<br><a href="/repport" class="btn btn-sm btn-primary">Назад</a>
-
-		</div><!-- row -->
-	</div><!-- container -->
+    <br><center><a href="/" class="btn btn-sm btn-primary">Назад</a></center>
+    </center>
     {{> footer}}
 </body>
+
+<script>
+    document.getElementById("loader").style.display = "none";
+</script>
 <html>
