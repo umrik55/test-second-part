@@ -12,7 +12,7 @@ module.exports = (app) => {
   var refEvendsFile = "data/evends.json"; // файл события водителей
   var jsonParser = bodyParser.json();
 
-  const User = require('../models/dataUser');
+  const User = require("../models/dataUser");
 
   // запрос страницы с пользователями
   app.get("/", function (request, response) {
@@ -115,28 +115,27 @@ module.exports = (app) => {
   // запрос страницы с валидациями АСОП
   app.get("/agent", function (request, response) {
     try {
-        User.findById(request.session.userId)
-            .exec(function (error, user) {
-                if (error) {
-                    return response.redirect('/auth');
-                } else {
-                    if (user === null || user.is_active === false) {
-                        return response.redirect('/auth');
-                    } else {
-                        var content = fs.readFileSync(refValidateFile, "utf8");
-                        var users = JSON.parse(content);
-                        //console.log(users);
-                        response.render("inAgent.hbs", {
-                            users: users,
-                        });
-                    }
-                }
-            })
-        } catch (e) {
-          var errit = [];
-          errit.push(e);
-          response.render("error.hbs", { errit: errit });
+      User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            var content = fs.readFileSync(refValidateFile, "utf8");
+            var users = JSON.parse(content);
+            //console.log(users);
+            response.render("inAgent.hbs", {
+              users: users,
+            });
+          }
         }
+      });
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
   });
 
   // запрос рейсов с валидациями АСОП
@@ -175,23 +174,22 @@ module.exports = (app) => {
   // запрос страницы с состоянием оборудования  АСОП
   app.get("/equips", function (request, response) {
     try {
-        User.findById(request.session.userId)
-            .exec(function (error, user) {
-                if (error) {
-                    return response.redirect('/auth');
-                } else {
-                    if (user === null || user.is_active === false) {
-                        return response.redirect('/auth');
-                    } else {
-                        var content = fs.readFileSync(refEvendsFile, "utf8");
-                        var users = JSON.parse(content);
-                        //console.log(users);
-                        response.render("inEquips.hbs", {
-                            users: users,
-                        });
-                    }
-                }
-            })
+      User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            var content = fs.readFileSync(refEvendsFile, "utf8");
+            var users = JSON.parse(content);
+            //console.log(users);
+            response.render("inEquips.hbs", {
+              users: users,
+            });
+          }
+        }
+      });
     } catch (e) {
       var errit = [];
       errit.push(e);
@@ -201,29 +199,28 @@ module.exports = (app) => {
 
   // запрос страницы с событиями водителей  АСОП
   app.get("/evends", function (request, response) {
-      try {
-      User.findById(request.session.userId)
-          .exec(function (error, user) {
-              if (error) {
-                  return response.redirect('/auth');
-              } else {
-                  if (user === null || user.is_active === false) {
-                      return response.redirect('/auth');
-                  } else {
-                        var content = fs.readFileSync(refEvendsFile, "utf8");
-                        var users = JSON.parse(content);
-                        //console.log(users);
-                        response.render("inEvents.hbs", {
-                            users: users,
-                        });
-                  }
-              }
-          })
-      } catch (e) {
-          var errit = [];
-          errit.push(e);
-          response.render("error.hbs", {errit: errit});
-      }
+    try {
+      User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            var content = fs.readFileSync(refEvendsFile, "utf8");
+            var users = JSON.parse(content);
+            //console.log(users);
+            response.render("inEvents.hbs", {
+              users: users,
+            });
+          }
+        }
+      });
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
   });
 
   // запрос страницы справочника резервуаров

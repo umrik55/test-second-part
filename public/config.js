@@ -1,10 +1,8 @@
 /**
  * http://usejsdoc.org/
  */
-var nconf = require('nconf');
+var nconf = require("nconf");
 //
-nconf.argv()
-    .env()
-    .file({ file: './config.json' });
+nconf.argv().env().file({ file: "./config.json" });
 
 module.exports = nconf;

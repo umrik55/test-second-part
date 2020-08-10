@@ -20,8 +20,8 @@ module.exports = (app) => {
   var MongoClient = require("mongodb").MongoClient;
   var db;
 
-  const User = require('../models/dataUser');
-    const Role = require('../models/dataUserAccess');
+  const User = require("../models/dataUser");
+  const Role = require("../models/dataUserAccess");
 
   //Connection
   MongoClient.connect(urldb, function (err, database) {
@@ -937,30 +937,32 @@ module.exports = (app) => {
 
   //Перенаправление на список всех формуляров в корне URL
   app.get("/", function (request, response) {
-      User.findById(request.session.userId)
-          .exec(function (error, user) {
-              if (error) {
-                  return response.redirect('/auth');
-              } else {
-                  if (user === null || user.is_active === false) {
-                      return response.redirect('/auth');
-                  } else {
-                      Role.find({id_level:user.level}, function (error, data) {
-                          var content = fs.readFileSync("data/filii.json", "utf8");
-                          var repps = JSON.parse(content);
-                          try {
-                              response.render("inFormulars.hbs", {
-                                  repps: repps, username: user.username, role: data[0]? data[0].name_level : "", notUser: user.level > 0? true : false
-                              });
-                          } catch (e) {
-                              var errit = [];
-                              errit.push(e);
-                              response.render("error.hbs", {errit: errit});
-                          }
-                      })
-                  }
-              }
-          })
+    User.findById(request.session.userId).exec(function (error, user) {
+      if (error) {
+        return response.redirect("/auth");
+      } else {
+        if (user === null || user.is_active === false) {
+          return response.redirect("/auth");
+        } else {
+          Role.find({ id_level: user.level }, function (error, data) {
+            var content = fs.readFileSync("data/filii.json", "utf8");
+            var repps = JSON.parse(content);
+            try {
+              response.render("inFormulars.hbs", {
+                repps: repps,
+                username: user.username,
+                role: data[0] ? data[0].name_level : "",
+                notUser: user.level > 0 ? true : false,
+              });
+            } catch (e) {
+              var errit = [];
+              errit.push(e);
+              response.render("error.hbs", { errit: errit });
+            }
+          });
+        }
+      }
+    });
   });
 
   //Перенаправление на список всех формуляров в корне URL
@@ -968,20 +970,19 @@ module.exports = (app) => {
     var content = fs.readFileSync("data/filii.json", "utf8");
     var repps = JSON.parse(content);
     try {
-        User.findById(request.session.userId)
-            .exec(function (error, user) {
-                if (error) {
-                    return response.redirect('/auth');
-                } else {
-                    if (user === null || user.is_active === false) {
-                        return response.redirect('/auth');
-                    } else {
-                        response.render("inMonTrips.hbs", {
-                            repps: repps,
-                        });
-                    }
-                }
-            })
+      User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            response.render("inMonTrips.hbs", {
+              repps: repps,
+            });
+          }
+        }
+      });
     } catch (e) {
       var errit = [];
       errit.push(e);
@@ -994,25 +995,24 @@ module.exports = (app) => {
     var content = fs.readFileSync("data/turnikets.json", "utf8");
     var repps = JSON.parse(content);
     try {
-        User.findById(request.session.userId)
-            .exec(function (error, user) {
-                if (error) {
-                    return response.redirect('/auth');
-                } else {
-                    if (user === null || user.is_active === false) {
-                        return response.redirect('/auth');
-                    } else {
-                        Role.find({id_level:user.level}, function (error, data) {
-                            response.render("inFormularsMetro.hbs", {
-                                repps: repps,
-                                username: user.username,
-                                role: data[0] ? data[0].name_level : "",
-                                notUser: user.level > 0 ? true : false
-                            });
-                        })
-                    }
-                }
-            })
+      User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            Role.find({ id_level: user.level }, function (error, data) {
+              response.render("inFormularsMetro.hbs", {
+                repps: repps,
+                username: user.username,
+                role: data[0] ? data[0].name_level : "",
+                notUser: user.level > 0 ? true : false,
+              });
+            });
+          }
+        }
+      });
     } catch (e) {
       var errit = [];
       errit.push(e);
@@ -1025,25 +1025,24 @@ module.exports = (app) => {
     var content = fs.readFileSync("data/turniketsST.json", "utf8");
     var repps = JSON.parse(content);
     try {
-        User.findById(request.session.userId)
-            .exec(function (error, user) {
-                if (error) {
-                    return response.redirect('/auth');
-                } else {
-                    if (user === null || user.is_active === false) {
-                        return response.redirect('/auth');
-                    } else {
-                        Role.find({id_level:user.level}, function (error, data) {
-                            response.render("inFormularsST.hbs", {
-                                repps: repps,
-                                username: user.username,
-                                role: data[0] ? data[0].name_level : "",
-                                notUser: user.level > 0 ? true : false
-                            });
-                        })
-                    }
-                }
-            })
+      User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            Role.find({ id_level: user.level }, function (error, data) {
+              response.render("inFormularsST.hbs", {
+                repps: repps,
+                username: user.username,
+                role: data[0] ? data[0].name_level : "",
+                notUser: user.level > 0 ? true : false,
+              });
+            });
+          }
+        }
+      });
     } catch (e) {
       var errit = [];
       errit.push(e);
@@ -1083,30 +1082,32 @@ module.exports = (app) => {
 
   //Перенаправление на список всех формуляров в корне URL
   app.get("/vn", function (request, response) {
-      User.findById(request.session.userId)
-          .exec(function (error, user) {
-              if (error) {
-                  return response.redirect('/auth');
-              } else {
-                  if (user === null || user.is_active === false) {
-                      return response.redirect('/auth');
-                  } else {
-                      Role.find({id_level:user.level}, function (error, data) {
-                          var content = fs.readFileSync("data/filii.json", "utf8");
-                          var repps = JSON.parse(content);
-                          try {
-                              response.render("inFormularsN.hbs", {
-                                  repps: repps, username: user.username, role: data[0]? data[0].name_level : "", notUser: user.level > 0? true : false
-                              });
-                          } catch (e) {
-                              var errit = [];
-                              errit.push(e);
-                              response.render("error.hbs", {errit: errit});
-                          }
-                      })
-                  }
-              }
-          })
+    User.findById(request.session.userId).exec(function (error, user) {
+      if (error) {
+        return response.redirect("/auth");
+      } else {
+        if (user === null || user.is_active === false) {
+          return response.redirect("/auth");
+        } else {
+          Role.find({ id_level: user.level }, function (error, data) {
+            var content = fs.readFileSync("data/filii.json", "utf8");
+            var repps = JSON.parse(content);
+            try {
+              response.render("inFormularsN.hbs", {
+                repps: repps,
+                username: user.username,
+                role: data[0] ? data[0].name_level : "",
+                notUser: user.level > 0 ? true : false,
+              });
+            } catch (e) {
+              var errit = [];
+              errit.push(e);
+              response.render("error.hbs", { errit: errit });
+            }
+          });
+        }
+      }
+    });
   });
 
   // запрос страницы для запроса путевого листа водителя
