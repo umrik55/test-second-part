@@ -1304,7 +1304,7 @@ GridView.prototype.getColIndexByColName = function(aname)
                                      if (true)
                                     {
                     	               ////ptr.ResetSelection.call(ptr);
-                    	               ////$(cell).addClass('found');
+                    	               //$(cell).addClass('found');
                     	                bFound = true;
 
                     	                var sender = cell;
@@ -1347,6 +1347,7 @@ GridView.prototype.getColIndexByColName = function(aname)
   		var cell = this.cellsfound[idx];
  	    ptr.ResetSelection.call(ptr);
 	    $(cell).addClass('found');
+          cell.scrollIntoView({block: "center", behavior: "smooth"})
 
 	   var sender = cell;
        var res =
@@ -1449,7 +1450,7 @@ GridView.prototype.getColIndexByColName = function(aname)
                 	 var s = $(cell).text();
 
 //                	 if (s == value)
-                	 if (s.indexOf(value) >= 0 )
+                	 if (s.toLowerCase().indexOf(value.toLowerCase()) >= 0 )
                 	 {
                        ptr.cellsfound.push(cell);
                         if (!bFound)
@@ -1457,6 +1458,7 @@ GridView.prototype.getColIndexByColName = function(aname)
                 	   ptr.ResetSelection.call(ptr);
                 	   $(cell).addClass('found');
                 	   bFound = true;
+                	   cell.scrollIntoView({block: "center", behavior: "smooth"})
 
                 	   var sender = cell;
                        var res =

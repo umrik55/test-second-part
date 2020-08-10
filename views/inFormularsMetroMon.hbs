@@ -60,7 +60,15 @@
     {{> menu_metro}}
 	{{> header}}
     {{> modalLegend}}
-    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+    <div id="container" style="float: right; padding-top: 15px;">
+        <div id="texts" style="display:inline; white-space:nowrap;">
+            <span>Користувач: <b>{{username}}</b></span>
+        </div>
+
+        <div style="display:inline;  cursor: pointer; height: 4%">
+            <img id="profile-preview" class="rounded-circle" src="img/user.png">
+        </div>
+    </div>
     {{> profile}}
 	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="10">
@@ -129,7 +137,7 @@
 				var data4 = "Mon";
 				var tempDateH = new Date();
 				var tempTimeH = tempDateH.getHours() + ":" + (tempDateH.getMinutes() < 10 ? "0" + tempDateH.getMinutes() : tempDateH.getMinutes());
-				document.getElementById('DateInfo').innerHTML = " Аларми турнікетів метро, станом на  " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH) + ":";
+				document.getElementById('DateInfo').innerHTML = " Аларми турнікетів метро, станом на  " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH);
 				$.ajax({
 					url: "/api/formularst_form/",
 					type: "POST",
@@ -141,6 +149,7 @@
 					success: function (users) {
 
 						if (users.length == 0) {
+                            document.getElementById("loader").style.display = "none";
 							alert("Формулярів на цю дату — не знайдено.")
 						} else {
 							var cont = "";
@@ -157,7 +166,7 @@
                             document.getElementById("loader").style.display = "none";
 						}
 					},
-					error: function (error) { alert("Невідома помилка...") }
+					error: function (error) { document.getElementById("loader").style.display = "none"; alert("Невідома помилка..."); }
 				});
 			}
 			//Получение массива данных с АРМ:медицина за текущие сутки

@@ -25,7 +25,15 @@
     {{> menu}}
 	{{> header_2}}
     {{> modalLegend}}
-    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+    <div id="container" style="float: right; padding-top: 15px;">
+        <div id="texts" style="display:inline; white-space:nowrap;">
+            <span>Користувач: <b>{{username}}</b></span>
+        </div>
+
+        <div style="display:inline;  cursor: pointer; height: 4%">
+            <img id="profile-preview" class="rounded-circle" src="img/user.png">
+        </div>
+    </div>
     {{> profile}}
     <h2 align="center">Список дій водіїв, що надійшли з АСОП</h2>
 	<div id="wrapper">

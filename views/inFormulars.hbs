@@ -20,40 +20,6 @@
 	<script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
 	<script type="text/javascript" src="gridview.js"></script>
 
-	<style>
-		#zatemnenie {
-			background: rgba(102, 102, 102, 0.5);
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: auto;
-			display: none;
-		}
-
-		#okno {
-			width: 350px;
-			height: 350px;
-			text-align: center;
-			padding: 15px;
-			border: 3px solid #0000cc;
-			border-radius: 10px;
-			color: #0000cc;
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			margin: auto;
-			background: #fff;
-		}
-
-		#zatemnenie:target {
-			display: block;
-		}
-
-	</style>
-
 </head>
 
 <body>
@@ -61,8 +27,15 @@
 	{{> menu}}
 	{{> header}}
     {{> modalLegend}}
+    <div id="container" style="float: right; padding-top: 15px;">
+        <div id="texts" style="display:inline; white-space:nowrap;">
+            <span>Користувач: <b>{{username}}</b></span>
+        </div>
 
-    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+        <div style="display:inline;  cursor: pointer; height: 4%">
+            <img id="profile-preview" class="rounded-circle" src="img/user.png">
+        </div>
+    </div>
     {{> profile}}
 	<h2 id="DateInfo" align="center"></h2>
 	<input type="hidden" name="selectReport" id="selRep" value="10">
@@ -131,7 +104,7 @@
 			var gCheck = true;
 			$body = $("body"); $(document).on({ ajaxStart: function () { if (gCheck) { $body.addClass("loading"); } }, ajaxStop: function () { $body.removeClass("loading"); } });
 
-            document.getElementById('name-menu-section').innerHTML = "Моніторинг стану оплати";
+            document.getElementById('name-menu-section').innerHTML = "Рухомий склад КПТ";
 
 			// Получение всех формуляров
 			function GetUsers() {
@@ -142,7 +115,7 @@
 				var data4 = document.getElementById('selRep').value; //текущая филия
 				var tempDateH = new Date();
 				var tempTimeH = tempDateH.getHours() + ":" + (tempDateH.getMinutes() < 10 ? "0" + tempDateH.getMinutes() : tempDateH.getMinutes());
-				document.getElementById('DateInfo').innerHTML = " Оперативний моніторинг стану оплати на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH) + ":";
+				document.getElementById('DateInfo').innerHTML = " Рухомий склад КПТ на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH);
 				$.ajax({
 					url: "/api/formulars_form/",
 					type: "POST",
@@ -154,6 +127,7 @@
 					success: function (users) {
 						gCheck = false;
 						if (users.length == 0) {
+                            document.getElementById("loader").style.display = "none";
 							alert("Формулярів на цю дату — не знайдено.")
 						} else {
 							var rows = "";
@@ -189,7 +163,7 @@
                             document.getElementById("loader").style.display = "none";
 						}
 					},
-					error: function (error) { alert("Невідома помилка...") }
+					error: function (error) { document.getElementById("loader").style.display = "none"; alert("Невідома помилка..."); }
 				});
 			}
 			//Получение массива данных с АРМ:медицина за текущие сутки
@@ -310,6 +284,9 @@
                 if(strBegin.length > 3)
                     strBegin=strBegin.slice(0, -3);
 
+                if(strEnd.length > 3)
+                    strEnd=strEnd.slice(0, -3);
+
 				var userValidation = user.validation;
 
 				if(userValidation)
@@ -422,8 +399,8 @@
 					"<td" + strTD + ">" + user.PENumPe + "</td>" +
 					"<td" + strTD + ">" + user.driversTabNum + "</td> <td" + strTD + ">" + user.marNum + "-" + user.vipNum + "-" + user.smenNum + "</td>" +
 					//"<td" + strTD + ">" + user.factWorkHeaderDate +
-					"</td>" + "<td" + strTD + ">" + strBegin.slice(0, -3) + "</td>" +
-					"<td" + strTD + ">" + strEnd.slice(0, -3) + "</td>" +
+					"</td>" + "<td" + strTD + ">" + strBegin + "</td>" +
+					"<td" + strTD + ">" + strEnd + "</td>" +
 					"<td" + strTD + ">" + user.driversName + "</td>" +
 					"<td" + strTD + ">" + descr + "</td>" +
 					"<td" + strTD + ">" + user.smenTripCount + "</td>" +
@@ -433,12 +410,68 @@
 					//"<td" + " id=" + user.id + " " + strTD + "><a href='#' class='close'" + "data-loc='" + user.id + "'" + " data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
 			}
 
+            $("body").on("click", ".close-model-about", function () {
+                window.location = "#"
+            })
+
 			// нажимаем на ссылку показать оборудование
 			$("body").on("click", ".close", function () {
 				window.location = "#zatemnenie";
 				var data2 = $(this).data("id");//время  посылки оборудования
-				var url = data2;
-				document.getElementById('okno').innerHTML = url + "<br>" + "<a href='#" + $(this).data("loc") + "' class='close'>Закрити</a>";
+
+                var parsedData = data2.split('<br>');
+                var parsedTime = parsedData[0];
+                var parsedStatus = parsedData[parsedData.length - 1];
+                var parsedTerminal = parsedData[parsedData.length - 2];
+                var parsedTerminalStatus = ""
+                var tableTerminal = "";
+                var tableValidators = "<table><tr><th>№</th><th>C №</th><th>Стан</th></tr>";
+                var countValidators = 0;
+
+                if(parsedStatus.includes("Статус")) {
+                    parsedStatus = parsedStatus.split(" - ")[1].includes("undef")? "<font color='red'>ERROR</font>" : "<font color='green'>"+parsedStatus.split(" - ")[1]+"</font>";
+                }
+
+
+                if(parsedTime.includes("Час")) {
+                    parsedTime =  parsedTime.split(" - ")[1];
+                    parsedTime = parsedTime.replace(/T/g, " ").slice(0, -4);
+                }
+
+                if(parsedTerminal.includes("uptime")){
+                    parsedTerminal = parsedTerminal.replace(/Термінал водія - driverInterface: /g, "").split(', ')
+                    console.log(parsedTerminal)
+
+                    if(parsedTerminal.length > 2){
+                        var row1 = parsedTerminal[0].split("=");
+                        var row2 = parsedTerminal[1].split("=");
+                        var row3 = parsedTerminal[2].split("=");
+
+                        tableTerminal = "<table><tr><td>"+row1[0]+"</td><td>"+row1[1]+"</td></tr><tr><td>"+row2[0]+"</td><td>"+row2[1]+"</td></tr><tr><td>"+row3[0]+"</td><td>"+row3[1]+"</td></tr></table>"
+                    }
+
+                    parsedTerminalStatus = "<b>Термінал водія - </b><font color='green'>ОК</font><br>";
+                }else{
+                    parsedTerminalStatus = "<b>Термінал водія - </b><font color='red'>NO</font><br>";
+                }
+
+                for(var i=2; i < parsedData.length - 2; i++){
+                    if(parsedData[i].includes('Валідатор'))
+                        parsedData[i] = parsedData[i].replace(/Валідатор - /g, "")
+
+                    if(parsedData[i] != ""){
+                        var rowV1 = parsedData[i].split("C№=")[1].split("_Стан=")[0];
+                        var rowV2 = parsedData[i].split("C№=")[1].split("_Стан=")[1];
+
+                        tableValidators+= "<tr><td>"+(i-1)+"</td><td>"+rowV1+"</td><td>"+rowV2+"</td></tr>"
+                        countValidators++;
+                    }
+                }
+
+                if(countValidators == 0)
+                    tableValidators = "";
+
+				document.getElementById('okno').innerHTML =  "<span class='close-model-about'>&times;</span><center><b>" + parsedData[1]+ "<br>Час - </b>" + parsedTime + "<br><b>Статус - </b>" + parsedStatus+ "<br>"+ parsedTerminalStatus + tableTerminal +"<br><b>Валідатори</b>"+tableValidators+"</table><br>";
 
 				window.location = "#zatemnenie";
 			})

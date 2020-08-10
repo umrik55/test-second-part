@@ -19,39 +19,6 @@
 	<script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
 	<script type="text/javascript" src="gridview.js"></script>
 
-	<style>
-		#zatemnenie {
-			background: rgba(102, 102, 102, 0.5);
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-			display: none;
-		}
-
-		#okno {
-			width: 350px;
-			height: 60%;
-			text-align: center;
-			padding: 15px;
-			border: 3px solid #0000cc;
-			border-radius: 10px;
-			color: #0000cc;
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			margin: auto;
-			background: #fff;
-		}
-
-		#zatemnenie:target {
-			display: block;
-		}
-
-	</style>
 
 </head>
 
@@ -60,7 +27,15 @@
     {{> menu_st}}
 	{{> header}}
     {{> modalLegend}}
-    <img class="rounded-circle" id="profile-preview" src="img/user.png" style="float: right; padding-top: 15px; cursor: pointer; ">
+    <div id="container" style="float: right; padding-top: 15px;">
+        <div id="texts" style="display:inline; white-space:nowrap;">
+            <span>Користувач: <b>{{username}}</b></span>
+        </div>
+
+        <div style="display:inline;  cursor: pointer; height: 4%">
+            <img id="profile-preview" class="rounded-circle" src="img/user.png">
+        </div>
+    </div>
     {{> profile}}
 	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
 	<input type="hidden" name="selectReport" id="selRep" value="ST1">
@@ -142,6 +117,7 @@
 					success: function (users) {
 
 						if (users.length == 0) {
+                            document.getElementById("loader").style.display = "none";
 							alert("Формулярів на цю дату — не знайдено.")
 						} else {
 
@@ -155,7 +131,7 @@
                             document.getElementById("loader").style.display = "none";
 						}
 					},
-					error: function (error) { alert("Невідома помилка...") }
+					error: function (error) { document.getElementById("loader").style.display = "none"; alert("Невідома помилка..."); }
 				});
 			}
 			//Получение массива данных с АРМ:медицина за текущие сутки
@@ -321,14 +297,71 @@
 					//"<td" + strTD + "><a href='#' class='close' data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>" + "</tr>";
 			}
 
-			// нажимаем на ссылку показать оборудование
-			$("body").on("click", ".close", function () {
-				window.location = "#zatemnenie";
-				var data2 = $(this).data("id");//время  посылки оборудования
-				var url = data2;
-				document.getElementById('okno').innerHTML = url + "<br>" + "<a href='#' class='close'>Закрити</a>";
-				window.location = "#zatemnenie";
-			})
+            $("body").on("click", ".close-model-about", function () {
+                window.location = "#"
+            })
+
+            // нажимаем на ссылку показать оборудование
+            $("body").on("click", ".close", function () {
+                window.location = "#zatemnenie";
+                var data2 = $(this).data("id");//время  посылки оборудования
+
+                var parsedData = data2.split('<br>');
+                var parsedTime = parsedData[0];
+                var parsedStatus = parsedData[parsedData.length - 1];
+                var parsedTerminal = parsedData[parsedData.length - 2];
+                var parsedTerminalStatus = ""
+                var tableTerminal = "";
+                var tableValidators = "<table><tr><th>№</th><th>C №</th><th>Стан</th></tr>";
+                var countValidators = 0;
+
+                if(parsedStatus.includes("Статус")) {
+                    parsedStatus = parsedStatus.split(" - ")[1].includes("undef")? "<font color='red'>ERROR</font>" : "<font color='green'>"+parsedStatus.split(" - ")[1]+"</font>";
+                }
+
+
+                if(parsedTime.includes("Час")) {
+                    parsedTime =  parsedTime.split(" - ")[1];
+                    parsedTime = parsedTime.replace(/T/g, " ").slice(0, -4);
+                }
+
+                if(parsedTerminal.includes("uptime")){
+                    parsedTerminal = parsedTerminal.replace(/Термінал водія - driverInterface: /g, "").split(', ')
+                    console.log(parsedTerminal)
+
+                    if(parsedTerminal.length > 2){
+                        var row1 = parsedTerminal[0].split("=");
+                        var row2 = parsedTerminal[1].split("=");
+                        var row3 = parsedTerminal[2].split("=");
+
+                        tableTerminal = "<table><tr><td>"+row1[0]+"</td><td>"+row1[1]+"</td></tr><tr><td>"+row2[0]+"</td><td>"+row2[1]+"</td></tr><tr><td>"+row3[0]+"</td><td>"+row3[1]+"</td></tr></table>"
+                    }
+
+                    parsedTerminalStatus = "<b>Термінал водія - </b><font color='green'>ОК</font><br>";
+                }else{
+                    parsedTerminalStatus = "<b>Термінал водія - </b><font color='red'>NO</font><br>";
+                }
+
+                for(var i=2; i < parsedData.length - 2; i++){
+                    if(parsedData[i].includes('Валідатор'))
+                        parsedData[i] = parsedData[i].replace(/Валідатор - /g, "")
+
+                    if(parsedData[i] != ""){
+                        var rowV1 = parsedData[i].split("C№=")[1].split("_Стан=")[0];
+                        var rowV2 = parsedData[i].split("C№=")[1].split("_Стан=")[1];
+
+                        tableValidators+= "<tr><td>"+(i-1)+"</td><td>"+rowV1+"</td><td>"+rowV2+"</td></tr>"
+                        countValidators++;
+                    }
+                }
+
+                if(countValidators == 0)
+                    tableValidators = "";
+
+                document.getElementById('okno').innerHTML =  "<span class='close-model-about'>&times;</span><center><b>" + parsedData[1].replace(/РО/g, "Location ID")+ "<br>Час - </b>" + parsedTime + "<br><b>Статус - </b>" + parsedStatus+ "<br><br><b>Валідатори/Контролери АКП</b>"+tableValidators+"</table><br>";
+
+                window.location = "#zatemnenie";
+            })
 
 			// создание строки для таблицы
 			var row1 = function (user) {

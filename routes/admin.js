@@ -12,7 +12,7 @@ module.exports = app => {
                 if (error) {
                     return res.redirect('/auth');
                 } else {
-                    if (user === null) {
+                    if (user === null || user.is_active === false) {
                         return res.redirect('/auth');
                     } else {
                         User.find({},'-password', function (error, data) {
@@ -123,7 +123,7 @@ module.exports = app => {
 
             // send mail with defined transport object
             let info = await transporter.sendMail({
-                from: '"Dmitry Liamtsev" <support_sataz@kpt.kiev.ua>', // sender address
+                from: '"Dmitry Liamtsev" <eticket@ttc.net.ua>', // sender address
                 to: data.email, // list of receivers
                 subject: "Auth data for use ”ASOP Monitoring E-TICKET”", // Subject line
                 html: data.is_active? `Hello, <b>${data.username}!</b><br><b>Your login:</b> ${data.email}<br><b>Your password:</b> ${data.password}<br><b>Your API-token:</b> ${data.api_token}<br><br>Have some questions? - contact with developer: Dmitry Liamtsev (lyama961@gmail.com)<br>This mail automatic, not answer pls:)` : `Hello, <b>${data.username}!</b><br><b>Your auth data has been blocked! Contact with developer: Dmitry Liamtsev (lyama961@gmail.com)<br>This mail automatic, not answer pls:)` // plain text body

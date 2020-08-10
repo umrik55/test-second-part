@@ -10,9 +10,9 @@
     "patch_zero_ways": "data/trip0.json"
   },
   "email":{
-    "smtp_host": "smtp.kpt.kiev.ua",
+    "smtp_host": "mail.ttc.net.ua",
     "port": 587,
-    "user": "support_sataz@kpt.kiev.ua",
-    "pass": "acotp17"
+    "user": "eticket@ttc.net.ua",
+    "pass": "QJTq3dM1A"
   }
 }

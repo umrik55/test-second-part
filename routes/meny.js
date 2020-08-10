@@ -407,20 +407,4 @@ module.exports = (app) => {
       response.render("error.hbs", { errit: errit });
     }
   });
-
-  // контактная информация
-  app.get("/contact", function (request, response) {
-    try {
-      response.render("contact.hbs", {
-        title: "Контакти команди підтримки",
-        emailsVisible: true,
-        emails: ["satazkadry@kpt.kiev.ua"],
-        phone: "454-00-23",
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
 };
