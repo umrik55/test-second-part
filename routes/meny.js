@@ -2,11 +2,7 @@
 module.exports = (app) => {
   var bodyParser = require("body-parser");
   var fs = require("fs");
-  var hbs = require("hbs"); // шаблонизатор
-  var peFile = "data/pefuel.json"; // файл заправок ПЕ
   var usersFile = "data/users.json"; // файл пользователей
-  var refRezFile = "data/rezervuarname.json"; // файл резервуаров
-  var refAgentFile = "data/agent.json"; // файл постачальників
   var refValidateFile = "data/validations.json"; // файл по валидациям
   var refCardsFile = "data/cards.json"; // файл по билетным продуктам
   var refEvendsFile = "data/evends.json"; // файл события водителей
@@ -29,73 +25,6 @@ module.exports = (app) => {
     }
   });
 
-  // запрос страницы форма 4 мтп
-  app.get("/repportmtp4", function (request, response) {
-    try {
-      /*
-			var content = fs.readFileSync("data/mtp4.json", "utf8");
-			var user = JSON.parse(content);
-			response.render("inMTP4.hbs", {
-				user: user
-			});
-			return;
-			*/
-
-      var content = fs.readFileSync(
-        "data/Fuel_2017-06-15_Remaining fuel.json",
-        "utf8"
-      );
-      var user = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл резервуаров
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inRepport_mtp.hbs", {
-        user: user,
-        rezs: rezs,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы ведомость расхода 5.4
-  app.get("/repport4", function (request, response) {
-    try {
-      var content = fs.readFileSync(
-        "data/Fuel_2017-06-15_Remaining fuel.json",
-        "utf8"
-      );
-      var user = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл резервуаров
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inRepport41.hbs", {
-        user: user,
-        rezs: rezs,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы ведомость заправки 5.3
-  app.get("/repport3", function (request, response) {
-    try {
-      var content = fs.readFileSync("data/servis_.json", "utf8");
-      var user = JSON.parse(content);
-      response.render("inRepport3.hbs", {
-        user: user,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
 
   // запрос страницы ведомость заправки 5.3
   app.get("/repaddeshl", function (request, response) {
@@ -124,7 +53,6 @@ module.exports = (app) => {
           } else {
             var content = fs.readFileSync(refValidateFile, "utf8");
             var users = JSON.parse(content);
-            //console.log(users);
             response.render("inAgent.hbs", {
               users: users,
             });
@@ -143,8 +71,6 @@ module.exports = (app) => {
     try {
       var content = fs.readFileSync(refValidateFile, "utf8");
       var users = JSON.parse(content);
-      //console.log(users);
-      //response.render('inAgent.hbs', {
       response.render("inTrips.hbs", {
         users: users,
       });
@@ -160,7 +86,6 @@ module.exports = (app) => {
     try {
       var content = fs.readFileSync(refCardsFile, "utf8");
       var users = JSON.parse(content);
-      //console.log(users);
       response.render("inCards.hbs", {
         users: users,
       });
@@ -183,7 +108,6 @@ module.exports = (app) => {
           } else {
             var content = fs.readFileSync(refEvendsFile, "utf8");
             var users = JSON.parse(content);
-            //console.log(users);
             response.render("inEquips.hbs", {
               users: users,
             });
@@ -215,188 +139,6 @@ module.exports = (app) => {
             });
           }
         }
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы справочника резервуаров
-  app.get("/refrezervuar", function (request, response) {
-    try {
-      var typeFuelFile = "data/Fuel.json"; // файл типов топлива
-      var content = fs.readFileSync(typeFuelFile, "utf8");
-      var fuels = JSON.parse(content);
-      var content = fs.readFileSync(refRezFile, "utf8");
-      var users = JSON.parse(content);
-      response.render("inRefRez.hbs", {
-        fuels: fuels,
-        users: users,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы ведомости запрвки
-  app.get("/repport31", function (request, response) {
-    try {
-      var content = fs.readFileSync("data/repport.json", "utf8");
-      var repps = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл резервуаров
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inRepport31.hbs", {
-        repps: repps,
-        rezs: rezs,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы ведомостями
-  app.get("/repport", function (request, response) {
-    try {
-      var content = fs.readFileSync("data/repport.json", "utf8");
-      var repps = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл резервуаров
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inRepport.hbs", {
-        repps: repps,
-        rezs: rezs,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы для расчета лимитов заправки РЕ
-  app.get("/pelimit", function (request, response) {
-    try {
-      var content = fs.readFileSync("data/filii.json", "utf8");
-      var repps = JSON.parse(content);
-      response.render("inLimitPE.hbs", {
-        repps: repps,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы инвентаризации резервуаров
-  app.get("/rezervuar", function (request, response) {
-    try {
-      var typeFuelFile = "data/Fuel.json"; // файл типов топлива
-      var content = fs.readFileSync(typeFuelFile, "utf8");
-      var fuels = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл резервуаров
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inRezFuel.hbs", {
-        fuels: fuels,
-        rezs: rezs,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы прихода в резервуар
-  app.get("/add", function (request, response) {
-    try {
-      var typeFuelFile = "data/Fuel.json"; // файл типов топлива
-      var content = fs.readFileSync(typeFuelFile, "utf8");
-      var fuels = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл типов топлива
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      typeFuelFile = "data/agent.json"; // файл типов топлива
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var agents = JSON.parse(content);
-
-      response.render("inAddFuel.hbs", {
-        rezs: rezs,
-        agents: agents,
-        fuels: fuels,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы перемещения с резервуара
-  app.get("/remove", function (request, response) {
-    try {
-      var typeFuelFile = "data/Fuel.json"; // файл типов топлива
-      var content = fs.readFileSync(typeFuelFile, "utf8");
-      var fuels = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл типов топлива
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      typeFuelFile = "data/agent.json"; // файл типов топлива
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var agents = JSON.parse(content);
-
-      response.render("inRemoveFuel.hbs", {
-        rezs: rezs,
-        agents: agents,
-        fuels: fuels,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы с РО
-  app.get("/pe", function (request, response) {
-    try {
-      var typeFuelFile = "data/users.json"; // файл типов топлива
-      var content = fs.readFileSync(typeFuelFile, "utf8");
-      var mars = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл типов топлива
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inPEFuel.hbs", {
-        mars: mars,
-        rezs: rezs,
-      });
-    } catch (e) {
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-  // запрос страницы с РО Маршрутов
-  app.get("/pemar", function (request, response) {
-    try {
-      var typeFuelFile = "data/mars.json"; // файл типов топлива
-      var content = fs.readFileSync(typeFuelFile, "utf8");
-      var mars = JSON.parse(content);
-      typeFuelFile = "data/rezervuarname.json"; // файл типов топлива
-      content = fs.readFileSync(typeFuelFile, "utf8");
-      var rezs = JSON.parse(content);
-      response.render("inPEMarFuel.hbs", {
-        mars: mars,
-        rezs: rezs,
       });
     } catch (e) {
       var errit = [];

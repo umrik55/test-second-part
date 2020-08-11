@@ -1,4 +1,3 @@
-// 20190513
 var express = require("express");
 var hbs = require("hbs"); // шаблонизатор
 var bodyParser = require("body-parser");
@@ -33,7 +32,6 @@ app.use(
 );
 
 // parse incoming requests
-
 app.set("json spaces", 2);
 
 // Подгружаем модули с каталога routes	(бизнес-логика)

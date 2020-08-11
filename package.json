@@ -1,6 +1,6 @@
 {
-  "name": "api_inventory",
-  "version": "1.0.0",
+  "name": "E-TICKET",
+  "version": "0.95",
   "dependencies": {
     "@frangiskos/mssql": "0.0.2",
     "bcrypt-nodejs": "0.0.3",

@@ -4,47 +4,13 @@
      //Для подключениия функционала в другой модуль:
      var API = require('./getAPI.js')//Подключаем модуль
 
-    //Для получения ВСЕХ формуляров на дату
-    var res = new API("2017-11-10", null);//Заполнение конструктора значением даты БЕЗ таб. номера
-    res.getFormular(function(obj){
-        console.log(obj);
-    });
-
-    //Для получения ВСЕХ формуляров на дату для конкретного водителя
-    var res = new API("2017-11-10", "1234");//Заполнение конструктора значением даты с таб. номером
-    res.getFormular(function(obj){
-        console.log(obj+"1");
-    });
-
-
-    //Для получения ВСЕХ заправок машины на дату по борт. номеру
-    var res_f = new API("2017-11-08", "7598");
-
-    res_f.getFuel(function(obj){
-        console.log(obj);
-    });
-
-    //Для получения ВСЕХ данных с АРМ
-    var res_arm = new API("2017-11-08", null);
-
-    res_arm.<метод для вызова конкретного АРМа>(function(obj){
-        console.log(obj);
-    });
-
-     for example Medical-Services:
-     res_arm.getMed(function(obj){
-        console.log(obj);
-    });
-
  =================================================================================================================*/
 module.exports = (app) => {
   var nconf = require("nconf");
   var filenameconf = "./config.json";
   nconf.argv().env().file({ file: filenameconf }); // подключаем конфиг файл
 
-  var fs = require("fs");
   var hostFormular = nconf.get("urls_services:hostGetAsdu"); //Хост сервиса для получение формуляров
-  var hostAwp = nconf.get("urls_services:hostGetAwp"); //Хост АРМ сервисов
 
   //Конструктор для обращения к модулю
   function init(n, a, c) {
@@ -61,24 +27,6 @@ module.exports = (app) => {
       }
     }
     return true;
-  }
-
-  //Получение вчерашней даты для поиска заправок
-  function dateYesterday(_date, _format, _delimiter) {
-    var formatLowerCase = _format.toLowerCase();
-    var formatItems = formatLowerCase.split(_delimiter);
-    var dateItems = _date.split(_delimiter);
-    var monthIndex = formatItems.indexOf("mm");
-    var dayIndex = formatItems.indexOf("dd");
-    var yearIndex = formatItems.indexOf("yyyy");
-    var month = parseInt(dateItems[monthIndex]);
-    month -= 1;
-    var formatedDate = new Date(
-      dateItems[yearIndex],
-      month,
-      dateItems[dayIndex]
-    );
-    return formatedDate;
   }
 
   //Получение объекта данных с формулярами
@@ -208,102 +156,6 @@ module.exports = (app) => {
           } else callback(null);
 
           callback(data);
-        } catch (e) {
-          callback(null);
-          console.log(e);
-        }
-      });
-    } catch (e) {
-      callback(null);
-      console.log(e);
-    }
-  };
-
-  //Получение объекта данных по факту заправки на сегодня и вчера
-  init.prototype.getFuel = function (callback) {
-    try {
-      var fuelObj;
-      var fuelsObj = {};
-      var idUrl;
-      var dateYest = dateYesterday(this.Date, "yyyy-mm-dd", "-")
-        .toISOString()
-        .slice(0, 10); //Получение вчерашней даті и преобразование в строку...
-
-      //Получаем заправки за вчера
-      idUrl = hostAwp + "v1/fuel/get-full-activity-json?date=" + dateYest;
-      require("request")(idUrl, function (error, response, body) {
-        try {
-          fuelObj = JSON.parse(body);
-          //callback(str);
-        } catch (e) {
-          callback(null);
-          console.log(e);
-        }
-      });
-
-      //..за сегодня и соединяем с вчерашними
-      idUrl = hostAwp + "v1/fuel/get-full-activity-json?date=" + this.Date;
-      require("request")(idUrl, function (error2, response2, body2) {
-        try {
-          var fuelObj2 = JSON.parse(body2);
-          if (isEmptyObject(fuelObj)) {
-            if (isEmptyObject(fuelObj2)) {
-              callback(null);
-            } else {
-              fuelsObj.fuelTomorow = fuelObj2; //Найдены только сегодняшние заправки
-            }
-          } else {
-            if (isEmptyObject(fuelObj2)) {
-              fuelsObj.fuelYesterday = fuelsObj; //Найдены только вчерашние заправоки
-            } else {
-              fuelsObj.fuelYesterday = fuelObj; //...
-              fuelsObj.fuelTomorow = fuelObj2; //Найдены заправки вчера и сегодня
-            }
-          }
-          //console.dir(fuelsObj)
-          callback(fuelsObj);
-        } catch (e2) {
-          callback(null);
-          //console.log(e2);
-        }
-      });
-    } catch (e) {
-      callback(null);
-      console.log(e);
-    }
-  };
-
-  //Получение объекта данных по факту Мед
-  init.prototype.getMed = function (callback) {
-    try {
-      var idUrl;
-      idUrl =
-        hostAwp + "v1/medical-service/get-full-activity-json?date=" + this.Date;
-      require("request")(idUrl, function (error, response, body) {
-        try {
-          var str = JSON.parse(body);
-          callback(str);
-        } catch (e) {
-          callback(null);
-          console.log(e);
-        }
-      });
-    } catch (e) {
-      callback(null);
-      console.log(e);
-    }
-  };
-
-  //Получение объекта данных по факту ВТК
-  init.prototype.getVtk = function (callback) {
-    try {
-      var idUrl;
-      idUrl =
-        hostAwp + "v1/vehicle-tcd/get-full-activity-json?date=" + this.Date;
-      require("request")(idUrl, function (error, response, body) {
-        try {
-          var str = JSON.parse(body);
-          callback(str);
         } catch (e) {
           callback(null);
           console.log(e);

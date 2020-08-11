@@ -2,13 +2,14 @@ module.exports = (app) => {
   const User = require("../models/dataUser");
   const bodyParser = require("body-parser");
   let jsonParser = bodyParser.json();
-  const UserAccess = require("../models/dataUserAccess");
 
+
+  //Create first user if is not exists
   /*
     var userData = {
         email: "lyama961@gmail.com",
-        username: "Forze961",
-        password: "159753",
+        username: "admin",
+        password: "admin",
         filial: 5,
         level: 2,
         api_token: "45454",
@@ -24,15 +25,6 @@ module.exports = (app) => {
     });
     /*
 
-/*    UserAccess.create({id_level:2}, function (error, user) {
-        if (error) {
-            console.log(error)
-        } else {
-            console.log("OK")
-        }
-    });
-    */
-  /*
         Auth page render
     */
   app.get("/auth", function (req, res, next) {
@@ -116,7 +108,6 @@ module.exports = (app) => {
 
   /*
 // confirm that user typed same password twice
-
 if (req.body.password !== req.body.passwordConf) {
     var err = new Error('Passwords do not match.');
     err.status = 400;
