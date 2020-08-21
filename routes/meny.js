@@ -25,7 +25,6 @@ module.exports = (app) => {
     }
   });
 
-
   // запрос страницы ведомость заправки 5.3
   app.get("/repaddeshl", function (request, response) {
     try {

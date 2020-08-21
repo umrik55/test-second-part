@@ -3,7 +3,6 @@ module.exports = (app) => {
   const bodyParser = require("body-parser");
   let jsonParser = bodyParser.json();
 
-
   //Create first user if is not exists
   /*
     var userData = {
