@@ -107,7 +107,7 @@
 				var data4 = document.getElementById('selRep').value; //текущая филия
 				var tempDateH = new Date();
 				var tempTimeH = tempDateH.getHours() + ":" + (tempDateH.getMinutes() < 10 ? "0" + tempDateH.getMinutes() : tempDateH.getMinutes());
-				document.getElementById('DateInfo').innerHTML = " Оплата проїзду турнікетами метро, станом на  " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH);
+				document.getElementById('DateInfo').innerHTML = " Турнікети метро, станом на  " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH);
 				$.ajax({
 					url: "/api/formularst_form/",
 					type: "POST",

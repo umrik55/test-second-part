@@ -1,6 +1,6 @@
 {
   "name": "E-TICKET",
-  "version": "0.95",
+  "version": "0.0.95",
   "dependencies": {
     "@frangiskos/mssql": "0.0.2",
     "bcrypt-nodejs": "0.0.3",

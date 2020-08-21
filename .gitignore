@@ -1,3 +1,6 @@
 node_modules
 data
 *.log
+!data/filii.json
+!data/turnikets.json
+!data/turniketsST.json
