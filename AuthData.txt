@@ -1,0 +1,10 @@
+#``Attention! This data For test cases only!``
+#``When the tests are completed, change your passwords immediately using the host / admin panel.``
+#``TTC ? 2020.``
+
+
+Login ? admin@example.com
+Pass ? fq4kgJHu
+
+Login ? operator@exampple.com
+Pass ? nFwv04Ci
