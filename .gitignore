@@ -4,3 +4,5 @@ data
 !data/filii.json
 !data/turnikets.json
 !data/turniketsST.json
+.idea
+package-lock.json
