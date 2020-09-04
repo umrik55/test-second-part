@@ -937,7 +937,8 @@ module.exports = (app) => {
 
   //Перенаправление на список всех формуляров в корне URL
   app.get("/", function (request, response) {
-    User.findById(request.session.userId).exec(function (error, user) {
+    /*
+	User.findById(request.session.userId).exec(function (error, user) {
       if (error) {
         return response.redirect("/auth");
       } else {
@@ -953,7 +954,7 @@ module.exports = (app) => {
                 username: user.username,
                 role: data[0] ? data[0].name_level : "",
                 notUser: user.level > 0 ? true : false,
-              });
+              });						
             } catch (e) {
               var errit = [];
               errit.push(e);
@@ -963,6 +964,23 @@ module.exports = (app) => {
         }
       }
     });
+	*/
+	        var content = fs.readFileSync("data/filii.json", "utf8");
+            var repps = JSON.parse(content);
+            try {
+              response.render("inFormulars.hbs", {
+                repps: repps,
+                //username: user.username,
+                //role: data[0] ? data[0].name_level : "",
+                //notUser: user.level > 0 ? true : false,
+              });						
+            } catch (e) {
+              var errit = [];
+              errit.push(e);
+              response.render("error.hbs", { errit: errit });
+            }
+	
+	
   });
 
   //Перенаправление на список всех формуляров в корне URL
@@ -1049,6 +1067,21 @@ module.exports = (app) => {
       response.render("error.hbs", { errit: errit });
     }
   });
+  
+  //Конфигурация турникетов скоросного трамвая
+    app.get('/stconfig', function(request, response) {
+		 var content = fs.readFileSync('data/turniketsST.json', 'utf8');
+         var repps = JSON.parse(content);
+        try {
+            response.render('inSTConfig.hbs', {
+				 repps: repps,
+		 });
+        } catch (e) {
+            var errit = [];
+            errit.push(e);
+            response.render('error.hbs', { errit: errit });
+        }
+    });
 
   //Мониторинг за турникетами метро
   app.get("/metroMon", function (request, response) {
@@ -1064,6 +1097,21 @@ module.exports = (app) => {
       response.render("error.hbs", { errit: errit });
     }
   });
+  
+  //Конфигурация турникетов метро
+    app.get('/metroconfig', function(request, response) {
+		 var content = fs.readFileSync('data/turnikets.json', 'utf8');
+         var repps = JSON.parse(content);
+        try {
+            response.render('inMetroConfig.hbs', {
+				 repps: repps,
+		 });
+        } catch (e) {
+            var errit = [];
+            errit.push(e);
+            response.render('error.hbs', { errit: errit });
+        }
+    });
 
   //Мониторинг за турникетами скоросного трамвая
   app.get("/stMon", function (request, response) {
