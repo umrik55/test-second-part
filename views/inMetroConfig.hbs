@@ -301,36 +301,36 @@
 			var strTD1="";
 			
 			//оборудование
-			strTD=" bgcolor='#FF7518'";
+			strTD=" bgcolor='#EDBB39'";
 			if(user.obtime==="-"){
-				strTD=" bgcolor='#FF7518'"; // красный
+				strTD=" bgcolor='#EDBB39'"; // красный
 			}else{
 			    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 				var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 19);
 				var local = localISOTime+".003Z";
 				//alert(+Date.parse(local)-Date.parse(user.obtime+".003Z"))
 				if(+Date.parse(local)-Date.parse(user.obtime+".003Z")<=180000){
-					strTD=" bgcolor='#00ffa1'";
+					strTD=" bgcolor='#87F630'";
 				}else{
 					if(+Date.parse(local)-Date.parse(user.obtime+".003Z")<=600000){
-						strTD=" bgcolor='#FFFF00'";
+						strTD=" bgcolor='#E1F037'";
 					}
 				};
 				
 			};
 			//валидации
-			strTD1=" bgcolor='#FF7518'";;
+			strTD1=" bgcolor='#EDBB39'";;
 			if(user.validation==="-"){
-				strTD1=" bgcolor='#FF7518'"; // красный
+				strTD1=" bgcolor='#EDBB39'"; // красный
 			}else{
 			    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 				var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 19);
 				var local = localISOTime+".000Z";
 				if(+Date.parse(local)-Date.parse(user.validation+".003Z")<=180000){
-					strTD1=" bgcolor='#00ffa1'"; //зеленный
+					strTD1=" bgcolor='#87F630'"; //зеленный
 				}else{
 					if(+Date.parse(local)-Date.parse(user.validation+".003Z")<=600000){
-						strTD1=" bgcolor='#FFFF00'";//желтый
+						strTD1=" bgcolor='#E1F037'";//желтый
 					}
 				};
 				
@@ -339,7 +339,7 @@
 			//конфигурация
 			var strTD2="";
 			if(user.confFlag==="Так" || user.confFlag===undefined){
-				strTD2=" bgcolor='#FF7518'";			
+				strTD2=" bgcolor='#EDBB39'";			
 			};
 			
 			if(user.info && user.validation){
@@ -419,7 +419,7 @@
 			
 			//Проверка наличие валидаций
 			var strValid = " bgcolor='#D3D3D3'"; //подсвечиваем серым;
-			//var strValid = "color='#FF7F00'"; //подсвечиваем красным ;
+			//var strValid = "color='#EDBB39'"; //подсвечиваем красным ;
 			var tempDate = new Date();
 			var tempTime = 60*tempDate.getHours()+tempDate.getMinutes();
 			if (user.validation==0){
@@ -428,12 +428,12 @@
 				var dutyvalid = 60*Number((user.validation).substr(0,2))+Number((user.validation).substr(3,2));
 			}
 			if((tempTime-dutyvalid) < 31 && (tempTime-dutyvalid) > -1){
-                strValid =  " bgcolor='#00ffa1'";//подсвечиваем зеленым;
-				//strValid =  "color='#00ffa1'";
+                strValid =  " bgcolor='#87F630'";//подсвечиваем зеленым;
+				//strValid =  "color='#87F630'";
 				}
             if((tempTime-dutyvalid) > 30 && (tempTime-dutyvalid) < 61){
-                strValid = " bgcolor='#FFFF00'"; //подсвечиваем желтый;
-				//strValid = "color='#FFFF00'"; //подсвечиваем желтый;
+                strValid = " bgcolor='#E1F037'"; //подсвечиваем желтый;
+				//strValid = "color='#E1F037'"; //подсвечиваем желтый;
 				};
 			
 
@@ -446,20 +446,20 @@
 			//alert(trips);
 			
 			if(user.A2==0)
-                strTD =  " bgcolor='#00ffa1'";//подсвечиваем зеленым;
+                strTD =  " bgcolor='#87F630'";//подсвечиваем зеленым;
             if(user.A2==1)
-                strTD = " bgcolor='#FFFF00'"; //подсвечиваем желтый;
+                strTD = " bgcolor='#E1F037'"; //подсвечиваем желтый;
 			if(user.A2==4){	
 				var ndate =tempDate.getFullYear()+"-"+(tempDate.getMonth()<9 ? "0"+(tempDate.getMonth()+1) : (tempDate.getMonth()+1)) +"-"+
 				(tempDate.getDate()<10 ? "0"+tempDate.getDate() : tempDate.getDate());
 				if(user.smenTripCount===0){
-					strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;
+					strTD = " bgcolor='#EDBB39'"; //подсвечиваем красный;
 				}else{
 					var duty1 = user.smenTripCount.substr(0,10);
 					console.log(duty1);
 					console.log(ndate);
 					if(!(duty1 == ndate)){
-						strTD = " bgcolor='#FF7F00'"; //подсвечиваем красный;	
+						strTD = " bgcolor='#EDBB39'"; //подсвечиваем красный;	
 					}
 				}
 			};
