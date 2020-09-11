@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}}</title>
+    <meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="../../bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="../../style.css" />
+	<link rel="stylesheet" href="../font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="../../fonts.css" />
+	<script type="text/javascript" src="../../bootstrap.min.js"></script> 
+	
+</head>
+<body>    
+    
+	{{> menu_1}}
+	{{> header}}
+    {{> modalLegend}}
+	   
+<div class="clearfix"></div>
+<!--<div class="container">-->
+   <!-- <div class="row">-->
+	<h2>Станція  {{nameSt}}</h2>	
+        
+       <div id="ten_2">
+		<table id="col" class="table table-condensed table-striped table-bordered">
+             <thead><tr>
+                 <th>О П И С</th>
+				<th>№ турнікету при вході на станцію з ліва на право</th>			   
+                <th>IP контрллеру RIDANGO</th>
+                <th>IP обладнання AKП</th>
+                <th>Посилання відправки даних</th>
+                <th>Тип обладнання АКП</th>
+                <th>ID обладнання АКП </th>
+				 <th>№ контроллеру RIDANGO</th>
+			   <th>Ф А К Т</th>
+				<th>№ контроллеру RIDANGO</th>	
+				<th>ID обладнання АКП </th>
+				<th>Останні дані від контроллеру RIDANGO</th>				
+				<th>Час останньої валідації транспортна картка</th>
+				<th>Час останньої валідації картка киянина</th>
+				<th>Час останньої валідації QR код</th>		
+				
+			</tr></thead>
+			{{#each confp}}
+            <tr>
+				<td>|</td>
+				<td>{{this.AKP_number}}</td> 				
+				<td>{{this.IP_RIDANGO}}</td> 
+				<td>{{this.IP_AKP}}</td> 
+				<td>{{this.Data_sending_link}}</td> 
+				<td>{{this.Type_equipment}} </td>  
+				<td>{{this.PLACE_ID}} </td>
+				<td>{{this.Number_RIDANGO}}</td> 
+				<td>|</td>
+				<td>{{this.keyCon}} </td>
+				<td>{{this.tur}} </td>
+				<td>{{this.timeUp}} </td>				
+				<td>{{this.TC}} </td>
+				<td>{{this.KC}} </td>
+				<td>{{this.QR}} </td>
+			</tr>
+            {{/each}}
+        </table>
+		</div>
+   
+
+              <!--  </div>-->  <!-- row -->
+<!--</div>--><!-- container -->
+    
+	 {{> footer}}
+</body>
+<html>
