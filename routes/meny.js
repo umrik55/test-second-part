@@ -203,9 +203,11 @@ module.exports = (app) => {
 		 inPlan=inPlan.sort(compareJson);
 		 var planTurn=[];   // перечень номеров валидаторов 
 		 var loc_id; //вестибуль
+		 var loc_name; //вестибуль название
 		 var num_r;  // контролер
 		 var turn;   // турникет
 		 loc_id=inPlan[0].Locatio_ID;
+		 loc_name=inPlan[0].Station;
 		 num_r=inPlan[0].Number_RIDANGO;	 
 		// console.log("h   "+loc_id+"h   "+num_r);	
 		for (var i = 0; i < inPlan.length; i++) {
@@ -228,10 +230,11 @@ module.exports = (app) => {
 						 var validationArrT =[];
 					 };
 					 try{
-					//if ((typeof peT === "undefined") || (typeof tripsT === "undefined") || (typeof validationArrT === "undefined"))
-					if ((typeof peT === "undefined") || (typeof tripsT === "undefined"))	
+					if ((typeof loc_id === "undefined") || (typeof num_r === "undefined") || (typeof validationArrT === "undefined"))
+					//if ((typeof peT === "undefined") || (typeof tripsT === "undefined"))	
+						
 					{
-						users.push({"id" : ++erN, "factWorkHeaderID" : peT, "PENumPe":tripsT,"driversTabNum":validationArrT})
+						users.push({"id" : ++erN, "factWorkHeaderID" : loc_id, "name" : loc_name, "PENumPe":tripsT,"driversTabNum":validationArrT})
 					}else{						 
 						confirmConfig(peT, tripsT, timeDataT, validationArrT, inPlan[i-1].Station);
 					}
@@ -240,6 +243,7 @@ module.exports = (app) => {
 						 console.log("Помилкові дані: Вестибуль - "+peT+" , контролер - "+tripsT) 
 					 };
 					 loc_id=inPlan[i].Locatio_ID;
+					 loc_name=inPlan[i].Station;
 					 num_r =inPlan[i].Number_RIDANGO;	  
 					 planTurn=[];
 					 planTurn.push(inPlan[i].PLACE_ID);
@@ -252,12 +256,18 @@ module.exports = (app) => {
 			let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 19);
 			let local = localISOTime;
 			var timeDataT = local;  //время посылки
-			var validationArrT = planTurn;   // перечень номеров валидаторов   
-			confirmConfig(peT, tripsT, timeDataT, validationArrT, inPlan[i-1].Station);
+			var validationArrT = planTurn;   // перечень номеров валидаторов 
+			
+			if ((typeof loc_id === "undefined") || (typeof num_r === "undefined") || (typeof validationArrT === "undefined"))
+				{
+					users.push({"id" : ++erN, "factWorkHeaderID" : loc_id, "name" : loc_name, "PENumPe":tripsT,"driversTabNum":validationArrT})
+				}else{						 
+					confirmConfig(peT, tripsT, timeDataT, validationArrT, inPlan[i-1].Station);
+				};
 		
 		/* запись файла с новыми данными*/
 		//console.log(saveConfig());
-		users.push({"id" : ++erN, "factWorkHeaderID" : saveConfig(), "PENumPe":" ","driversTabNum":" "})
+		users.push({"id" : " ", "factWorkHeaderID" : saveConfig(), "name" : " ", "PENumPe":" ","driversTabNum":" "})
 				
 				
 			

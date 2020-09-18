@@ -98,9 +98,10 @@
 				<thead>
 					<tr>
 						<th>№ </th>
-						<th>Станція (Борт. №)</th>
+						<th>Станція (Код. №)</th>
+						<th>Станція (Назва)</th>
 						<th>Контролер</th>
-						<th>Турнікет</th>
+						<th>Турнікети</th>
 						<!--<th>Дата</th>-->
 						<!--<th>Початок</th>-->
 						<!--<th>Кінець</th>-->
@@ -389,6 +390,7 @@
 				strValid = "";                
 				return "<tr data-rowid='" + user.id + "'><td" + strTD + ">" +user.id +					
 					"<td>" + user.factWorkHeaderID + "</td>" +
+					"<td>" + user.name + "</td>" +
 					"<td" + strTD + ">" + user.PENumPe + "</td>" +
 					"<td" + strTD + ">" + user.driversTabNum + "</td>"+"/tr"
 					//"<td" + strTD + ">" + user.marNum + "-" + user.vipNum + "-" + user.smenNum + "</td>" +
