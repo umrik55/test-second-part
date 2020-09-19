@@ -113,7 +113,6 @@ exports.covertToMongo = function(data, options, callback){
 											schema[rows[sRow][i]] = 'String';
 											//MS Excel date is object in javascript.
 											if (typeof (rows[sRow + 1][i]) === 'object') {
-												console.log(rows[sRow + 1][i])
 												if (isDate(rows[sRow + 1][i])) {
 													schema[rows[sRow][i]] = 'Date';
 													for (var j = sRow + 1; j < eRow; j++) {
@@ -142,7 +141,6 @@ exports.covertToMongo = function(data, options, callback){
 											for (var j in rows[i]) {
 												obj[rows[sRow][j]] = rows[i][j];
 											}
-											console.log(numberSh)
 											obj.type = numberSh;
 											colData.push(obj);
 										}
