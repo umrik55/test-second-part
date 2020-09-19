@@ -1,0 +1,67 @@
+{
+  "_from": "excel-to-mongodb",
+  "_id": "excel-to-mongodb@1.5.8",
+  "_inBundle": false,
+  "_integrity": "sha512-o6ncSBbdwO5GrtT9Qlj+SMr9ZQzowI/5xRnEj6EYM76rn9SHDX6CsiVqclhsJ7HCDLyVmLeYIPz5aDcqSp2tfA==",
+  "_location": "/excel-to-mongodb",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "excel-to-mongodb",
+    "name": "excel-to-mongodb",
+    "escapedName": "excel-to-mongodb",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/excel-to-mongodb/-/excel-to-mongodb-1.5.8.tgz",
+  "_shasum": "2f5dcf2e3c6e18767415a57a67411df56f0912c8",
+  "_spec": "excel-to-mongodb",
+  "_where": "C:\\Users\\cs-ju\\Desktop\\DEV\\NODE\\FUEL\\Fuel-Rep",
+  "author": {
+    "name": "Udbhav Gambhir",
+    "email": "ngudbhav05@hotmail.com",
+    "url": "https://www.ngudbhav.me"
+  },
+  "bugs": {
+    "url": "https://github.com/ngudbhav/excel-to-mongodb/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "csvtojson": "^2.0.8",
+    "mongoose": "^5.3.3",
+    "read-excel-file": "^2.0.5"
+  },
+  "deprecated": false,
+  "description": "A node module to covert a spreadsheet of Excel to a collection in MongoDB.",
+  "engines": {
+    "node": ">=4.2.4"
+  },
+  "homepage": "https://github.com/ngudbhav/excel-to-mongodb#readme",
+  "keywords": [
+    "excel",
+    "mongo",
+    "db",
+    "mongoose",
+    "covert",
+    "exceltomongo",
+    "excel-to-mongodb"
+  ],
+  "license": "MIT",
+  "main": "index",
+  "name": "excel-to-mongodb",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngudbhav/excel-to-mongodb.git"
+  },
+  "scripts": {
+    "prepublish": "npm test",
+    "test": "node test/test.js"
+  },
+  "version": "1.5.8"
+}

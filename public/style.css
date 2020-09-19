@@ -191,10 +191,19 @@ body {
 }
 
 .external-borders {
+	height: 100%;
 	border: 2px solid;
 	border-radius: 16px;
 	border-color: #116cc9;
 	padding: 8px;
+	background-clip: content-box; /* support: IE9+ */
+}
+
+.external-borders-jsgrid {
+	height: 100%;
+	border: 2px solid;
+	border-radius: 17px;
+	border-color: #116cc9;
 	background-clip: content-box; /* support: IE9+ */
 }
 

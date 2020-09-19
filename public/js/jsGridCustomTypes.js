@@ -1104,6 +1104,108 @@ function SetTextAutoFilterTypeCar() {
   };
 }
 
+function setAutoFilterType() {
+  return {
+    css: "date-field",            // redefine general property 'css'
+    align: "center",              // redefine general property 'align'
+
+
+    itemTemplate: function (value) {
+      return value;
+    },
+
+    insertTemplate: function (value) {
+      return this._insertNumFuel = $("<input id='numFuel'>");
+    },
+
+    editTemplate: function (value, value2) {
+      var parseVal = value? value : "";
+      return this._editNumFuel = $("<input id='numFuel' value='" + parseVal + "'>");
+    },
+
+    filterTemplate: function (value) {
+      //return this._filterNumFuel = $("<input id='numFuelfilter'>");
+
+      var grid = this._grid;
+      this._filterNumFuel = $(`<input id='${this.name}ChangerFilter'>`);
+      this._filterNumFuel.on("keyup", function (e) {
+        grid.search();
+      });
+
+      return this._filterNumFuel;
+    },
+
+    insertValue: function () {
+      return this._insertNumFuel.val();
+    },
+
+    editValue: function () {
+      return typeof this._editNumFuel !== "object" ? this._editNumFuel : this._editNumFuel.val()
+    },
+
+    filterValue: function () {
+      return this._filterNumFuel.val()
+    }
+  };
+}
+
+
+function setAutoFilterTypeNum() {
+  return {
+    css: "date-field",            // redefine general property 'css'
+    align: "center",              // redefine general property 'align'
+
+
+    itemTemplate: function (value) {
+      return value;
+    },
+
+    insertTemplate: function (value) {
+      this._insertNumFuel = $("<input id='numFuel'>");
+      this._insertNumFuel.on("keypress", function (e) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+          //display error message
+          $('#warning-alert').text("Дане поле може вміщувати лише цифри!");
+          $('#warning-alert').show();
+          return false;
+        }else{
+          $('#warning-alert').hide();
+        }
+      });
+      return this._insertNumFuel;
+    },
+
+    editTemplate: function (value, value2) {
+      var parseVal = value? value : "";
+      return this._editNumFuel = $("<input id='numFuel' value='" + parseVal + "'>");
+    },
+
+    filterTemplate: function (value) {
+      //return this._filterNumFuel = $("<input id='numFuelfilter'>");
+
+      var grid = this._grid;
+      this._filterNumFuel = $(`<input id='${this.name}ChangerFilter'>`);
+      this._filterNumFuel.on("keyup", function (e) {
+        grid.search();
+      });
+
+      return this._filterNumFuel;
+    },
+
+    insertValue: function () {
+      return this._insertNumFuel.val();
+    },
+
+    editValue: function () {
+      return typeof this._editNumFuel !== "object" ? this._editNumFuel : this._editNumFuel.val()
+    },
+
+    filterValue: function () {
+      return this._filterNumFuel.val()
+    }
+  };
+}
+
 function calcAllLitres(arrData) {
   var result = arrData.reduce((a, b) => +a + +b.fuelCount, 0);
   $("#countLit").html(

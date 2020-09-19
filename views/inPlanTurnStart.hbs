@@ -58,7 +58,7 @@
 
 <body>
     {{> loader}}
-	{{> menu}}
+	{{> menu_metro}}
 	{{> header_2}}
     {{> modalLegend}}
     <div id="container" style="float: right; padding-top: 15px;">
@@ -176,7 +176,7 @@
 								if (tempTime > dutyBeg - 1) {
 									rows += row(user)
 								};
-								*/								
+								*/
 								rows += row(user);
 							})
 							$("#col").append(rows);
@@ -289,7 +289,7 @@
 
 			// создание строки для таблицы
 			var row = function (user) {
-             /*			
+             /*
 				var strBegin = user.factWorkHeaderBegin.replace(/1900-01-01T|:00.000Z/g, "");//Привидение данных времени к адекватному виду
 				if (user.factWorkHeaderEnd.substr(9, 1) === "2") {
 					var strEnd = user.factWorkHeaderEnd.replace(/1900-01-02T|:00.000Z/g, "");
@@ -387,8 +387,8 @@
 				};
 				*/
 				strTD = "";
-				strValid = "";                
-				return "<tr data-rowid='" + user.id + "'><td" + strTD + ">" +user.id +					
+				strValid = "";
+				return "<tr data-rowid='" + user.id + "'><td" + strTD + ">" +user.id +
 					"<td>" + user.factWorkHeaderID + "</td>" +
 					"<td>" + user.name + "</td>" +
 					"<td" + strTD + ">" + user.PENumPe + "</td>" +
@@ -402,7 +402,7 @@
 					//"<td" + strTD + ">" + user.smenTripCount + "</td>" +
 					//"<td" + " id=" + user.id + " " + strTD + "><a href='#' class='close'" + "data-loc='" + user.id + "'" + " data-id='" + user.info + "'><span class='text-danger glyphicon glyphicon-edit'></span></a></td></tr>";
 			      //"<td" +strTD+"><a class='editLink' data-id='" + user.PENumPe + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>"+"</tr>";
-				  }; 
+				  };
 
 			// нажимаем на ссылку показать оборудование
 			$("body").on("click", ".close", function () {

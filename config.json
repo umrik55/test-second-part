@@ -10,5 +10,8 @@
     "port": 587,
     "user": "eticket@ttc.net.ua",
     "pass": "QJTq3dM1A"
+  },
+  "parse_excel": {
+    "count_sheets": 7
   }
 }

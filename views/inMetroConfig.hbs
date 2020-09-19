@@ -19,7 +19,7 @@
 	<script type="text/javascript" src="bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
     <script type="text/javascript" src="gridview.js"></script>
-	
+
 	<style>
       #zatemnenie {
         background: rgba(102, 102, 102, 0.5);
@@ -54,19 +54,19 @@
         color: #0000cc;
         padding: 0 12px;
         margin: 10px;
-        text-decoration: none;       
+        text-decoration: none;
 		background: #f2f2f2;
         font-size: 14pt;
         cursor:pointer;
       }
       .close:hover {background: #e6e6ff;}
     </style>
-	
+
 </head>
 <body>
 
  {{> loader}}
- {{> menu}}
+ {{> menu_metro}}
  {{> header}}
  {{> modalLegend}}
 
@@ -89,15 +89,15 @@
             <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>
             </div>
-        </div>	
-		
-		
+        </div>
+
+
     <h2 id="DateInfo"> Транспортна робота філії на дату: </h2>
 	 <div id="ten_2">
 		<table id="col" class="table table-condensed table-striped table-bordered">
 			<thead><tr>
-                <th>№ </th>  
-			    <th>Станція</th>				
+                <th>№ </th>
+			    <th>Станція</th>
 				<th>Час валідація</th>
 				<th>Валідації<br>Транспортна картка</th>
 				<th>Валідації<br>Картка киянина</th>
@@ -105,13 +105,13 @@
 				<th>Валідації, по за конфігурацією </th>
 				<th>Опис конфігурації</th>
 				<th>Факт конфігурації</th>
-				<!--<th>Відхилення конфігурації контролерів</th>-->	
+				<!--<th>Відхилення конфігурації контролерів</th>-->
 				<th>Обладнання</th>
 				<!--<th>Валідатори</th>-->
 				<!--<th>Термінал</th>-->
                 <!--<th>Час зміни конфігурації</th>-->
 				<!--<th>Останні зміни конфігурації</th>-->
-				
+
 			</tr></thead>
 			<tbody>
 			</tbody>
@@ -136,7 +136,7 @@
         GetUsers();//Получение списка формуляров
         //GetMed();//получение массива даных с мед службы
         //GetVtk();//-//-ОТК
-		
+
         //Ajax-loadrer
         var gCheck = true;
         $body = $("body");$(document).on({    ajaxStart: function() { if(gCheck){$body.addClass("loading");}    },     ajaxStop: function() { $body.removeClass("loading");}     });
@@ -159,16 +159,16 @@
 					tData4: data4
                 }),
                 success: function (users) {
-                    
+
                     if (users.length == 0){
                         alert("Даних на цю дату — не знайдено.")
                     } else {
-					
+
                         var rows = "";
                         $.each(users, function (index, user) {
 							console.log(user.name);
 							rows += row(user)
-							
+
                         })
                         $("#col").append(rows);
 						 document.getElementById("loader").style.display = "none";
@@ -207,7 +207,7 @@
                 }
             });
         }
-		
+
 		//Получение массива данных с АРМ:втк за текущие сутки
         function GetDuty(duty) {
 		    var user={
@@ -220,24 +220,24 @@
 			//var tFilii = document.getElementById('datebegin').value;
 			var typeFilii = getSelect("rezs");
 			//alert(typeFilii);
-			
+
             $.ajax({
                 url: "/api/monduty/"+typeFilii,
                 type: "GET",
                 contentType: "application/json",
                 success: function (user) {
                     //alert("qqq");
-					//alert(user.route);					
+					//alert(user.route);
                }
             });
 			//alert("error");
 			//return user
         }
-		
-		
-		
-		
-		
+
+
+
+
+
 		// прочитать тип транспорта Select
 		function getSelect(id){
 			var i,o;
@@ -267,14 +267,14 @@
 			  default:
 				descr = "A";
 			}
-			
-			return descr;	
+
+			return descr;
 		}
-		
-		
-		function addChange(){			
+
+
+		function addChange(){
 				var o;
-				var sel = document.getElementById('rezs'); 
+				var sel = document.getElementById('rezs');
 				var opt=sel.options;
 				for(var i=0;i<opt.length;i++){
 					o=opt[i];
@@ -284,22 +284,22 @@
 						break;
 					}
 				}
-							
+
 				//window.location.reload(true);// перегружаем страницу
 				$("table tbody").empty();GetUsers();
-				
+
 
 			}
 
-		
-		
+
+
           var row = function (user) {
 			if(!user.validation) user.validation="-";
-            if(user.obtime==0) user.obtime="-";	
-				
+            if(user.obtime==0) user.obtime="-";
+
 			var strTD="";
 			var strTD1="";
-			
+
 			//оборудование
 			strTD=" bgcolor='#EDBB39'";
 			if(user.obtime==="-"){
@@ -316,7 +316,7 @@
 						strTD=" bgcolor='#E1F037'";
 					}
 				};
-				
+
 			};
 			//валидации
 			strTD1=" bgcolor='#EDBB39'";;
@@ -333,48 +333,48 @@
 						strTD1=" bgcolor='#E1F037'";//желтый
 					}
 				};
-				
+
 			};
-			
+
 			//конфигурация
 			var strTD2="";
 			if(user.confFlag==="Так" || user.confFlag===undefined){
-				strTD2=" bgcolor='#EDBB39'";			
+				strTD2=" bgcolor='#EDBB39'";
 			};
-			
+
 			if(user.info && user.validation){
-			
+
 			};
 			if(user.info){
 			}else{
 				user.info="На даний час інформація відсутня"
 			};
-           // return "<tr data-rowid='" + user.id + "'><td"+strTD+">" + user.id + "</td>" +                   
-			return "<tr data-rowid='" + user.id + "'><td"+">" + user.id + "</td>" +                   	  
+           // return "<tr data-rowid='" + user.id + "'><td"+strTD+">" + user.id + "</td>" +
+			return "<tr data-rowid='" + user.id + "'><td"+">" + user.id + "</td>" +
 				   // "<td"+strTD+">"  + user.name + "</td>" +
 				    // "<td"+strTD+">"  + user.name + "</td>" +
-				    "<td"+">"  + user.name + "</td>" +													
+				    "<td"+">"  + user.name + "</td>" +
 					"<td"+strTD1+">"  + user.validation + "</td>" +
 					"<td"+"><center>"  + ((user.validationKC===undefined) ? "-" : user.validationKC) + "</td>" +
 					"<td"+"><center>"  + ((user.validationTC===undefined) ? "-" : user.validationTC) + "</td>" +
-					"<td"+"><center>"  + ((user.validationQR===undefined) ? "-" : user.validationQR) + "</td>" +	
-					"<td"+"><center>"  +  (( user.errorValid===undefined) ? "" :  user.errorValid)  + "</td>" +							
+					"<td"+"><center>"  + ((user.validationQR===undefined) ? "-" : user.validationQR) + "</td>" +
+					"<td"+"><center>"  +  (( user.errorValid===undefined) ? "" :  user.errorValid)  + "</td>" +
 					"<td"+strTD2+">"  + ((user.conf1p===undefined) ? "Відсутня інформація" : user.conf1p) + "</td>" +
 					"<td"+strTD2+">"  + ((user.conf1f===undefined) ? "Відсутня інформація" : user.conf1f) + "</td>" +
-					//"<td"+"><center>"  + ((user.confFlag===undefined) ? "Так" : user.confFlag) + "</td>" +	
-					"<td"+strTD+">"  + user.obtime + "</td>" + 
-					//"<td"+strTD+">"  + user.conftime_+" - "+user.conftime+ "</td>" + 
-					//"<td"+strTD+">"  + user.conftime_ + "</td>" + 
+					//"<td"+"><center>"  + ((user.confFlag===undefined) ? "Так" : user.confFlag) + "</td>" +
+					"<td"+strTD+">"  + user.obtime + "</td>" +
+					//"<td"+strTD+">"  + user.conftime_+" - "+user.conftime+ "</td>" +
+					//"<td"+strTD+">"  + user.conftime_ + "</td>" +
 				  	//"<td"+strTD+"><a href='#' class='close' data-id='" + user.info+"'><span class='text-danger glyphicon glyphicon-edit'></span></a></td>"+
-					"</tr>";		   
+					"</tr>";
 				   //"<td><a class='editLink' data-id='" + user.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>  " ;
         }
-		
-		 // нажимаем на ссылку показать оборудование		
+
+		 // нажимаем на ссылку показать оборудование
         $("body").on("click", ".close", function () {
 		window.location="#zatemnenie";
-			
-            var data2  = $(this).data("id");//время  посылки оборудования			
+
+            var data2  = $(this).data("id");//время  посылки оборудования
             //var data3 = document.getElementById('datebegin').value;//текущая дата расчёта
 			//var data4 = document.getElementById('selRep').value;//текущая филия
 			//alert(data4);
@@ -387,7 +387,7 @@
 			//window.location=url;//Открываем другую страницу (НЕ ИСПОЛЬЗУ AJAX-запрос)
 			window.location="#zatemnenie";
         })
-		
+
 		 // создание строки для таблицы
         var row1 = function (user) {
             var strBegin = user.factWorkHeaderBegin.replace(/1900-01-01T|:00.000Z/g, "");//Привидение данных времени к адекватному виду
@@ -416,7 +416,7 @@
 			  default:
 				descrF = "";
 			}
-			
+
 			//Проверка наличие валидаций
 			var strValid = " bgcolor='#D3D3D3'"; //подсвечиваем серым;
 			//var strValid = "color='#EDBB39'"; //подсвечиваем красным ;
@@ -424,7 +424,7 @@
 			var tempTime = 60*tempDate.getHours()+tempDate.getMinutes();
 			if (user.validation==0){
 				var dutyvalid=0
-			}else{	
+			}else{
 				var dutyvalid = 60*Number((user.validation).substr(0,2))+Number((user.validation).substr(3,2));
 			}
 			if((tempTime-dutyvalid) < 31 && (tempTime-dutyvalid) > -1){
@@ -435,21 +435,21 @@
                 strValid = " bgcolor='#E1F037'"; //подсвечиваем желтый;
 				//strValid = "color='#E1F037'"; //подсвечиваем желтый;
 				};
-			
+
 
 			//Проверка работы по формулярe
-            
-			var strTD = " bgcolor='#D3D3D3'";//подсвечиваем серым  	#D3D3D3 #adadad	
-			
+
+			var strTD = " bgcolor='#D3D3D3'";//подсвечиваем серым  	#D3D3D3 #adadad
+
            // GetDuty(user.factWorkHeaderID);
 			//alert(GetDuty(user.factWorkHeaderID));
 			//alert(trips);
-			
+
 			if(user.A2==0)
                 strTD =  " bgcolor='#87F630'";//подсвечиваем зеленым;
             if(user.A2==1)
                 strTD = " bgcolor='#E1F037'"; //подсвечиваем желтый;
-			if(user.A2==4){	
+			if(user.A2==4){
 				var ndate =tempDate.getFullYear()+"-"+(tempDate.getMonth()<9 ? "0"+(tempDate.getMonth()+1) : (tempDate.getMonth()+1)) +"-"+
 				(tempDate.getDate()<10 ? "0"+tempDate.getDate() : tempDate.getDate());
 				if(user.smenTripCount===0){
@@ -459,11 +459,11 @@
 					console.log(duty1);
 					console.log(ndate);
 					if(!(duty1 == ndate)){
-						strTD = " bgcolor='#EDBB39'"; //подсвечиваем красный;	
+						strTD = " bgcolor='#EDBB39'"; //подсвечиваем красный;
 					}
 				}
 			};
-			
+
 			var descr = "";
 			switch (user.A2) {
 			  case 0:
@@ -477,19 +477,19 @@
 				break;
 			  case 3:
 				descr = " Паузи в роботі";
-				break;	
+				break;
 			  case 4:
 				descr = " Потребує огляду";
-				break;		
+				break;
 			  default:
 				descr = " ";
 			}
-			
-			
-	
+
+
+
 			var condytion = "Ні";
-			if (user.cond==1) condytion = "Так";	
-			
+			if (user.cond==1) condytion = "Так";
+
 
             return "<tr data-rowid='" + user.id + "'><td"+strTD+">" +
 					descrF+user.name+ "</td>" +
@@ -497,12 +497,12 @@
                     "<td"+strTD+">" + user.driversTabNum + "</td> <td"+strTD+">" + user.marNum +"-"+user.vipNum +"-"+user.smenNum + "</td>" +
                     "<td"+strTD+">" + user.factWorkHeaderDate + "</td>" +"<td"+strTD+">" + strBegin + "</td>" +
                     "<td"+strTD+">" + strEnd + "</td>" +
-                    "<td"+strTD+">" + user.driversName + "</td>" +					
+                    "<td"+strTD+">" + user.driversName + "</td>" +
                     //"<td"+strTD+">" + (user.A2>2) ? " Відключена" : " В роботі")+"</td>+" +
-						
-					"<td"+strTD+">" +descr + "</td>" +	
+
+					"<td"+strTD+">" +descr + "</td>" +
 					"<td"+strTD+">" + user.smenTripCount + "</td>" +
-					"<td"+strValid+">" +user.validation + "</td>" +					
+					"<td"+strValid+">" +user.validation + "</td>" +
 					"<td"+strTD+">" +user.obtime+ "</td>" +
 				    "<td" +strTD+"><a class='editLink' data-id='" + user.PENumPe + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>"+"</tr>";
                    // "<td><a class='editLink' data-id='" + user.driversTabNum + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>"+"</tr>";
@@ -510,7 +510,7 @@
 
         // нажимаем на ссылку Изменить (переход к ЕШЛ)
         $("body").on("click", ".editLink", function () {
-            var data2  = $(this).data("id");//табельный			
+            var data2  = $(this).data("id");//табельный
             var data3 = document.getElementById('datebegin').value;//текущая дата расчёта
 			var data4 = document.getElementById('selRep').value;//текущая филия
 			//alert(data4);
@@ -524,11 +524,11 @@
         // Инициализируем нашу таблицу как грид, дабы была возможность сортировки
        // var g = new GridView('col');
        // g.Init();
-		
-		
-		
-		
-		
+
+
+
+
+
 
     </script>
     <script type="text/javascript">
@@ -537,9 +537,9 @@
     </script>
 	</div>
 	<div id="zatemnenie">
-		  <div id="okno">		
-			
-			
+		  <div id="okno">
+
+
 		  </div>
     </div>
 </body>

@@ -29,7 +29,7 @@ h1 {
 
 h2 {
 	margin-bottom: 0px;
-	font-size: 25px;
+	font-size: 30px;
 	color: #116cc9;
 }
 
@@ -96,7 +96,7 @@ nav.navbar-fixed-top {
 
 thead {
 
-	background-color: #116cc9;
+	background-color: #3197F4;
 	color: #fff;
 	font-weight: bold;
 }
@@ -170,14 +170,14 @@ thead {
 nav {
 	width: 100%;
 	height: 40px;
-	background-color: #116CC9;
+	background-color: #3197F4;
 	display: block;
 }
 
 footer {
 	width: 100%;
 	height: 100px;
-	background-color: #116CC9;
+	background-color: #3197F4;
 	display: block;
 }
 
@@ -193,7 +193,7 @@ nav a {
 nav a:hover {
 	background-color: #fff;
 	text-decoration: none;
-	color: #116CC9;
+	color: #3197F4;
 }
 
 footer {

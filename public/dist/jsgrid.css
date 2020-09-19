@@ -22,7 +22,6 @@
 
 .jsgrid-grid-header {
     overflow-x: hidden;
-    overflow-y: scroll;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
@@ -32,8 +31,9 @@
 }
 
 .jsgrid-grid-body {
-    overflow-x: auto;
     overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
     -webkit-overflow-scrolling: touch;
 }
 
