@@ -1,3 +1,4 @@
+// 20200921` сервіси для посилань меню + план конфигурации турникетов
 // 20180814 сервіси для посилань меню
 module.exports = (app) => {
   var bodyParser = require("body-parser");
@@ -26,8 +27,9 @@ module.exports = (app) => {
     // получения списка сотрудников группы Киев
     async function getPlan(){	
 		try{		 
-			var response = await fetch("http://inventoryakp.kpt.kiev.ua/api/get-asop/PYilplp3b2lsjAQtVTBK9nYWDMrZJYi5", {
-				 'method': 'Get',
+			//var response = await fetch("http://inventoryakp.kpt.kiev.ua/api/get-asop/PYilplp3b2lsjAQtVTBK9nYWDMrZJYi5", {
+			var response = await fetch("http://193.23.225.178:3001/api/get-asop/test/", {				
+			'method': 'Get',
 				 'Host': "http://inventoryakp.kpt.kiev.ua",
 				 'Accept-Encoding': 'gzip,deflate',
 				 'Connection': 'Keep-Alive',
@@ -264,6 +266,18 @@ module.exports = (app) => {
 				}else{						 
 					confirmConfig(peT, tripsT, timeDataT, validationArrT, inPlan[i-1].Station);
 				};
+		
+		    /*
+			var usersFile = 'data/LocationsAll.json'; // файл с остановками метро
+			var content = fs.readFileSync(usersFile, 'utf8');
+			var usersM = JSON.parse(content);
+			users.push({"id" : " ", "factWorkHeaderID" : "Відсутні зупинки метро", "name" : " ", "PENumPe":" ","driversTabNum":" "})
+			for (var i = 0; i < usersM.length; i++) {
+			 	
+			
+			};
+		    */ 
+		
 		
 		/* запись файла с новыми данными*/
 		//console.log(saveConfig());
