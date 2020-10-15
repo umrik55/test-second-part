@@ -65,6 +65,7 @@ module.exports = app => {
 			console.log('Connected equips.json to MongoDB');
 		}
 	});
+	
 
 	function confirmConfig(pe, trips, timeData, validationArr) {
 			try{
@@ -227,6 +228,18 @@ module.exports = app => {
 				//else console.log('Success save mongo equips.json');
 			});
 		return result;
+	}
+	
+	async function loadDB(name) {		
+		try{
+		var result1 = await db.collection('equips').find({ _id: name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[{}]";
+			return result1;
+		}		
 	}
 
     // Запрос водителя
@@ -483,9 +496,15 @@ module.exports = app => {
 	/////////////////////
 
 	// получение списка данных
-	app.get('/api/qvausers', function(req, res) {
-		var content = fs.readFileSync(usersFile, 'utf8');
+	app.get('/api/qvausers', async function(req, res) {
+		//var content = fs.readFileSync(usersFile, 'utf8');
+		//var usersP = JSON.parse(content);
+		
+		var content;
+		content = await loadDB(usersFile);		
+		//console.log("--------"+content);
 		var usersP = JSON.parse(content);
+		
 		if(usersP.length-700>0){
 			var poz = usersP.length-700
 			var users =usersP.slice(poz);

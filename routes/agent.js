@@ -1,3 +1,4 @@
+// 20200909  версия для ГИОЦ Этап 2, чтен7ие с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, без передачи валидаций в ГИОЦ 193.23.225.178 read config
 // 20200831  передача валидаций в ГИОЦ 193.23.225.178 read config
 // 20200713  передача валидаций в ГИОЦ 193.23.225.178 
@@ -307,6 +308,7 @@ module.exports = app => {
 			}
 		}
 	
+		
 	
 //pe filii
 async function qweryBDTimeFilii(nameserv, namebd, log, pass, dater, filii) { 
@@ -862,6 +864,24 @@ if (key1==="validCount" || key1==="timestamp"){
 			});
 		return result;
 	}
+	
+	
+	async function loadDB(name) {
+		try{
+		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[{}]";
+			return result1;
+		}	
+	}
+	
+	
+	
+	
+	
 	/////////////////////
 // получение данных втрат из файла отчета
 	app.get('/api/vtraty/:sdate', function(req, res) {
@@ -877,16 +897,20 @@ if (key1==="validCount" || key1==="timestamp"){
 		res.send(usersP);
 	});
 	// получение списка данных
-	app.get('/api/ausers', function(req, res) {
-		var content = fs.readFileSync(usersFile, 'utf8');
+	app.get('/api/ausers', async function(req, res) {
+		//var content = fs.readFileSync(usersFile, 'utf8');
+		//var usersP = JSON.parse(content);
+		
+		var content = await loadDB(usersFile);
 		var usersP = JSON.parse(content);
+		
 		if(usersP.length-700>0){
 			var poz = usersP.length-700
 			var users =usersP.slice(poz);
 		}else{
 			var users =usersP;
 		};	
-		
+		//console.log(usersP);
 		res.send(users);
 	});
 	// получение одного пользователя по id

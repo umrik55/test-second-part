@@ -1,3 +1,4 @@
+// 20200913  версия для ГИОЦ Этап 2, чтен7ие с базы данных mongodb
 // 20191129  убираем запись истории файлов и начальный ноль для номеров из 2 цифр
 module.exports = (app) => {
   var bodyParser = require("body-parser");
@@ -51,6 +52,19 @@ module.exports = (app) => {
     );
     return result;
   }
+  
+   async function loadDB(name) {		
+		try{
+		var result1 = await db.collection('evends').find({ _id: name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[{}]";
+			return result1;
+		}		
+	}
+	
 
   // Запрос водителя
   async function qweryBD(nameserv, namebd, log, pass, filii) {
@@ -301,10 +315,17 @@ module.exports = (app) => {
   }
 
   // получение списка данных
-  app.get("/api/vausers", function (req, res) {
-    var content = fs.readFileSync(usersFile, "utf8");
-    var usersP = JSON.parse(content);
-    if (usersP.length - 700 > 0) {
+  app.get("/api/vausers",async function (req, res) {
+    //var content = fs.readFileSync(usersFile, "utf8");
+    //var usersP = JSON.parse(content);
+   
+		var content;
+		content = await loadDB(usersFile);		
+		//console.log("--------"+content);
+		//var usersP=content;
+		var usersP = JSON.parse(content);
+	
+	if (usersP.length - 700 > 0) {
       var poz = usersP.length - 700;
       var users = usersP.slice(poz);
     } else {
