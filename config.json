@@ -1,6 +1,6 @@
 {
-  "ServerPort": 3001,
-  "urldb": "mongodb://localhost:27017/fueldbSecondPart",
+  "ServerPort": 3001, 
+  "urldb": "mongodb://localhost:27017/fueldb"
   "asop_auth": "mongodb://localhost:27017/asop-auth",
   "urls_services": {
     "hostGetAsdu": "http://gpsapi.kpt.kiev.ua/"
