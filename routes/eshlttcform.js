@@ -22,7 +22,8 @@ module.exports = app => {
     var formTNum;
 
     ///////////////mongodb
-    var nconf = require('nconf');
+   /*   
+   var nconf = require('nconf');
     var JSFtp = require('jsftp');
     var filenameconf = './config.json';
     nconf
@@ -42,7 +43,27 @@ module.exports = app => {
             console.log('Connected climete.json to MongoDB');
         }
     });
-
+    */
+	
+	var nconf = require('nconf');
+	var filenameconf = './config.json';
+	nconf
+		.argv()
+		.env()
+		.file({ file: filenameconf }); // подключаем конфиг файл
+	//файлы с конфиг-файла
+	var urldb = nconf.get('urldb'); // база данных
+	var MongoClient = require('mongodb').MongoClient;
+	var db;
+	//Connection
+	MongoClient.connect(urldb, function(err, database) {
+		if (err) throw err;
+		else {
+			db = database;
+			console.log('Connected *.json to MongoDB');
+		}
+	});
+	
     function saveDB(name, data) {
         var result = 0;
         var tempData = { _id: name, cont: data };
@@ -57,6 +78,43 @@ module.exports = app => {
             });
         return result;
     }
+	
+	 async function loadDBVal(name) {		
+		try{
+		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[{}]";
+			return result1;
+		}		
+	}
+	
+	 async function loadDBEv(name) {		
+		try{
+		var result1 = await db.collection('evends').find({ _id: name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[{}]";
+			return result1;
+		}		
+	}
+	
+	 async function loadDBEq(name) {		
+		try{
+		var result1 = await db.collection('equips').find({ _id: name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[{}]";
+			return result1;
+		}		
+	}
+	
     //Функция для получения расписания с фтп
     function getSchedule(date){
 
@@ -1132,9 +1190,32 @@ module.exports = app => {
     });
 	
 	//Получение списка всех формуляров на текущую датту для просмотра
-    app.post('/api/formulars_form', jsonParser, function(req, res) {
+    app.post('/api/formulars_form', jsonParser, async function(req, res) {		
         try {
-                var fDate = req.body.tDate;
+                // действия водителей
+						var usersFile = 'data/evends.json'; // файл driver						 
+						//var content = fs.readFileSync(usersFile, 'utf8');
+						var content = await loadDBEv(usersFile);						
+						var usersdr = JSON.parse(content);
+						usersdr.sort(function (a, b) {
+							  if (a.timestamp > b.timestamp) {
+								return 1;
+							  }
+							  if (a.timestamp < b.timestamp) {
+								return -1;
+							  }
+							  // a равно b обратный порядок 
+							  return -1;
+							});
+				// валидации
+						usersFile = 'data/validations.json'; // файл валидаций
+						//content = fs.readFileSync(usersFile, 'utf8');
+						var content = await loadDBVal(usersFile);	
+						var usersvalid = JSON.parse(content);
+						
+				
+				
+				var fDate = req.body.tDate;
 				var fFilii = req.body.tData4;
 				//console.log(fFilii);
                 var API = require('./getAPI.js');
@@ -1156,29 +1237,8 @@ module.exports = app => {
 							break;
 						  default:
 							descr = "A";
-						}
-						// действия водителей
-						var usersFile = 'data/evends.json'; // файл driver
-						var content = fs.readFileSync(usersFile, 'utf8');
-						var usersdr = JSON.parse(content);
-						usersdr.sort(function (a, b) {
-							  if (a.timestamp > b.timestamp) {
-								return 1;
-							  }
-							  if (a.timestamp < b.timestamp) {
-								return -1;
-							  }
-							  // a равно b обратный порядок 
-							  return -1;
-							});
-						
-						
-						
-						// валидации
-						usersFile = 'data/validations.json'; // файл валидаций
-						content = fs.readFileSync(usersFile, 'utf8');
-						var usersvalid = JSON.parse(content);
-						
+						}				
+												
 						
 						for (var i=0; i < users.length; i++) {
 							users[i] = monduty(users[i],descr,usersdr, usersvalid);  
