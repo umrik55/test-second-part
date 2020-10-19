@@ -1,3 +1,5 @@
+// 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
+// 20200913  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 // 20200909  версия для ГИОЦ.Этап 2;
 // 20200228  конфигурация турникетов, peConfig[pe].note_time=timeData;
 // 20191120  турникеты
@@ -1140,6 +1142,8 @@ module.exports = app => {
 		saveConfig();
 		
 		var data = JSON.stringify(obPe);
+		// перезаписываем BD с новыми данными
+		saveDB(obPeFile, data);
 		// перезаписываем файл с новыми данными
 		fs.writeFileSync(obPeFile, data);	
 //		

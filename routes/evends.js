@@ -1,3 +1,4 @@
+// 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200913  версия для ГИОЦ Этап 2, чтен7ие с базы данных mongodb
 // 20191129  убираем запись истории файлов и начальный ноль для номеров из 2 цифр
 module.exports = (app) => {
@@ -646,7 +647,9 @@ module.exports = (app) => {
       }
       var data = JSON.stringify(eventPe);
 
-      // перезаписываем файл с новыми данными
+      // перезаписываем BD с новыми данными
+	  saveDB(eventPeFile, data);
+	  // перезаписываем файл с новыми данными
       fs.writeFileSync(eventPeFile, data);
       data = JSON.stringify(users);
 

@@ -1,3 +1,4 @@
+//20201016  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 //20200917 -  сервисе план конфигурации турникетов
 //20200527 -  сервисе /api/pe_date_formVtrat
 //20200417 - оперативный мониторинг турникетов, детально по турникетам
@@ -73,21 +74,60 @@ module.exports = app => {
                 err,
                 result
             ) {
-                if (err) console.log('Error save mongo rezervuar.json');
-                else console.log('Success save mongo rezervuar.json');
+                if (err) console.log('Error save mongo '+name);
+                else console.log('Success save mongo '+name);
             });
         return result;
     }
+	
+	function saveDBEv(name, data) {
+        var result = 0;
+        var tempData = { _id: name, cont: data };
+        db
+            .collection('evends')
+            .update({ _id: name }, { tempData }, { upsert: true }, function(
+                err,
+                result
+            ) {
+                if (err) console.log('Error save mongo '+name);
+                else console.log('Success save mongo '+name);
+            });
+        return result;
+    }
+	function saveDBEq(name, data) {
+        var result = 0;
+        var tempData = { _id: name, cont: data };
+        db
+            .collection('equips')
+            .update({ _id: name }, { tempData }, { upsert: true }, function(
+                err,
+                result
+            ) {
+                if (err) console.log('Error save mongo '+name);
+                else console.log('Success save mongo '+name);
+            });
+        return result;
+    }
+	
+	
 	
 	 async function loadDBVal(name) {		
 		try{
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
 		return result1[0].tempData.cont;
-		}catch(e){
+		}catch(e){			
 			console.log("Помилка читання БД "+name);
-			var result1 = "[{}]";
+			result1  = fs.readFileSync(name, 'utf8');
+			/*
+			// перезаписываем БД с новым файлом данных            
+			var users= JSON.parse(result1);
+			var data = JSON.stringify(users);
+            saveDB(name, data);
+			console.log("Запис в БД "+name);
+			*/
 			return result1;
+			
 		}		
 	}
 	
@@ -98,7 +138,15 @@ module.exports = app => {
 		return result1[0].tempData.cont;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
-			var result1 = "[{}]";
+			result1  = fs.readFileSync(name, 'utf8');	
+			/*
+			// перезаписываем БД с новым файлом данных            
+			var users= JSON.parse(result1);
+			var data = JSON.stringify(users);
+            saveDBEv(name, data);
+			console.log("Запис в БД "+name);
+			*/
+			
 			return result1;
 		}		
 	}
@@ -110,7 +158,15 @@ module.exports = app => {
 		return result1[0].tempData.cont;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
-			var result1 = "[{}]";
+			result1  = fs.readFileSync(name, 'utf8');	
+			/*
+			// перезаписываем БД с новым файлом данных            
+			var users= JSON.parse(result1);
+			var data = JSON.stringify(users);
+            saveDBEq(name, data);
+			console.log("Запис в БД "+name);
+			*/
+			
 			return result1;
 		}		
 	}
@@ -238,9 +294,9 @@ module.exports = app => {
         catch(e){console.log(e);}
     });
 	
-	function monduty(userf, descr, users, usersvalid) {
+	function monduty(userf, descr, users, usersvalid, eventPe, validPe, obPe) {
 		//console.log("F="+descr);
-		
+		/*
 		var eventPeFile = 'data/eventPe.json'; // файл последних действий водителя
 		var eventPe = {}; // объявление obj последних действий водителя
 		var evpecont = fs.readFileSync(eventPeFile, 'utf8');
@@ -255,7 +311,7 @@ module.exports = app => {
 		var obPe = {}; // объявление obj последних сообщений оборудования
 		var vapecont1 = fs.readFileSync(obPeFile, 'utf8');
 		obPe = JSON.parse(vapecont1);	
-		
+		*/
         var user = null;
         // находим в массиве пользователя по id
 		
@@ -1191,28 +1247,48 @@ module.exports = app => {
 	
 	//Получение списка всех формуляров на текущую датту для просмотра
     app.post('/api/formulars_form', jsonParser, async function(req, res) {		
-        try {
-                // действия водителей
-						var usersFile = 'data/evends.json'; // файл driver						 
-						//var content = fs.readFileSync(usersFile, 'utf8');
-						var content = await loadDBEv(usersFile);						
-						var usersdr = JSON.parse(content);
-						usersdr.sort(function (a, b) {
-							  if (a.timestamp > b.timestamp) {
-								return 1;
-							  }
-							  if (a.timestamp < b.timestamp) {
-								return -1;
-							  }
-							  // a равно b обратный порядок 
-							  return -1;
-							});
+				try {
+				// действия водителей
+				var usersFile = 'data/evends.json'; // файл driver						 
+				//var content = fs.readFileSync(usersFile, 'utf8');
+				var content = await loadDBEv(usersFile);				
+				var usersdr = JSON.parse(content);
+				usersdr.sort(function (a, b) {
+				  if (a.timestamp > b.timestamp) {
+						return 1;
+				  }
+					  if (a.timestamp < b.timestamp) {
+							return -1;
+						  }
+						  // a равно b обратный порядок 
+						  return -1;
+				});
 				// валидации
-						usersFile = 'data/validations.json'; // файл валидаций
-						//content = fs.readFileSync(usersFile, 'utf8');
-						var content = await loadDBVal(usersFile);	
-						var usersvalid = JSON.parse(content);
-						
+				usersFile = 'data/validations.json'; // файл валидаций
+				//content = fs.readFileSync(usersFile, 'utf8');
+				var content = await loadDBVal(usersFile);	
+				var usersvalid = JSON.parse(content);
+				
+				//
+				var eventPeFile = 'data/eventPe.json'; // файл последних действий водителя
+				var eventPe = {}; // объявление obj последних действий водителя
+				var evpecont= await loadDBEv(eventPeFile);
+				//var evpecont = fs.readFileSync(eventPeFile, 'utf8');
+				eventPe = JSON.parse(evpecont);	
+
+				var validPeFile = 'data/validPe.json'; // файл последних действий водителя
+				var validPe = {}; // объявление obj последних действий водителя
+				//var vapecont = fs.readFileSync(validPeFile, 'utf8');
+				var vapecont= await loadDBVal(validPeFile);
+				validPe = JSON.parse(vapecont);	
+
+				var obPeFile = 'data/equipsPe.json'; // файл последних действий водителя
+				var obPe = {}; // объявление obj последних сообщений оборудования
+				//var vapecont1 = fs.readFileSync(obPeFile, 'utf8');
+				var vapecont1= await loadDBEq(obPeFile);
+				obPe = JSON.parse(vapecont1);	
+								
+				//				
 				
 				
 				var fDate = req.body.tDate;
@@ -1241,7 +1317,7 @@ module.exports = app => {
 												
 						
 						for (var i=0; i < users.length; i++) {
-							users[i] = monduty(users[i],descr,usersdr, usersvalid);  
+							users[i] = monduty(users[i],descr,usersdr, usersvalid, eventPe, validPe, obPe);  
 							};
 						//users.sort(compare);
 										
