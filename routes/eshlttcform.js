@@ -813,9 +813,10 @@ module.exports = app => {
 		return contest 
 	};
 	
-	function mondutyM(userf, descr, users, usersvalid) {
+	function mondutyM(userf, descr, users, usersvalid, eventPe, validPe, obPe, chobPe, chobPeP) {
+	//function mondutyM(userf, descr, users, usersvalid) {	
 		//console.log("F="+descr);
-		
+	/*	
 		var eventPeFile = 'data/eventPe.json'; // файл последних действий водителя
 		var eventPe = {}; // объявление obj последних действий водителя
 		var evpecont = fs.readFileSync(eventPeFile, 'utf8');
@@ -830,7 +831,7 @@ module.exports = app => {
 		var obPe = {}; // объявление obj последних сообщений оборудования по ПЕ
 		vapecont = fs.readFileSync(obPeFile, 'utf8');
 		obPe = JSON.parse(vapecont);
-
+    
 		var chobPeFile = 'data/configTurnikets.json'; // файл изменения состояния оборудования
 		var chobPe = {}; // последние изменения сообщений оборудования по ПЕ
 		chvapecont = fs.readFileSync(chobPeFile, 'utf8');
@@ -840,7 +841,7 @@ module.exports = app => {
 		var chobPeP = {}; // последние изменения сообщений оборудования по ПЕ
 		chvapecontp = fs.readFileSync(chobPeFileP, 'utf8');
 		chobPeP = JSON.parse(chvapecontp);
-						
+	*/					
         var user = null;
         // находим в массиве пользователя по id
 		//console.log(userf);
@@ -1811,7 +1812,7 @@ module.exports = app => {
 	
 	
 	 //Получение списка всех турникетов на текущую дату для просмотра
-     app.post('/api/formularst_form', jsonParser, function(req, res) {
+     app.post('/api/formularst_form', jsonParser,async function(req, res) {
         try {
                 var fDate = req.body.tDate;
 				var fFilii = req.body.tData4;
@@ -1828,55 +1829,52 @@ module.exports = app => {
 				if (fFilii==="ST3") validPeFile = 'data/LocationsSTEl.json';
 				if (fFilii==="STMon") validPeFile = 'data/LocationsSTAll.json';
 				
-/*               
-			   var API = require('./getAPI.js');
-                var result = new API(fDate, null, fFilii);//Заполнение конструктора значением даты и таб. номера
-                result.getFormular(function (obj) {
-                    if (obj != null) {
-                        var users = JSON.parse(obj);
-						var rez = users[0].vipFilialID;
-						var descr = "A";
-						switch ( true ) {
-						  case (rez)>0 && (rez)<9:
-							descr = "A";
-							break;
-						  case (rez)>8 && (rez)<13:
-							descr = "B";
-							break;
-						  case (rez)>12 && (rez)<16:
-							descr = "C";
-							break;
-						  default:
-							descr = "A";
-						}
-						// действия водителей
-						var usersFile = 'data/evends.json'; // файл driver
-						var content = fs.readFileSync(usersFile, 'utf8');
-						var usersdr = JSON.parse(content);
-						usersdr.sort(function (a, b) {
-							  if (a.timestamp > b.timestamp) {
-								return 1;
-							  }
-							  if (a.timestamp < b.timestamp) {
-								return -1;
-							  }
-							  // a равно b обратный порядок 
-							  return -1;
-							});
+				
 						
-	*/					
+						var obj = fs.readFileSync(validPeFile, 'utf8');
+					    //var obj = await loadDBVal(validPeFile);
+						var users = JSON.parse(obj);						
 						
 						// валидации
 						usersFile = 'data/validations.json'; // файл валидаций
-						content = fs.readFileSync(usersFile, 'utf8');
+						//content = fs.readFileSync(usersFile, 'utf8');
+						content = await loadDBVal(usersFile);
 						var usersvalid = JSON.parse(content);
 						
+						var eventPeFile = 'data/eventPe.json'; // файл последних действий водителя
+						var eventPe = {}; // объявление obj последних действий водителя
+						//var evpecont = fs.readFileSync(eventPeFile, 'utf8');
+						var evpecont = await loadDBEv(eventPeFile);
+						eventPe = JSON.parse(evpecont);	
+					  	
+						var validPeFile = 'data/validPe.json'; // файл последних валидаций
+						var validPe = {}; // объявление obj последних валидаций ПЕ
+						//var vapecont = fs.readFileSync(validPeFile, 'utf8');
+						var vapecont = await loadDBVal(validPeFile);
+						validPe = JSON.parse(vapecont);	
+
+						var chobPeFile = 'data/configTurnikets.json'; // файл изменения состояния оборудования
+						var chobPe = {}; // последние изменения сообщений оборудования по ПЕ
+						chvapecont = fs.readFileSync(chobPeFile, 'utf8');
+						chobPe = JSON.parse(chvapecont);
 						
-						var obj = fs.readFileSync(validPeFile, 'utf8');
-					    var users = JSON.parse(obj);
+						var chobPeFileP = 'data/configTurniketsPlan.json'; // файл изменения состояния оборудования план
+						var chobPeP = {}; // последние изменения сообщений оборудования по ПЕ
+						chvapecontp = fs.readFileSync(chobPeFileP, 'utf8');
+						chobPeP = JSON.parse(chvapecontp);
+						
+						var obPeFile = 'data/equipsPe.json'; // файл состояния оборудования
+						var obPe = {}; // объявление obj последних сообщений оборудования по ПЕ
+						//vapecont = fs.readFileSync(obPeFile, 'utf8');
+						vapecont = await loadDBEq(obPeFile);
+						obPe = JSON.parse(vapecont);
+						
+						
+						
 						
 						for (var i=0; i < users.length; i++) {
-							users[i] = mondutyM(users[i],descr,usersdr, usersvalid);  
+							users[i] = mondutyM(users[i],descr,usersdr, usersvalid, eventPe, validPe, obPe, chobPe,chobPeP );  
+							//users[i] = mondutyM(users[i],descr,usersdr, usersvalid);  
 							};
 						//users.sort(compare);					
 						
