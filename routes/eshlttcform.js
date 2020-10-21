@@ -139,10 +139,10 @@ module.exports = app => {
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
 		console.log(result1[0].tempData.cont.substr(0,1800));
-		console.log(Object.keys(result1[0].tempData.cont));
-		val twres ="";
-		twres = (result1[0].tempData.cont).substr(0,(result1[0].tempData.cont)length-1);
-		return twres;
+		console.log(Object.keys(result1));
+		//val twres ="";
+		//twres = (result1[0].tempData.cont).substr(0,(result1[0].tempData.cont)length-1);
+		return (result1[0].tempData.cont);
 		}catch(e){
 			console.log("Помилка читання БД "+name);			
 			result1  = fs.readFileSync(name, 'utf8');	
