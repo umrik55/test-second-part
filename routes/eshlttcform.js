@@ -118,6 +118,7 @@ module.exports = app => {
 		return result1[0].tempData.cont;
 		}catch(e){			
 			console.log("Помилка читання БД "+name);
+			console.log(e);
 			result1  = fs.readFileSync(name, 'utf8');
 			/*
 			// перезаписываем БД с новым файлом данных            
