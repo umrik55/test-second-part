@@ -119,8 +119,7 @@ module.exports = app => {
 		
 		return result1[0].tempData.cont;		
 		}catch(e){			
-			console.log("Помилка читання БД "+name);
-			console.log(e);
+			console.log("Помилка читання БД "+name);			
 			result1  = fs.readFileSync(name, 'utf8');
 			/*
 			// перезаписываем БД с новым файлом данных            
@@ -142,9 +141,10 @@ module.exports = app => {
 		console.log(Object.keys(result1));
 		//val twres ="";
 		//twres = (result1[0].tempData.cont).substr(0,(result1[0].tempData.cont)length-1);
-		return (result1[0].tempData.cont);
+		return (result1["0"].tempData.cont);
 		}catch(e){
 			console.log("Помилка читання БД "+name);			
+			console.log(e);
 			result1  = fs.readFileSync(name, 'utf8');	
 			/*
 			// перезаписываем БД с новым файлом данных            
