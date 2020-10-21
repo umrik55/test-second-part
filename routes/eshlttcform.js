@@ -140,8 +140,8 @@ module.exports = app => {
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
 		console.log(result1[0].tempData.cont.substr(0,800));
 		console.log(Object.keys(result1[0].tempData.cont));
-		val res = result1[0].tempData.cont;
-		return res;
+		val twres = result1[0].tempData.cont;
+		return twres;
 		}catch(e){
 			console.log("Помилка читання БД "+name);			
 			result1  = fs.readFileSync(name, 'utf8');	
