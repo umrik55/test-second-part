@@ -138,7 +138,7 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		console.log(result1[0].tempData.cont[0]);
+		console.log(result1[0].tempData.cont.substr(0,200));
 		console.log(Object.keys(result1[0].tempData.cont));
 		return result1[0].tempData.cont;
 		}catch(e){
