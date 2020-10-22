@@ -116,8 +116,10 @@ module.exports = app => {
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0]).length);
 		//console.log(result1[0]);
+		var twres;
+		twres = (result1[0].tempData.cont);
 		db.close();
-		return result1[0].tempData.cont;		
+		return twres;		
 		}catch(e){			
 			console.log("Помилка читання БД "+name);			
 			result1  = fs.readFileSync(name, 'utf8');
