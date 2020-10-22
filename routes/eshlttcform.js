@@ -114,14 +114,10 @@ module.exports = app => {
 	 async function loadDBVal(name) {		
 		try{
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
-		//console.log(JSON.parse(result1[0]).length);
-		//console.log(result1[0]);
-		var twres;
-		twres = (result1[0].tempData.cont);		
-		console.log(result1[0].tempData.cont.substr(0,1800));
-		return twres;		
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
 		}catch(e){			
-			console.log("Помилка читання БД "+name);			
+			console.log("Помилка читання БД "+name);
 			result1  = fs.readFileSync(name, 'utf8');
 			/*
 			// перезаписываем БД с новым файлом данных            
@@ -138,13 +134,10 @@ module.exports = app => {
 	 async function loadDBEv(name) {		
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
-		var twres;
-		twres = (result1[0].tempData.cont);		
-		console.log(result1[0].tempData.cont.substr(0,1800));		
-		return twres;
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
 		}catch(e){
-			console.log("Помилка читання БД "+name);			
-			console.log(e);
+			console.log("Помилка читання БД "+name);
 			result1  = fs.readFileSync(name, 'utf8');	
 			/*
 			// перезаписываем БД с новым файлом данных            
@@ -161,10 +154,8 @@ module.exports = app => {
 	 async function loadDBEq(name) {		
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
-		var twres;
-		twres = (result1[0].tempData.cont);
-		console.log(result1[0].tempData.cont.substr(0,1800));		
-		return twres;
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		return result1[0].tempData.cont;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
 			result1  = fs.readFileSync(name, 'utf8');	
