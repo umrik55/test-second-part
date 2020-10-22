@@ -125,6 +125,7 @@ module.exports = app => {
 		//console.log(result1[0]);
 		var twres;
 		twres = (result1[0].tempData.cont);
+		console.log(result1[0].tempData.cont.substr(0,1800));
 		db.close();
 		return twres;		
 		}catch(e){			
@@ -153,12 +154,13 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		console.log(result1[0].tempData.cont.substr(0,1800));
+		
 		console.log(Object.keys(result1['0']['tempData']));
 		var twres;
 		twres = (result1[0].tempData.cont);
 		//return (result1['0']['tempData']['cont']);
-		console.log(twres);
+		//console.log(twres);
+		console.log(result1[0].tempData.cont.substr(0,1800));
 		db.close();
 		return twres;
 		}catch(e){
@@ -188,6 +190,7 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		console.log(result1[0].tempData.cont.substr(0,1800));
 		db.close();
 		return result1[0].tempData.cont;
 		}catch(e){
