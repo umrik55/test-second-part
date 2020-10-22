@@ -143,6 +143,7 @@ module.exports = app => {
 		twres = (result1[0].tempData.cont);
 		//return (result1['0']['tempData']['cont']);
 		console.log(twres);
+		db.close();
 		return twres;
 		}catch(e){
 			console.log("Помилка читання БД "+name);			
