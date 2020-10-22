@@ -112,21 +112,13 @@ module.exports = app => {
 	
 	
 	 async function loadDBVal(name) {		
-		MongoClient.connect(urldb, function(err, database) {
-		if (err) throw err;
-		else {
-			db = database;
-			console.log('Connected *.json to MongoDB');
-		}
-		});
 		try{
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0]).length);
 		//console.log(result1[0]);
 		var twres;
-		twres = (result1[0].tempData.cont);
+		twres = (result1[0].tempData.cont);		
 		console.log(result1[0].tempData.cont.substr(0,1800));
-		db.close();
 		return twres;		
 		}catch(e){			
 			console.log("Помилка читання БД "+name);			
@@ -144,24 +136,11 @@ module.exports = app => {
 	}
 	
 	 async function loadDBEv(name) {		
-		MongoClient.connect(urldb, function(err, database) {
-		if (err) throw err;
-		else {
-			db = database;
-			console.log('Connected *.json to MongoDB');
-		}
-		});
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
-		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		
-		console.log(Object.keys(result1['0']['tempData']));
 		var twres;
-		twres = (result1[0].tempData.cont);
-		//return (result1['0']['tempData']['cont']);
-		//console.log(twres);
-		console.log(result1[0].tempData.cont.substr(0,1800));
-		db.close();
+		twres = (result1[0].tempData.cont);		
+		console.log(result1[0].tempData.cont.substr(0,1800));		
 		return twres;
 		}catch(e){
 			console.log("Помилка читання БД "+name);			
@@ -180,19 +159,12 @@ module.exports = app => {
 	}
 	
 	 async function loadDBEq(name) {		
-		MongoClient.connect(urldb, function(err, database) {
-		if (err) throw err;
-		else {
-			db = database;
-			console.log('Connected *.json to MongoDB');
-		}
-		});
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
-		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		console.log(result1[0].tempData.cont.substr(0,1800));
-		db.close();
-		return result1[0].tempData.cont;
+		var twres;
+		twres = (result1[0].tempData.cont);
+		console.log(result1[0].tempData.cont.substr(0,1800));		
+		return twres;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
 			result1  = fs.readFileSync(name, 'utf8');	
