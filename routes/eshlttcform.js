@@ -116,7 +116,7 @@ module.exports = app => {
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0]).length);
 		//console.log(result1[0]);
-		
+		db.close();
 		return result1[0].tempData.cont;		
 		}catch(e){			
 			console.log("Помилка читання БД "+name);			
@@ -165,6 +165,7 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		db.close();
 		return result1[0].tempData.cont;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
