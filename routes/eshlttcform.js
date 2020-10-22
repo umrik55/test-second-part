@@ -112,6 +112,13 @@ module.exports = app => {
 	
 	
 	 async function loadDBVal(name) {		
+		MongoClient.connect(urldb, function(err, database) {
+		if (err) throw err;
+		else {
+			db = database;
+			console.log('Connected *.json to MongoDB');
+		}
+		});
 		try{
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0]).length);
@@ -136,6 +143,13 @@ module.exports = app => {
 	}
 	
 	 async function loadDBEv(name) {		
+		MongoClient.connect(urldb, function(err, database) {
+		if (err) throw err;
+		else {
+			db = database;
+			console.log('Connected *.json to MongoDB');
+		}
+		});
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
@@ -164,6 +178,13 @@ module.exports = app => {
 	}
 	
 	 async function loadDBEq(name) {		
+		MongoClient.connect(urldb, function(err, database) {
+		if (err) throw err;
+		else {
+			db = database;
+			console.log('Connected *.json to MongoDB');
+		}
+		});
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
