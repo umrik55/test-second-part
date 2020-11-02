@@ -356,6 +356,40 @@ module.exports = (app) => {
     }
   });
 
+  // запрос страницы с валидациями АСОП
+  app.get("/agentBD", function (request, response) {
+    try {
+    /* 
+	 User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");		  
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            var content = fs.readFileSync(refValidateFile, "utf8");
+            var users = JSON.parse(content);
+            response.render("inAgent.hbs", {
+              users: users,
+            });
+          }
+        }
+      });
+	  */
+	   var content = fs.readFileSync(refValidateFile, "utf8");
+            var users = JSON.parse(content);
+            response.render("inAgentMongo.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
+
+  
   // запрос рейсов с валидациями АСОП
   app.get("/trips", function (request, response) {
     try {

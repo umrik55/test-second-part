@@ -1,3 +1,4 @@
+// 20201029  версия для ГИОЦ Этап 2, история валидаций в базе данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, без передачи валидаций в ГИОЦ 193.23.225.178 read config
@@ -866,6 +867,43 @@ if (key1==="validCount" || key1==="timestamp"){
 		return result;
 	}
 	
+	function insertDB(name, data) {
+		var result = 0;
+		//console.log(name);
+		//console.log(data);
+		var tempData = { _id: name, cont: data };
+		db
+			.collection('fuelhistory')
+			.insertOne({ tempData }, function(
+				err,
+				result
+			) {
+				if (err) {
+					console.log('Error insert mongo agent.json');
+					console.log(err);
+				}else console.log('Success insert mongo agent.json');
+			});
+		return result;
+	}
+	
+	function insertDB2(name, data) {
+		var result = 0;
+		//console.log(name);
+		//console.log(data);
+		//var tempData = { _id: name, cont: data };
+		db
+			.collection(name)
+			.insertOne({cont: data }, function(
+				err,
+				result
+			) {
+				if (err) {
+					console.log('Error insert2 mongo agent.json');
+					console.log(err);
+				}else console.log('Success insert2 mongo agent.json');
+			});
+		return result;
+	}
 	
 	async function loadDB(name) {
 		try{
@@ -879,6 +917,34 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
+	async function loadDBHistory(name) {
+		try{
+	var result1 = await db.collection('fuelhistory').find({ 'tempData._id' : name }).toArray();
+	//var result1 = await db.collection('fuelhistory').find({ 'tempData._id' : { #eq : name }}).toArray();
+	//var result1 = await db.collection('fuelhistory').find({ _id : name }).toArray();
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		//return result1[0].tempData.cont;		
+		return result1;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
+	async function loadDBHistory2(name) {
+		try{
+	var result1 = await db.collection(name).find().toArray();
+	
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		//return result1[0].tempData.cont;		
+		return result1;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
 	
 	
 	
@@ -914,19 +980,33 @@ if (key1==="validCount" || key1==="timestamp"){
 		//console.log(usersP);
 		res.send(users);
 	});
-	// получение одного пользователя по id
-	app.get('/api/ausers/:id', function(req, res) {
-		var id = req.params.id; // получаем id
-		var content = fs.readFileSync(usersFile, 'utf8');
-		var users = JSON.parse(content);
-		var user = null;
-		// находим в массиве пользователя по id
-		for (var i = 0; i < users.length; i++) {
-			if (users[i].id == id) {
-				user = users[i];
-				break;
+	// получение валидацый с базы данных
+	app.get('/api/ausers/:id',async function(req, res) {
+		var id = req.params.id; // получаем день		
+		var usersFile1 = 'val_'+id;
+		//console.log(usersFile1);
+		var user = [];	
+		item =0;			
+		var cont28 = [];
+		var contval = [];
+		var kol =0;
+		cont28 = await loadDBHistory2(usersFile1);
+		//console.log(cont28);	
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {
+					//console.log(contval[j]);
+					user.push(contval[j]);
+					
+				}	
+            //console.log("Валидаций = "+kol);  
 			}
-		}
+			
+		
+		
+		
 		// отправляем пользователя
 		if (user) {
 			res.send(user);
@@ -1203,17 +1283,15 @@ if (key1==="validCount" || key1==="timestamp"){
 	
 	
 	
-	// получение валидаций с АСОП (тестовая+продуктовая среда)
-	//app.post('/validations', urlencodedParser, function(req, res) {
-	app.post('/validations', bodyParser.json(), function(req, res) {	
-	//app.post('/validations', function(req, res) {	
+	// получение валидаций с АСОП (тестовая+продуктовая среда)	
+	app.post('/validations', bodyParser.json(), async function(req, res) {	
 		
 		if (!req.body) return res.sendStatus(400);
 		var tempdata=[];
-		var item = 0;
+		var item = 0; // указатель блока вaлидаций для истории
+		var itemdata=[]; // блок вaлидаций для истории
 		
-		//var giocValid=nconf.get("giocValids"); 
-		
+		//var giocValid=nconf.get("giocValids");		
 		validCount=validCount+1;
 		var tempstr=req.body;
 		tempdata.push(tempstr);
@@ -1296,84 +1374,7 @@ if (key1==="validCount" || key1==="timestamp"){
 						})
 					);
 				}
-/*		
-		// Принимаем массив валидаций
-		var arr=[];
-		var arr1,strtemp;
-		var arrtemp=[];
-		arr1=JSON.stringify(req.body);
-		arr1=arr1.slice(2,arr1.length-4);
-		//console.log(arr1);
-		arrtemp=arr1.split("");
-		//console.log(arrtemp);
-		for (var i = 0;  i< arrtemp.length; i++) {	
-			if (arrtemp[i]=="{"){
-				strtemp=arrtemp[i];
-				for (var j = i+1;  j< arrtemp.length; j++) {
-					if (arrtemp[j]!="}"){
-						if (arrtemp[j]!="\\") strtemp+=arrtemp[j];					
-					}else{
-						strtemp+=arrtemp[j];
-						//console.log(strtemp);
-						//var strtemp1=JSON.parse(strtemp);
-						arr.push(strtemp);
-						strtemp="";
-						i=j;
-						j=arrtemp.length;
-					};
-					
-				};	
-			}; 
-			
-		};
-		//arr1=arr2.split('\"').join('"');
-		//console.log("==================");
-		//console.log(arr);
-		
-		//console.log("------------------");
-		//console.log("Lentch = "+ arr.length);
-		//console.log(arr[0]);
-		//console.log("----"+arr[1]);
-		//console.log(JSON.parse(arr[0]));
-		//console.log(arr);
-		for (var i = 0; i < arr.length; i++) {	
-		//for (var i = 0; i < 0; i++) {
-                var tempParse = JSON.parse(arr[i]);	
-//console.log("1111 "+tempParse);				
-				var timestamp = tempParse.timestamp;
-				var line = tempParse.line;
-				var trip_id = tempParse.trip_id;
-				var passengers = tempParse.passengers;
-				var stop_code = tempParse.stop_code;
-				var stop_sequence = tempParse.stop_sequence;
-				var location_id = tempParse.location_id;
-				var product_id = tempParse.product_id;
-				var card_id = tempParse.card_id;
-				var doc_num = tempParse.doc_num;					
-				
-				var user = { 
-				timestamp : timestamp,
-				line : line,
-				trip_id : trip_id,
-				passengers : passengers,
-				stop_code : stop_code,
-				stop_sequence : stop_sequence,
-				location_id : location_id,
-				product_id : product_id,
-				card_id : card_id,
-				doc_num : doc_num
-				};
 
-				
-				// увеличиваем его на единицу
-				user.id = id + 1+i;
-				//console.log(user.id);
-				// удаляем 1 пользователя из массива
-				if(users.length>4000) users.splice(0,1);	
-				// добавляем пользователя в массив
-				users.push(user);
-		};
-*/
 ////
 		// Принимаем массив валидаций
 	
@@ -1424,28 +1425,14 @@ if (key1==="validCount" || key1==="timestamp"){
 				doc_num : doc_num
 				};
 
-				// сохраняем порцию действий в отдельном файле
-		/*
-			if(id>2000) {
-			//if(timestamp.substring(0,10)!=users[id].timestampsubstring(0,13)) {	
-				if(item>1000){
-						//var usersFile1 = 'data/evends'+users[id].timestamp.substring(0,13)+'.json';
-						var usersFile1 = 'data/evends'+users[0].timestamp.substring(0,13)+'.json';
-						var data = JSON.stringify(users);
-						fs.writeFileSync(usersFile1, data);
-						saveDB(usersFile1, data);
-						item =1;						
-				};
-				users.splice(0,1);			
-				//users.splice(0,users.length);
-			};	
+				// сохраняем порцию валидаций в массиве истории БД
+		///*				
 				// увеличиваем его на единицу
-				user.id = id + 1+i;
 				item=item+1;
-				user.item = item;
-				// добавляем ltqcndbt пользователя в массив
-				users.push(user);
-		*/			
+				
+				// добавляем  пользователя в массив	истории БД			
+				itemdata.push(user);
+		//*/			
 				// увеличиваем его на единицу
 				user.id = id + 1+i;
 				// удаляем 1 пользователя из массива
@@ -1647,6 +1634,41 @@ if (key1==="validCount" || key1==="timestamp"){
 				};
 		};
 		
+		// запись истории в БД
+		if(item>0){
+			var usersFile1 = 'val_'+itemdata[0].timestamp.substring(0,10);
+			var data = JSON.stringify(itemdata);
+			//insertDB(usersFile1, data);
+			insertDB2(usersFile1, data);			
+			item =0;			
+			var cont28 = [];
+			var contval = [];
+			var kol =0;
+			cont28 = await loadDBHistory2(usersFile1);
+			//console.log(cont28);
+			
+			//cont28 = await loadDBHistory(usersFile1);
+			
+			
+			//var cont29 = JSON.parse(cont28);
+			//console.log(cont28[0].cont);
+			//console.log(cont28.length + " записей в базу");
+			//contval=JSON.parse(cont28[0].cont);
+			//console.log(contval.length + " валидаций в блоке 0");
+			
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {
+					//console.log(contval[j]);
+					
+				}	
+            //console.log("Валидаций = "+kol);  
+			}
+			
+				
+		};
 		
 		// запись файлов раз в 5 секунд
 		var data = JSON.stringify(validPe);
