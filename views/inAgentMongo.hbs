@@ -42,7 +42,15 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>timestamp</th>
+                            <th>timestamp
+							<br>
+							<div class="input-group date datefuelpicker" data-provide="datepicker" style="float: left">
+							<input type="text" class="form-control" id="datebegin" name="datebegin">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-th"></span>
+								</div>
+							</div>								
+							</th>
                             <th>line</th>
                             <th>trip_id</th>
                             <th>passengers</th>
@@ -67,7 +75,8 @@
             var store;
             // Получение всех пользователей
             function GetUsers() {
-                var dat1 = "2020-10-29";
+                //var dat1 = "2020-10-29";
+				var dat1 = document.getElementById('datebegin').value;				
 				document.getElementById("loader").style.display = "block";
                 $.ajax({
                     url: "/api/ausers/" + dat1,
@@ -359,10 +368,13 @@
 
 
         </script>
+        //<script type="text/javascript">
+        //    $('.datefuelpicker').datepicker({ 'format': 'yyyy-mm-dd', 'language': 'uk' });
+        //</script>
         <script type="text/javascript">
-            $('.datefuelpicker').datepicker({ 'format': 'yyyy-mm-dd', 'language': 'uk' });
-        </script>
-
+			//Инициализация компонента календрря и отлов события смены датты
+			$('.datefuelpicker').datepicker({ 'format': 'yyyy-mm-dd', 'language': 'uk' }).on('changeDate', function (e) { $('.datefuelpicker').datepicker('hide'); $("table tbody").empty(); GetUsers();location.reload() });
+		</script>
     </div>
 	{{> footer}}
 </body>
