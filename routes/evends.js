@@ -1,3 +1,4 @@
+// 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200913  версия для ГИОЦ Этап 2, чтен7ие с базы данных mongodb
 // 20191129  убираем запись истории файлов и начальный ноль для номеров из 2 цифр
@@ -54,6 +55,26 @@ module.exports = (app) => {
     return result;
   }
   
+  function insertDB2(name, data) {
+		var result = 0;
+		//console.log(name);
+		//console.log(data);
+		//var tempData = { _id: name, cont: data };
+		db
+			.collection(name)
+			.insertOne({cont: data }, function(
+				err,
+				result
+			) {
+				if (err) {
+					console.log('Error insert2 mongo agent.json');
+					console.log(err);
+				}else console.log('Success insert2 mongo agent.json');
+			});
+		return result;
+	}
+	
+  
    async function loadDB(name) {		
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
@@ -66,7 +87,21 @@ module.exports = (app) => {
 		}		
 	}
 	
-
+    async function loadDBHistory2(name) {
+		try{
+	var result1 = await db.collection(name).find().toArray();
+	
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		//return result1[0].tempData.cont;		
+		return result1;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
+	
   // Запрос водителя
   async function qweryBD(nameserv, namebd, log, pass, filii) {
     //	sqlConfig :
@@ -526,10 +561,13 @@ module.exports = (app) => {
   });
 
   // получение валидаций с АСОП (тестовая+продуктовая среда)
-  app.post("/events", bodyParser.json(), function (req, res) {
+  app.post("/events", bodyParser.json(), async function (req, res) {
     if (!req.body) return res.sendStatus(400);
     var tempdata = [];
     var item = 0;
+	var item1 = 0; // указатель блока вaлидаций для истории
+		var itemdata=[]; // блок вaлидаций для истории
+	
     var tempstr = req.body;
     tempdata.push(tempstr);
     tempstr = JSON.stringify(req.headers);
@@ -623,6 +661,12 @@ module.exports = (app) => {
         user.id = id + 1 + i;
         item = item + 1;
         user.item = item;
+		
+		// увеличиваем его на единицу
+		item1=item1+1;
+				
+		// добавляем  пользователя в массив	истории БД			
+		itemdata.push(user);
 
         // добавляем ltqcndbt пользователя в массив
         users.push(user);
@@ -645,7 +689,46 @@ module.exports = (app) => {
           }
         }
       }
-      var data = JSON.stringify(eventPe);
+      // запись истории в БД
+		if(item1>0){
+			var usersFile1 = 'even_'+itemdata[0].timestamp.substring(0,10);
+			var data = JSON.stringify(itemdata);
+			//insertDB(usersFile1, data);
+			insertDB2(usersFile1, data);			
+			item =0;			
+			var cont28 = [];
+			var contval = [];
+			var kol =0;
+			cont28 = await loadDBHistory2(usersFile1);
+			//console.log(cont28);
+			
+			//cont28 = await loadDBHistory(usersFile1);
+			
+			
+			//var cont29 = JSON.parse(cont28);
+			//console.log(cont28[0].cont);
+			//console.log(cont28.length + " записей в базу");
+			//contval=JSON.parse(cont28[0].cont);
+			//console.log(contval.length + " валидаций в блоке 0");
+			
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {
+					//console.log(contval[j]);
+					
+				}	
+            //console.log("Валидаций = "+kol);  
+			}
+			
+				
+		};
+		
+	  
+	  
+	  
+	  var data = JSON.stringify(eventPe);
 
       // перезаписываем BD с новыми данными
 	  saveDB(eventPeFile, data);

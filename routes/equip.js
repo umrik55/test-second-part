@@ -1,3 +1,4 @@
+// 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200913  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 // 20200909  версия для ГИОЦ.Этап 2;
@@ -232,6 +233,25 @@ module.exports = app => {
 		return result;
 	}
 	
+	function insertDB2(name, data) {
+		var result = 0;
+		//console.log(name);
+		//console.log(data);
+		//var tempData = { _id: name, cont: data };
+		db
+			.collection(name)
+			.insertOne({cont: data }, function(
+				err,
+				result
+			) {
+				if (err) {
+					console.log('Error insert2 mongo agent.json');
+					console.log(err);
+				}else console.log('Success insert2 mongo agent.json');
+			});
+		return result;
+	}
+	
 	async function loadDB(name) {		
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
@@ -243,7 +263,22 @@ module.exports = app => {
 			return result1;
 		}		
 	}
-
+	
+	async function loadDBHistory2(name) {
+		try{
+	var result1 = await db.collection(name).find().toArray();
+	
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		//return result1[0].tempData.cont;		
+		return result1;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
+	
     // Запрос водителя
 	async function qweryBD(nameserv, namebd, log, pass, filii) {
 		//	sqlConfig :
@@ -802,11 +837,15 @@ module.exports = app => {
 
 	// получение состояния оборудования с АСОП (тестовая+продуктовая среда)
 	
-    app.post('/equips', bodyParser.json(), function(req, res) {		
-	
+    app.post('/equips', bodyParser.json(), async function(req, res) {		
+	     
 		if (!req.body) return res.sendStatus(400);
 		var tempdata=[];
 		var item = 0;
+		var item1 = 0; // указатель блока вaлидаций для истории
+		var itemdata=[]; // блок вaлидаций для истории
+		
+		
 		// бортовые номера ПЕ
 		// userstb[0][test1]
 		
@@ -1072,6 +1111,12 @@ module.exports = app => {
 				user.item = item;
 				// добавляем ltqcndbt пользователя в массив
 				users.push(user);
+				// увеличиваем его на единицу
+				item1=item1+1;
+				
+				// добавляем  пользователя в массив	истории БД			
+				itemdata.push(user);
+				
 				
 //	
 	if (user.Location_type === null){
@@ -1137,6 +1182,44 @@ module.exports = app => {
 				};
 //				
 		};
+		
+		// запись истории в БД
+		if(item1>0){
+			var usersFile1 = 'equip_'+itemdata[0].Note_time.substring(0,10);
+			var data = JSON.stringify(itemdata);
+			//insertDB(usersFile1, data);
+			insertDB2(usersFile1, data);			
+			item =0;			
+			var cont28 = [];
+			var contval = [];
+			var kol =0;
+			cont28 = await loadDBHistory2(usersFile1);
+			//console.log(cont28);
+			
+			//cont28 = await loadDBHistory(usersFile1);
+			
+			
+			//var cont29 = JSON.parse(cont28);
+			//console.log(cont28[0].cont);
+			//console.log(cont28.length + " записей в базу");
+			//contval=JSON.parse(cont28[0].cont);
+			//console.log(contval.length + " валидаций в блоке 0");
+			
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {
+					//console.log(contval[j]);
+					
+				}	
+            //console.log("Валидаций = "+kol);  
+			}
+			
+				
+		};
+		
+		
 		
 		/* запись файла с новыми данными*/
 		saveConfig();

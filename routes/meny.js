@@ -388,6 +388,36 @@ module.exports = (app) => {
       response.render("error.hbs", { errit: errit });
     }
   });
+  
+  // запрос страницы с действия водителей базы АСОП
+  app.get("/evendsBD", function (request, response) {
+    try {	   
+            var users=[];
+            response.render("inEventsMongo.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
+  
+  // запрос страницы с оборудования базы АСОП
+  app.get("/equipsBD", function (request, response) {
+    try {	   
+            var users=[];
+            response.render("inequipsMongo.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
 
   
   // запрос рейсов с валидациями АСОП
