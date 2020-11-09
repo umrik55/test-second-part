@@ -408,7 +408,7 @@ module.exports = (app) => {
   app.get("/equipsBD", function (request, response) {
     try {	   
             var users=[];
-            response.render("inequipsMongo.hbs", {
+            response.render("inEquipsMongo.hbs", {
               users: users,
             });
 	  
