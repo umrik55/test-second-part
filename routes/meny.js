@@ -389,11 +389,27 @@ module.exports = (app) => {
     }
   });
   
-  // запрос страницы с действия водителей базы АСОП
+  // запрос страницы с действия водителей базы АСОП 
   app.get("/evendsBD", function (request, response) {
     try {	   
             var users=[];
             response.render("inEventsMongo.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
+  
+   // запрос страницы с действия водителей базы АСОП интерфей Дм 
+  app.get("/agentBDDm", function (request, response) {
+    try {   
+	   var content = fs.readFileSync(refValidateFile, "utf8");
+            var users = JSON.parse(content);
+            response.render("inAgentMongoDm.hbs", {
               users: users,
             });
 	  

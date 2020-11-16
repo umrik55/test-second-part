@@ -1075,6 +1075,140 @@ if (key1==="validCount" || key1==="timestamp"){
 		}
 	});
 	
+	// валидации база
+	app.post('/api/ausersdm',async function(req, res) {
+		//var id = req.params.id; // получаем день
+		//console.log(req.body);
+		//var id = req.body.dat1;
+		var id = req.body.bodyreg.filter.date.start.substr(0,10);		
+		var usersFile1 = 'val_'+id;
+		console.log(usersFile1);
+		//var partN=req.body.bodyreg.currentPage;
+		//var rowPerPage=req.body.bodyreg.rowPerPage;
+		
+		
+		var rowPerPage = req.body.bodyreg.rowPerPage;
+		var currentPage = req.body.bodyreg.currentPage;
+		var filter_date_start = req.body.bodyreg.filter.date.start;
+		var filter_date_end = req.body.bodyreg.filter.date.end;
+		var filter_line = req.body.bodyreg.filter.line;
+		var filter_trip_id = req.body.bodyreg.filter.trip_id;
+		var filter_passengers = req.body.bodyreg.filter.passengers;
+		var filter_stop_code = req.body.bodyreg.filter.stop_code;
+		var filter_stop_sequence = req.body.bodyreg.filter.stop_sequence;		 
+		var filter_location_id = req.body.bodyreg.filter.location_id;
+		var filter_product_id = req.body.bodyreg.filter.product_id;
+		var filter_card_id = req.body.bodyreg.filter.card_id;
+		var filter_doc_num = req.body.bodyreg.filter.doc_num;
+		
+		console.log(currentPage +" - "+rowPerPage);
+		var user = [];	
+		item =0;			
+		var cont28 = [];
+		var contval = [];
+		var kol =0;
+		
+		cont28 = await loadDBHistory2(usersFile1);
+		//console.log(cont28);	
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {					
+					{
+						user.push(contval[j]);
+						//console.log(contval[j]);
+					}
+				}	
+            //console.log("Валидаций = "+kol);  
+			}
+			//console.log(filter_line);
+			if(filter_line!="")
+			{
+				var userFF = user.filter(function (a) {
+				
+				if(a.line===null){
+					//console.log(a.line);
+					return false
+				}else{
+					//console.log(a.line);
+					//console.log(filter_line);
+					return (String(a.line)==String(filter_line));
+					
+				}
+				});
+			}
+			
+			//console.log(userFF.length);
+			var userF = userFF.slice(0);
+			
+			if(filter_product_id!="")
+			{
+				var userFF = userF.filter(function (a) {
+				
+				if(a.product_id===null){
+					//console.log(a.product_id);
+					return false
+				}else{
+					//console.log(a.product_id);
+					//console.log(filter_line);
+					return ((a.product_id)==(filter_product_id));
+					
+				}
+				});
+			}
+
+            //filter_location_id
+			var userF = userFF.slice(0);
+			
+			if(filter_location_id!="")
+			{
+				var userFF = userF.filter(function (a) {
+				
+				if(a.location_id===null){
+					//console.log(a.product_id);
+					return false
+				}else{
+					//console.log(a.product_id);
+					//console.log(filter_line);
+					return ((a.location_id)==(filter_location_id));
+					
+				}
+				});
+			}			
+			
+		    //var userF=[];
+			//console.log(userFF.length);
+			var userF = userFF.slice(0);
+		if(userF.length-(rowPerPage)>0){	
+			if(userF.length-(rowPerPage*currentPage)>0){				
+				var poz2 = (rowPerPage*currentPage);
+				var poz1 = (rowPerPage*(currentPage-1));
+				var users =userF.slice(poz1,poz2);
+			}else{
+				var poz2 = (rowPerPage*(currentPage-1));
+				var poz1 = (rowPerPage*(currentPage-2));
+				var users =userF.slice(poz1,poz2);	
+			}	
+		}else{			
+			if 	(currentPage===1){
+				var poz2 = rowPerPage;
+				var poz1 = 0;
+				var users =userF.slice(poz1,poz2);
+			}else{				
+				var users =[];
+			}
+		};	
+		//console.log(users);
+		// отправляем пользователя
+		if (users) {
+			res.send(users);
+		} else {
+			res.status(404).send();
+		}
+	});
+	
+	
 	// действия водителей база
 	app.post('/api/vausers',async function(req, res) {
 		//var id = req.params.id; // получаем день
