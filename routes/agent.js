@@ -1955,7 +1955,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			var cont28 = [];
 			var contval = [];
 			var kol =0;
-			cont28 = await loadDBHistory2(usersFile1);
+			//cont28 = await loadDBHistory2(usersFile1);
 			//console.log(cont28);
 			
 			//cont28 = await loadDBHistory(usersFile1);
