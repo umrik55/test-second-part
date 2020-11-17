@@ -1123,9 +1123,11 @@ if (key1==="validCount" || key1==="timestamp"){
             //console.log("Валидаций = "+kol);  
 			}
 			//console.log(filter_line);
+			
+			var userFF = user.slice(0);
 			if(filter_line!="")
 			{
-				var userFF = user.filter(function (a) {
+				var userF = userFF.filter(function (a) {
 				
 				if(a.line===null){
 					//console.log(a.line);
@@ -1140,10 +1142,11 @@ if (key1==="validCount" || key1==="timestamp"){
 			}
 			
 			//console.log(userFF.length);
-			var userF = userFF.slice(0);
+			
 			
 			if(filter_product_id!="")
 			{
+				var userF = userFF.slice(0);
 				var userFF = userF.filter(function (a) {
 				
 				if(a.product_id===null){
@@ -1159,10 +1162,11 @@ if (key1==="validCount" || key1==="timestamp"){
 			}
 
             //filter_location_id
-			var userF = userFF.slice(0);
+			
 			
 			if(filter_location_id!="")
 			{
+				var userF = userFF.slice(0);
 				var userFF = userF.filter(function (a) {
 				
 				if(a.location_id===null){
