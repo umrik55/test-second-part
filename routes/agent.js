@@ -1966,7 +1966,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			//console.log(cont28.length + " записей в базу");
 			//contval=JSON.parse(cont28[0].cont);
 			//console.log(contval.length + " валидаций в блоке 0");
-			
+			/*
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
 				//console.log("-------------Блок № "+i);
@@ -1977,7 +1977,7 @@ if (key1==="validCount" || key1==="timestamp"){
 				}	
             //console.log("Валидаций = "+kol);  
 			}
-			
+			*/
 				
 		};
 		
