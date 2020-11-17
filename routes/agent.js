@@ -1623,7 +1623,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		//console.log(req.body);
 	
 	try {
-		 /*
+		
 		// передача валидаций 10.31.11.241:3000 
 		var btest=JSON.stringify(req.body)+"      ";
 		//console.log("body- "+btest);
@@ -1651,7 +1651,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		//request.post({ url: "http://10.31.11.26:3000/validations", headers : req.headers, body : btest},	
 		//request.post({ url: "http://10.31.11.26:3000/validations", headers : headtest, body : btest},	
 		//request.post({ url: "http://193.23.225.178:3000/validations", headers : headtest, body : btest},	
-		request.post({ url: giocValid, headers : headtest, body : btest},	
+		request.post({ url: "http://185.185.255.181:3000/validations", headers : headtest, body : btest},	
 			
 			function(err, remoteResponse, remoteBody) {
 				if (err) { 
@@ -1665,7 +1665,7 @@ if (key1==="validCount" || key1==="timestamp"){
 				
 		validCount=0;
 		};
-        */	 
+        	 
 	 
 		//читаем существующие валидации
 		var id;
