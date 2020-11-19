@@ -947,6 +947,20 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
+	async function loadDBHistory3(name, pagesice, rowPerPage) {
+		try{
+	var result1 = await db.collection(name).find().limit(pagesice).skip((rowPerPage-1)*pagesice).toArray();
+	
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		//return result1[0].tempData.cont;		
+		return result1;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
 	
 	
 	
@@ -1297,7 +1311,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		var cont28 = [];
 		var contval = [];
 		var kol =0;
-		cont28 = await loadDBHistory2(usersFile1);
+		//cont28 = await loadDBHistory2(usersFile1);
+		cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
 		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
@@ -1310,12 +1325,14 @@ if (key1==="validCount" || key1==="timestamp"){
 				}	
             //console.log("Валидаций = "+kol);  
 			}
+		/*	
 		if(user.length-700>0){
 			var poz = user.length-700
 			var users =user.slice(poz);
 		}else{
 			var users =user;
 		};	
+		*/
 		
 		// отправляем пользователя
 		if (users) {
