@@ -947,9 +947,10 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
-	async function loadDBHistory3(name, pagesice, rowPerPage) {
+	async function loadDBHistory3(name,  rowPerPage, curentpage) {
 		try{
-	var result1 = await db.collection(name).find().limit(pagesice).skip((rowPerPage-1)*pagesice).toArray();
+		//console.log((Number(curentpage)-1)* Number(rowPerPage));	
+		var result1 = await db.collection(name).find().limit(rowPerPage).skip((curentpage-1)*Number(rowPerPage)).toArray();
 	
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
 		//return result1[0].tempData.cont;		
@@ -1122,7 +1123,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		var contval = [];
 		var kol =0;
 		
-		cont28 = await loadDBHistory2(usersFile1);
+		//cont28 = await loadDBHistory2(usersFile1);
+		cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
 		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
@@ -1311,8 +1313,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		var cont28 = [];
 		var contval = [];
 		var kol =0;
-		//cont28 = await loadDBHistory2(usersFile1);
-		cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		cont28 = await loadDBHistory2(usersFile1);
+		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
 		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
