@@ -34,11 +34,24 @@
         </div>
     </div>
     {{> profile}}
-	<h2 align="center">Список валідацій, що надійшли з АСОП  ( 	
+	 
+	<h3 align="center">
+     Запит частини інформації - 	
      <button id="button1"><</button>
-	 <label id="label">№ = 1</label>
+	 <label id="label">№ = 1</label>	
 	 <button id="button">></button>
-	)</h2>	
+	 &nbsp;&nbsp;&nbsp;&nbsp
+	 ( Параметри запиту: N=
+	 <input type="text" id="input" size="1" value="">
+	 
+	 РО=
+	 <input type="text" id="inputpe" size="1" value="">
+	 № мар=
+	 <input type="text" id="inputmar" size="1" value="">
+	 <button id="buttonF">Встановити</button>
+	 )</h3>
+	 <h2 align="center">Список валідацій, що надійшли з АСОП </h2> 
+		
 	<div id="wrapper">
         <div class="external-borders-big">
             <div id="ten">
@@ -79,10 +92,23 @@
 
 
         <script>
-			var partN =1;
+		var partN =1;
+		var mar="";
+		var pe="";
+		document.getElementById('input').value =0;
+		document.getElementById('inputmar').value = "";
+		document.getElementById('inputpe').value = "";	
+		
+		$("#buttonF").on( "click", function() {
+        partN= document.getElementById('input').value;
+		$("#label").text("№ "+partN);
+		mar= document.getElementById('inputmar').value;
+		pe= document.getElementById('inputpe').value;
+		});
 		
 		$("#button").on( "click", function() {
         partN++;
+		
 		$("#label").text("№ "+partN);        
 			GetUsers();		
 			InitPagingB(g);		
@@ -136,12 +162,12 @@
 								start: dat1,
 								end: "2020-11-03T12:00:00Z"
 							},
-							line: "",
+							line: mar,
 							trip_id: "",
 							passengers: "",
 							stop_code: "",
 							stop_sequence: "",
-							location_id: "",
+							location_id: pe,
 							product_id: "",
 							card_id: "",
 							doc_num: ""

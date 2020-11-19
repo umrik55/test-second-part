@@ -1151,10 +1151,11 @@ if (key1==="validCount" || key1==="timestamp"){
 				}else{
 					//console.log(a.line);
 					//console.log(filter_line);
-					return (String(a.line)==String(filter_line));
+					return (a.line==filter_line);
 					
 				}
 				});
+				userFF=userF.slice(0);
 			}
 			
 			//console.log(userFF.length);
@@ -1175,13 +1176,14 @@ if (key1==="validCount" || key1==="timestamp"){
 					
 				}
 				});
+				userFF=userF.slice(0);
 			}
-
+			
             //filter_location_id
 			
 			
 			if(filter_location_id!="")
-			{
+			{				
 				var userF = userFF.slice(0);
 				var userFF = userF.filter(function (a) {
 				
