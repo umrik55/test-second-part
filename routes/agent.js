@@ -1200,6 +1200,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		    //var userF=[];
 			//console.log(userFF.length);
 			var userF = userFF.slice(0);
+		/*	
 		if(userF.length-(rowPerPage)>0){	
 			if(userF.length-(rowPerPage*currentPage)>0){				
 				var poz2 = (rowPerPage*currentPage);
@@ -1218,7 +1219,9 @@ if (key1==="validCount" || key1==="timestamp"){
 			}else{				
 				var users =[];
 			}
-		};	
+		};
+		*/
+		var users =userF.slice(0);	
 		//console.log(users);
 		// отправляем пользователя
 		if (users) {
@@ -1327,14 +1330,14 @@ if (key1==="validCount" || key1==="timestamp"){
 				}	
             //console.log("Валидаций = "+kol);  
 			}
-		/*	
+			
 		if(user.length-700>0){
 			var poz = user.length-700
 			var users =user.slice(poz);
 		}else{
 			var users =user;
 		};	
-		*/
+		
 		
 		// отправляем пользователя
 		if (users) {
