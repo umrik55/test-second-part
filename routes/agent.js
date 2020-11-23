@@ -962,7 +962,42 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
-	
+		
+	async function loadDBHistoryBec(name,  rowPerPage, curentpage, filter_location_id) {
+		try{		
+		
+        var result1 = await db.collection(name).find({}, function(err, item){               
+				if(err) return console.log(err);							
+				//console.log("+++ ---");	
+				return item				
+			}).toArray();
+			//});
+			var cursor=result1;
+			var arr=[]
+			try{
+				cursor.forEach(function(x) {					
+					var valid=JSON.parse(x.cont);
+					for (var i = 0; i < valid.length; i++) {
+					 {
+						if (valid[i].location_id===filter_location_id){
+							console.log(valid[i].location_id);
+							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+						}
+					 }
+					}	
+				})				
+				}
+				catch(e){
+					console.log(e);
+				};	
+				console.log("11111111111111111111+++ ---");	
+		return arr;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
 	
 	
 	/////////////////////
@@ -1124,8 +1159,13 @@ if (key1==="validCount" || key1==="timestamp"){
 		var kol =0;
 		
 		//cont28 = await loadDBHistory2(usersFile1);
-		cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
-		//console.log(cont28);	
+		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		if (filter_location_id===""){
+			cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		}else{			
+			cont28 = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);		
+		}
+		console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
 				//console.log("-------------Блок № "+i);
