@@ -1160,9 +1160,11 @@ if (key1==="validCount" || key1==="timestamp"){
 		
 		//cont28 = await loadDBHistory2(usersFile1);
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
-		if (filter_location_id===""){
+		//if (filter_location_id===""){
+		if (true){	
 			cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
-		}else{			
+		}else{
+			// запрос с информации полного дня (location id)	
 			cont28 = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);		
 		}
 		console.log(cont28);	
@@ -1179,7 +1181,7 @@ if (key1==="validCount" || key1==="timestamp"){
             //console.log("Валидаций = "+kol);  
 			}
 			//console.log(filter_line);
-			
+			// маршрут
 			var userFF = user.slice(0);
 			if(filter_line!="")
 			{
@@ -1191,8 +1193,8 @@ if (key1==="validCount" || key1==="timestamp"){
 				}else{
 					//console.log(a.line);
 					//console.log(filter_line);
-					return (a.line==filter_line);
-					
+					//return (a.line==filter_line);
+					return (a.line.includes(filter_line));
 				}
 				});
 				userFF=userF.slice(0);
@@ -1200,7 +1202,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			
 			//console.log(userFF.length);
 			
-			
+			// номер турникета
 			if(filter_product_id!="")
 			{
 				var userF = userFF.slice(0);
@@ -1212,7 +1214,8 @@ if (key1==="validCount" || key1==="timestamp"){
 				}else{
 					//console.log(a.product_id);
 					//console.log(filter_line);
-					return ((a.product_id)==(filter_product_id));
+					//return ((a.product_id)==(filter_product_id));
+					return (a.product_id.includes(filter_product_id));
 					
 				}
 				});
@@ -1221,7 +1224,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			
             //filter_location_id
 			
-			
+			// номер ПЕ, станции с турникетами
 			if(filter_location_id!="")
 			{				
 				var userF = userFF.slice(0);
@@ -1233,11 +1236,43 @@ if (key1==="validCount" || key1==="timestamp"){
 				}else{
 					//console.log(a.product_id);
 					//console.log(filter_line);
-					return ((a.location_id)==(filter_location_id));
+					//return ((a.location_id)==(filter_location_id));
+					return (a.location_id.includes(filter_location_id));
 					
 				}
 				});
 			}			
+			
+			// тип билета
+			if(filter_card_id!="")
+			{				
+				var userF = userFF.slice(0);
+				var userFF = userF.filter(function (a) {
+				
+				if(a.card_id===null){					
+					return false
+				}else{					
+					//return ((a.card_id)==(filter_card_id));
+					return (a.card_id.includes(filter_card_id));
+				}
+				});
+			}	
+			
+			// к-во пассажиров
+			if(filter_passengers!="")
+			{				
+				var userF = userFF.slice(0);
+				var userFF = userF.filter(function (a) {
+				
+				if(a.card_id===null){					
+					return false
+				}else{					
+					//return ((a.passengers)==(filter_passengers));
+					return (a.passengers.includes(filter_passengers));					
+				}
+				});
+			}	
+			
 			
 		    //var userF=[];
 			//console.log(userFF.length);
