@@ -1160,8 +1160,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		
 		//cont28 = await loadDBHistory2(usersFile1);
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
-		//if (filter_location_id===""){
-		if (true){	
+		if (filter_location_id===""){
+		//if (true){	
 			cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
 		}else{
 			// запрос с информации полного дня (location id)	
@@ -1268,7 +1268,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					return false
 				}else{					
 					//return ((a.passengers)==(filter_passengers));
-					return (a.passengers.includes(filter_passengers));					
+					return (String(a.passengers).includes(filter_passengers));					
 				}
 				});
 			}	
