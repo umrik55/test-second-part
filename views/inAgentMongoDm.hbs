@@ -53,6 +53,11 @@
 	 <input type="text" id="inputmar" size="1" value=""  >
 	 <button id="buttonF"><img src="img/edit.png"></button>
 	 )
+	 &nbsp;&nbsp;&nbsp;&nbsp
+	 
+	  <label id="nDoc"></label>
+	  <label id="nVal"></label>
+	 
 	 
 	 </div>
 	 </h3>
@@ -184,7 +189,17 @@
                     contentType: "application/json",
                     success: function (users) {
                         var rows = "";
-						//alert(users.cont.users);
+						if(users.cont.nDoc===0){
+							$("#nDoc").text("");
+						}else{
+							$("#nDoc").text("Д="+users.cont.nDoc);
+						};
+						if(users.cont.nVal===0){
+							$("#nVal").text("");
+						}else{
+							$("#nVal").text("В="+users.cont.nVal);
+						};										
+						
                         $.each(users.cont.users, function (index, user) {
                             // добавляем полученные элементы в таблицу
                             //alert(user);

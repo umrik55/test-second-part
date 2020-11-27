@@ -973,15 +973,21 @@ if (key1==="validCount" || key1==="timestamp"){
 			}).toArray();
 			//});
 			var cursor=result1;
-			var arr=[]
+			var arr=[];
+			var nDoc=0;
+			var nVal=0;
+			var nDocEnd=0;
 			try{
 				cursor.forEach(function(x) {					
 					var valid=JSON.parse(x.cont);
+					nDoc=nDoc+1;
+					nDocEnd=0;
 					for (var i = 0; i < valid.length; i++) {
 					 {
 						if (valid[i].location_id===filter_location_id){
 							console.log(valid[i].location_id);
 							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+							nVal=nVal+1;
 						}
 					 }
 					}	
@@ -991,7 +997,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					console.log(e);
 				};	
 				console.log("11111111111111111111+++ ---");	
-		return arr;
+		return {"cont" :{"arr" : arr, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
 		}catch(e){
 			console.log("Помилка читання БД "+name);
 			var result1 = "[]";
@@ -1157,6 +1163,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		var cont28 = [];
 		var contval = [];
 		var kol =0;
+		var contDocN=0;
+		var contValN=0;
 		
 		//cont28 = await loadDBHistory2(usersFile1);
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
@@ -1164,8 +1172,15 @@ if (key1==="validCount" || key1==="timestamp"){
 		//if (true){	
 			cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
 		}else{
-			// запрос с информации полного дня (location id)	
-			cont28 = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);		
+			// запрос с информации полного дня (location id)	{"cont" :{"arr" : arr, "nDoc" = nDoc, "nVal" : nVal }};
+			var contR = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);
+				cont28 = contR.cont.arr; 
+				console.log(contR.cont.arr);
+				console.log(contR.cont.nDoc);
+				console.log(contR.cont.nVal);
+				console.log(contR.cont.nDocEnd);
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;	
 		}
 		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
@@ -1194,7 +1209,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					//console.log(a.line);
 					//console.log(filter_line);
 					//return (a.line==filter_line);
-					return (a.line.includes(filter_line));
+					return (String(a.line).includes(filter_line));
 				}
 				});
 				userFF=userF.slice(0);
@@ -1215,7 +1230,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					//console.log(a.product_id);
 					//console.log(filter_line);
 					//return ((a.product_id)==(filter_product_id));
-					return (a.product_id.includes(filter_product_id));
+					return (String(a.product_id).includes(filter_product_id));
 					
 				}
 				});
@@ -1237,7 +1252,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					//console.log(a.product_id);
 					//console.log(filter_line);
 					//return ((a.location_id)==(filter_location_id));
-					return (a.location_id.includes(filter_location_id));
+					return (String(a.location_id).includes(filter_location_id));
 					
 				}
 				});
@@ -1253,7 +1268,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					return false
 				}else{					
 					//return ((a.card_id)==(filter_card_id));
-					return (a.card_id.includes(filter_card_id));
+					return (String(a.card_id).includes(filter_card_id));
 				}
 				});
 			}	
@@ -1302,7 +1317,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		//console.log(users);
 		// отправляем пользователя
 		if (users) {
-			res.send({cont:{users : users, nDoc : 0, nVal : 0}});
+			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN}});
 		} else {
 			res.status(404).send();
 		}
