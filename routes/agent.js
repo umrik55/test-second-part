@@ -1167,7 +1167,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			// запрос с информации полного дня (location id)	
 			cont28 = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);		
 		}
-		console.log(cont28);	
+		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
 				//console.log("-------------Блок № "+i);
@@ -1302,7 +1302,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		//console.log(users);
 		// отправляем пользователя
 		if (users) {
-			res.send(users);
+			res.send({cont:{users : users, nDoc : 0, nVal : 0}});
 		} else {
 			res.status(404).send();
 		}

@@ -170,7 +170,7 @@
 							},
 							line: mar,
 							trip_id: "",
-							passengers: "",
+							passengers: "1",
 							stop_code: "",
 							stop_sequence: "",
 							location_id: pe,
@@ -184,15 +184,17 @@
                     contentType: "application/json",
                     success: function (users) {
                         var rows = "";
-                        $.each(users, function (index, user) {
+						//alert(users.cont.users);
+                        $.each(users.cont.users, function (index, user) {
                             // добавляем полученные элементы в таблицу
-                            rows += row(user);
+                            //alert(user);
+							rows += row(user);
                         })
                        	
 						//$("table tbody").append(rows);                        
 						
-						store = users;
-						
+						//store = users;
+						store = users.cont.users;
                         document.getElementById("loader").style.display = "none";
                     }
                 });
