@@ -166,7 +166,7 @@
 					///*
 					bodyreg: {
 							rowPerPage : 900,
-							currentPage : partN,
+							currentPage : partN-1,
 							filter: {
 							Id: "",
 							date: {
@@ -192,12 +192,12 @@
 						if(users.cont.nDoc===0){
 							$("#nDoc").text("");
 						}else{
-							$("#nDoc").text("Д="+users.cont.nDoc);
+							$("#nDoc").text("бд_док="+users.cont.nDoc);
 						};
 						if(users.cont.nVal===0){
 							$("#nVal").text("");
 						}else{
-							$("#nVal").text("В="+users.cont.nVal);
+							$("#nVal").text("з "+users.cont.nVal+" валід.");
 						};										
 						
                         $.each(users.cont.users, function (index, user) {

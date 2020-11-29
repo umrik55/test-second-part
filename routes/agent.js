@@ -963,6 +963,48 @@ if (key1==="validCount" || key1==="timestamp"){
 	}
 	
 		
+	async function loadDBHistory3_Bec(name,  rowPerPage, curentpage) {
+		try{		
+		
+        var result1 = await db.collection(name).find({}, function(err, item){               
+				if(err) return console.log(err);							
+				//console.log("+++ ---");	
+				return item				
+			}).limit(rowPerPage).skip(curentpage).toArray();
+			//});
+			var cursor=result1;
+			var arr=[];
+			var nDoc=0;
+			var nVal=0;
+			var nDocEnd=0;
+			try{
+				cursor.forEach(function(x) {					
+					var valid=JSON.parse(x.cont);
+					nDoc=nDoc+1;
+					nDocEnd=0;
+					for (var i = 0; i < valid.length; i++) {
+					 {
+						//if (valid[i].location_id===filter_location_id){
+							//console.log(valid[i].location_id);
+							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+							nVal=nVal+1;
+						//}
+					 }
+					}	
+				})				
+				}
+				catch(e){
+					console.log(e);
+				};	
+				//console.log("11111111111111111111+++ ---");	
+		return {"cont" :{"arr" : arr, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
 	async function loadDBHistoryBec(name,  rowPerPage, curentpage, filter_location_id) {
 		try{		
 		
@@ -985,7 +1027,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					for (var i = 0; i < valid.length; i++) {
 					 {
 						if (valid[i].location_id===filter_location_id){
-							console.log(valid[i].location_id);
+							//console.log(valid[i].location_id);
 							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
 							nVal=nVal+1;
 						}
@@ -996,7 +1038,7 @@ if (key1==="validCount" || key1==="timestamp"){
 				catch(e){
 					console.log(e);
 				};	
-				console.log("11111111111111111111+++ ---");	
+				//console.log("11111111111111111111+++ ---");	
 		return {"cont" :{"arr" : arr, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
 		}catch(e){
 			console.log("Помилка читання БД "+name);
@@ -1170,15 +1212,23 @@ if (key1==="validCount" || key1==="timestamp"){
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
 		if (filter_location_id===""){
 		//if (true){	
-			cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+			//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+				contR = await loadDBHistory3_Bec(usersFile1,rowPerPage, currentPage);
+				cont28 = contR.cont.arr; 
+				//console.log(contR.cont.arr);
+				//console.log(contR.cont.nDoc);
+				//console.log(contR.cont.nVal);
+				//console.log(contR.cont.nDocEnd);
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
 		}else{
 			// запрос с информации полного дня (location id)	{"cont" :{"arr" : arr, "nDoc" = nDoc, "nVal" : nVal }};
 			var contR = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);
 				cont28 = contR.cont.arr; 
-				console.log(contR.cont.arr);
-				console.log(contR.cont.nDoc);
-				console.log(contR.cont.nVal);
-				console.log(contR.cont.nDocEnd);
+				//console.log(contR.cont.arr);
+				//console.log(contR.cont.nDoc);
+				//console.log(contR.cont.nVal);
+				//console.log(contR.cont.nDocEnd);
 				contDocN=contR.cont.nDoc;
 				contValN=contR.cont.nVal;	
 		}
