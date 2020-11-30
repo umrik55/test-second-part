@@ -1,3 +1,4 @@
+// 20201130  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + nDocEndItem return
 // 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20201029  версия для ГИОЦ Этап 2, история валидаций в базе данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
@@ -991,7 +992,8 @@ if (key1==="validCount" || key1==="timestamp"){
 						//}
 					 }
 					}	
-				})				
+				})
+				if(nDoc===rowPerPage) nDocEnd=nDocEnd+nDoc+curentpage;						
 				}
 				catch(e){
 					console.log(e);
@@ -1207,6 +1209,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		var kol =0;
 		var contDocN=0;
 		var contValN=0;
+		var contDocEnd=0;
 		
 		//cont28 = await loadDBHistory2(usersFile1);
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
@@ -1221,6 +1224,7 @@ if (key1==="validCount" || key1==="timestamp"){
 				//console.log(contR.cont.nDocEnd);
 				contDocN=contR.cont.nDoc;
 				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;
 		}else{
 			// запрос с информации полного дня (location id)	{"cont" :{"arr" : arr, "nDoc" = nDoc, "nVal" : nVal }};
 			var contR = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);
@@ -1230,7 +1234,8 @@ if (key1==="validCount" || key1==="timestamp"){
 				//console.log(contR.cont.nVal);
 				//console.log(contR.cont.nDocEnd);
 				contDocN=contR.cont.nDoc;
-				contValN=contR.cont.nVal;	
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;	
 		}
 		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
@@ -1367,7 +1372,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		//console.log(users);
 		// отправляем пользователя
 		if (users) {
-			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN}});
+			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN, nDocEndItem : contDocEnd}});
 		} else {
 			res.status(404).send();
 		}

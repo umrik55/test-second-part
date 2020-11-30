@@ -1,4 +1,4 @@
-﻿<!-- 20201113 форма формирование мониторинга валидаций, що надійшло з АСОП, протокол Дм -->
+﻿<!-- 20201130 форма формирование мониторинга валидаций, що надійшло з АСОП, протокол Дм +return-->
 <!DOCTYPE html>
 <html>
 
@@ -198,8 +198,9 @@
 							$("#nVal").text("");
 						}else{
 							$("#nVal").text("з "+users.cont.nVal+" валід.");
-						};										
-						
+						};
+						partN=users.cont.nDocEndItem;
+						$("#label").text("№ "+partN);
                         $.each(users.cont.users, function (index, user) {
                             // добавляем полученные элементы в таблицу
                             //alert(user);
