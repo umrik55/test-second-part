@@ -718,6 +718,70 @@ module.exports = app => {
 	 }
 );
 	
+	// оборудование база
+	app.post('/api/qvausersN',async function(req, res) {
+		//var id = req.params.id; // получаем день
+		console.log(req.body);
+		var id = req.body.dat1;
+		var usersFile1 = 'equip_'+id;
+		console.log('qqqqq');
+		console.log(usersFile1);
+		/*
+		var rowPerPage = req.body.rowPerPage;
+		var currentPage = req.body.currentPage;
+		var filter.date.start = req.body.filter.date.start;
+		var filter.date.end = req.body.filter.date.end;
+		var filter.line : "",
+		var filter.trip_id : "",
+		var filter.passengers : "",
+		var filter.stop_code : "",
+		var filter.stop_sequence : "",		 
+		var filter.location_id : "",
+		var filter.product_id : "",
+		var filter.card_id : "",
+		var filter.doc_num : ""
+		*/
+		
+		var user = [];	
+		item =0;			
+		var cont28 = [];
+		var contval = [];
+		var kol =0;
+		console.log("----------");
+		cont28 = await loadDBHistory2(usersFile1);
+		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		console.log("----------");
+		console.log(cont28);	
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {
+					//console.log(contval[j]);
+					user.push(contval[j]);
+					
+				}	
+            //console.log("Валидаций = "+kol);  
+			}
+			
+		if(user.length-700>0){
+			var poz = user.length-700
+			var users =user.slice(poz);
+		}else{
+			var users =user;
+		};	
+		
+		
+		// отправляем пользователя
+		if (users) {
+			res.send(users);
+		} else {
+			res.status(404).send();
+		}
+	});
+	
+	
+	
 	// получение отправленных данных
 	app.post('/api/qvausers', jsonParser, function(req, res) {
 		if (!req.body) return res.sendStatus(400);
