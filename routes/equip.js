@@ -1191,11 +1191,12 @@ module.exports = app => {
 			var data = JSON.stringify(itemdata);
 			//insertDB(usersFile1, data);
 			insertDB2(usersFile1, data);			
+			
 			item =0;			
 			var cont28 = [];
 			var contval = [];
 			var kol =0;
-			cont28 = await loadDBHistory2(usersFile1);
+			//cont28 = await loadDBHistory2(usersFile1);
 			//console.log(cont28);
 			
 			//cont28 = await loadDBHistory(usersFile1);
@@ -1206,7 +1207,7 @@ module.exports = app => {
 			//console.log(cont28.length + " записей в базу");
 			//contval=JSON.parse(cont28[0].cont);
 			//console.log(contval.length + " валидаций в блоке 0");
-			
+			/*
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
 				//console.log("-------------Блок № "+i);
@@ -1217,7 +1218,7 @@ module.exports = app => {
 				}	
             //console.log("Валидаций = "+kol);  
 			}
-			
+			*/
 				
 		};
 		
