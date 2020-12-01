@@ -1,3 +1,4 @@
+// 20201201  версия для ГИОЦ Этап 2, передача действий водителей в ГИОЦ
 // 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200913  версия для ГИОЦ Этап 2, чтен7ие с базы данных mongodb
@@ -588,7 +589,28 @@ module.exports = (app) => {
         return res.sendStatus(401);
       }
     }
+	
+	
     try {
+	  // передача действий водителя  "http://185.185.255.181:3000/
+		var btest=JSON.stringify(req.body);
+		//console.log("ttt- "+btest);
+	    if(typeof req.body === "string"){}else{ btest=JSON.stringify(req.body)};
+		//request.post({ url: "http://10.31.11.241:3000/events", headers : req.headers, body : btest},		
+		//request.post({ url: "http://sip.ttc.net.ua:3000/events", headers : req.headers, body : btest},		
+		request.post({ url:  "http://185.185.255.181:3000/events", headers : req.headers, body : btest},			
+			function(err, remoteResponse, remoteBody) {
+				if (err) { 
+					console.log("Error events copy send = "+err);
+				};
+				console.log("events copy send - ok");
+				//res.write(remoteResponse.statusCode.toString()); // copy all headers from remoteResponse
+				//res.end(remoteBody);
+			
+		});	
+		
+		
+		
       //читаем существующие валидации
       var id;
       var data = fs.readFileSync(usersFile, "utf8");

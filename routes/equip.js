@@ -1,3 +1,4 @@
+// 20201201  версия для ГИОЦ Этап 2, передача оборудования в ГИОЦ
 // 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200913  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
@@ -896,24 +897,25 @@ module.exports = app => {
 	
        var btest=JSON.stringify(arr1); 
 	   */
-      // передача оборудования на другой сервер
-	  /*	  
+      // передача оборудования в ГИОЦ  "http://185.185.255.181:3000/"
+	  	  
 	   var btest=JSON.stringify(req.body);
 	  // if(typeof req.body === "string"){}else{ btest=JSON.stringify({"last_contact_time": "2019-0-29T11:03:00"})};
 	  if(typeof req.body === "string"){}else{ btest=JSON.stringify(req.body)};
-	request.post({ url: "http://193.23.225.42:3001/gps", headers: req.headers, body: btest },	
+	//request.post({ url: "http://193.23.225.42:3001/gps", headers: req.headers, body: btest },	
 	//request.post({ url: "http://localhost:3001/gps", headers: req.headers, body: btest },
+	request.post({ url: "http://185.185.255.181:3000/gps", headers: req.headers, body: btest },
 		function(err, remoteResponse, remoteBody) {
         if (err) { 
 		//return res.status(500).end('Error'); 
 		console.log("Error = "+err);
 		};
-		console.log("Koordynaty - ok");
+		console.log("Oborudovanie - ok");
         //res.write(remoteResponse.statusCode.toString()); // copy all headers from remoteResponse
         //res.end(remoteBody);
 		
     });
-    */
+    
 
 		//res.redirect(307, 'http://localhost:3001' + req.path);
 
