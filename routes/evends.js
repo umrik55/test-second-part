@@ -71,7 +71,7 @@ module.exports = (app) => {
 				if (err) {
 					console.log('Error insert2 mongo agent.json');
 					console.log(err);
-				}else console.log('Success insert2 mongo agent.json');
+				}else console.log('Success insert2 mongo evends.json');
 			});
 		return result;
 	}

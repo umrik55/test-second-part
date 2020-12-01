@@ -1436,7 +1436,7 @@ if (key1==="validCount" || key1==="timestamp"){
 	});
 	
 	// оборудование база
-	app.post('/api/qvausers',async function(req, res) {
+	app.post('/api/qvausersN',async function(req, res) {
 		//var id = req.params.id; // получаем день
 		//console.log(req.body);
 		var id = req.body.dat1;
