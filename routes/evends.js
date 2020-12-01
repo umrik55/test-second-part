@@ -6,6 +6,7 @@
 module.exports = (app) => {
   var bodyParser = require("body-parser");
   var fs = require("fs");
+  var request = require('request');
   var hbs = require("hbs"); // шаблонизатор
   var usersFile = "data/evends.json"; // файл пользователей
   var tbnIdFile = "data/driverASOPjson"; // файл тб№ - idтб№
@@ -597,8 +598,10 @@ module.exports = (app) => {
 		//console.log("ttt- "+btest);
 	    if(typeof req.body === "string"){}else{ btest=JSON.stringify(req.body)};
 		//request.post({ url: "http://10.31.11.241:3000/events", headers : req.headers, body : btest},		
-		//request.post({ url: "http://sip.ttc.net.ua:3000/events", headers : req.headers, body : btest},		
-		request.post({ url:  "http://185.185.255.181:3000/events", headers : req.headers, body : btest},			
+		//request.post({ url: "http://sip.ttc.net.ua:3000/events", headers : req.headers, body : btest},
+        //request.post({ url: giocEvend, headers : req.headers, body : btest},		
+		request.post({ url: "http://185.185.255.181:3000/events", headers : req.headers, body : btest},		
+			
 			function(err, remoteResponse, remoteBody) {
 				if (err) { 
 					console.log("Error events copy send = "+err);
@@ -607,7 +610,8 @@ module.exports = (app) => {
 				//res.write(remoteResponse.statusCode.toString()); // copy all headers from remoteResponse
 				//res.end(remoteBody);
 			
-		});	
+		});
+
 		
 		
 		
