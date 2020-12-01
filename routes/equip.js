@@ -904,7 +904,7 @@ module.exports = app => {
 	  if(typeof req.body === "string"){}else{ btest=JSON.stringify(req.body)};
 	//request.post({ url: "http://193.23.225.42:3001/gps", headers: req.headers, body: btest },	
 	//request.post({ url: "http://localhost:3001/gps", headers: req.headers, body: btest },
-	request.post({ url: "http://185.185.255.181:3000/gps", headers: req.headers, body: btest },
+	request.post({ url: "http://185.185.255.181:3000/equips", headers: req.headers, body: btest },
 		function(err, remoteResponse, remoteBody) {
         if (err) { 
 		//return res.status(500).end('Error'); 
