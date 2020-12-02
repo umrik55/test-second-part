@@ -934,6 +934,20 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
+	async function loadDBHistory2_(name) {
+		try{
+	var result1 = await db.collection(name).find().limit(3000).skip(0).toArray();
+	
+		//console.log(JSON.parse(result1[0].tempData.cont).length);
+		//return result1[0].tempData.cont;		
+		return result1;
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
 	async function loadDBHistory2(name) {
 		try{
 	var result1 = await db.collection(name).find().limit(3000).skip(3000).toArray();
@@ -1386,21 +1400,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		var id = req.body.dat1;
 		var usersFile1 = 'even_'+id;
 		console.log(usersFile1);
-		/*
-		var rowPerPage = req.body.rowPerPage;
-		var currentPage = req.body.currentPage;
-		var filter.date.start = req.body.filter.date.start;
-		var filter.date.end = req.body.filter.date.end;
-		var filter.line : "",
-		var filter.trip_id : "",
-		var filter.passengers : "",
-		var filter.stop_code : "",
-		var filter.stop_sequence : "",		 
-		var filter.location_id : "",
-		var filter.product_id : "",
-		var filter.card_id : "",
-		var filter.doc_num : ""
-		*/
+		
 		
 		var user = [];	
 		item =0;			
@@ -1449,9 +1449,9 @@ if (key1==="validCount" || key1==="timestamp"){
 		var cont28 = [];
 		var contval = [];
 		var kol =0;		
-		cont28 = await loadDBHistory2(usersFile1);
+		cont28 = await loadDBHistory2_(usersFile1);
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);		
-		console.log(cont28);	
+		//console.log(cont28);	
 			for (var i = 0; i < cont28.length; i++) {
 				contval=JSON.parse(cont28[i].cont);
 				//console.log("-------------Блок № "+i);
