@@ -936,7 +936,7 @@ if (key1==="validCount" || key1==="timestamp"){
 	
 	async function loadDBHistory2_(name) {
 		try{
-	var result1 = await db.collection(name).find().limit(3000).skip(0).toArray();
+	var result1 = await db.collection(name).find().limit(3).skip(0).toArray();
 	
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
 		//return result1[0].tempData.cont;		
