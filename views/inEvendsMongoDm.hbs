@@ -1,4 +1,4 @@
-﻿<!-- 20201202 форма формирование мониторинга дій водіїв, що надійшло з АСОП, протокол Дм +return-->
+﻿<!-- 20201203 форма формирование мониторинга дій водіїв, що надійшло з АСОП, протокол Дм +return-->
 <!DOCTYPE html>
 <html>
 
@@ -50,7 +50,7 @@
 	 РО=
 	 <input type="text" id="inputpe" size="1" value="">
 	 Водій=
-	 <input type="text" id="inputmar" size="1" value=""  >
+	 <input type="text" id="inputdriv" size="1" value="">
 	 <button id="buttonF"><img src="img/edit.png"></button>
 	 )
 	 &nbsp;&nbsp;&nbsp;&nbsp
@@ -104,13 +104,13 @@
 		var mar="";
 		var pe="";
 		document.getElementById('input').value =0;
-		document.getElementById('inputmar').value = "";
+		document.getElementById('inputdriv').value = "";
 		document.getElementById('inputpe').value = "";	
 		
 		$("#buttonF").on( "click", function() {
         partN= document.getElementById('input').value;
 		$("#label").text("№ "+partN);
-		mar= document.getElementById('inputmar').value;
+		mar= document.getElementById('inputdriv').value;
 		pe= document.getElementById('inputpe').value;
 		});
 		
@@ -165,20 +165,17 @@
 							rowPerPage : 900,
 							currentPage : partN-1,
 							filter: {
-							Id: "",
-							date: {
-								start: dat1,
-								end: "2020-11-03T12:00:00Z"
-							},
-							line: mar,
-							trip_id: "",
-							passengers: "1",
-							stop_code: "",
-							stop_sequence: "",
-							location_id: pe,
-							product_id: "",
-							card_id: "",
-							doc_num: ""
+								Id: "",
+								date: {
+									start: dat1,
+									end: "2020-11-03T12:00:00Z"
+									},
+								driver_id: mar,							
+								location_id: pe,							
+								duty_code: "",							
+								line: "",
+								trip_id: "",							
+								evends_id: ""							
 							}
 						}					
 					//*/

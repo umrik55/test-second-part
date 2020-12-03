@@ -1,30 +1,10 @@
+// 20201203  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + интерфейс Evends Dm
 // 20201130  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + nDocEndItem return
 // 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20201029  версия для ГИОЦ Этап 2, история валидаций в базе данных mongodb
 // 20201019  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, без передачи валидаций в ГИОЦ 193.23.225.178 read config
-// 20200831  передача валидаций в ГИОЦ 193.23.225.178 read config
-// 20200713  передача валидаций в ГИОЦ 193.23.225.178 
-// 20200623  передача валидаций в ГИОЦ 
-// 20200615  построение отчета по втратам валидаций по формулярам с оценкой потерь
-// 20200611  построение отчета по втратам валидаций по формулярам
-// 20200331  учет времени каждого типа валидации
-// 20200319  изменение начала суток, переименование файла+новый файл, колбек
-// 20200318  передача с валидацией номера турникета и кода Герц продукта
-// 20200317  изменение начала суток, переименование файла
-// 20200228  изменение начала суток, вычисление в предыдущего дня в функции  initValTr
-// 20200226  валидаторов Герц привязка рейсов на последний рейс. valFlag всегда =true
-// 20200115  виртуальная связь валидаторов Герц с ПЕ (4507, 4504, 8515)
-// 20200110  валидации Герц по рейсам Риданго
-// 20191210  признак метро "org_id": 3328913
-// 20191206  запись файлов только для рейсов раз 5 секунд
-// 20191129  по ПЕ и рейсам валидации +cron, запись файлов раз минуту  
-// 20191128  по ПЕ и рейсам валидации +cron  
-// 20190530  сохраняем в файле по ПЕ валидации турникетов  
-// 20200717  добавляем в конец пробелы для отсылки ваоидаций в ГИОЦ 
-// 20190529  убираем начальный ноль для сравнения формулярами 
-// 20190301  сервисы принятия от АСОП валидаций, запоминание последней валидации по  ПЕ
 // 20181130  сервисы принятия от АСОП валидаций, билетной продукции, событий водителя
 module.exports = app => {
 	var bodyParser = require('body-parser');
@@ -1111,6 +1091,48 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
+	async function loadDBHistoryBecDriv(name,  rowPerPage, curentpage, filter_driver_id) {
+		try{		
+		
+        var result1 = await db.collection(name).find({}, function(err, item){               
+				if(err) return console.log(err);							
+				//console.log("+++ ---");	
+				return item				
+			}).toArray();
+			//});
+			var cursor=result1;
+			var arr=[];
+			var nDoc=0;
+			var nVal=0;
+			var nDocEnd=0;
+			try{
+				cursor.forEach(function(x) {					
+					var valid=JSON.parse(x.cont);
+					nDoc=nDoc+1;
+					nDocEnd=0;
+					for (var i = 0; i < valid.length; i++) {
+					 {
+						if (valid[i].ext_driver_id===filter_driver_id){
+							//console.log(valid[i].location_id);
+							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+							nVal=nVal+1;
+						}
+					 }
+					}	
+				})				
+				}
+				catch(e){
+					console.log(e);
+				};	
+				//console.log("11111111111111111111+++ ---");	
+		return {"cont" :{"arr" : arr, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
 	
 	/////////////////////
 // получение данных втрат из файла отчета
@@ -1253,15 +1275,17 @@ if (key1==="validCount" || key1==="timestamp"){
 		var currentPage = req.body.bodyreg.currentPage;
 		var filter_date_start = req.body.bodyreg.filter.date.start;
 		var filter_date_end = req.body.bodyreg.filter.date.end;
+		
+		var filter_driver_id = req.body.bodyreg.filter.driver_id;
+		var filter_location_id = req.body.bodyreg.filter.location_id;
+		var filter_duty_code = req.body.bodyreg.filter.duty_code;		
 		var filter_line = req.body.bodyreg.filter.line;
 		var filter_trip_id = req.body.bodyreg.filter.trip_id;
-		var filter_passengers = req.body.bodyreg.filter.passengers;
-		var filter_stop_code = req.body.bodyreg.filter.stop_code;
-		var filter_stop_sequence = req.body.bodyreg.filter.stop_sequence;		 
-		var filter_location_id = req.body.bodyreg.filter.location_id;
-		var filter_product_id = req.body.bodyreg.filter.product_id;
-		var filter_card_id = req.body.bodyreg.filter.card_id;
-		var filter_doc_num = req.body.bodyreg.filter.doc_num;
+		var filter_evends_id = req.body.bodyreg.filter.evends_id;
+		
+		//var filter_card_id = req.body.bodyreg.filter.card_id;
+		//var filter_doc_num = req.body.bodyreg.filter.doc_num;
+		//var filter_stop_sequence = req.body.bodyreg.filter.stop_sequence;	
 		
 		console.log(currentPage +" - "+rowPerPage);
 		var user = [];	
@@ -1275,9 +1299,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		
 		//cont28 = await loadDBHistory2(usersFile1);
 		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
-		if (filter_location_id===""){
-		//if (true){	
-			//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		if ((filter_location_id==="") && (filter_driver_id==="")){		
 				contR = await loadDBHistory3_BecEvends(usersFile1,rowPerPage, currentPage);
 				cont28 = contR.cont.arr; 
 				//console.log(contR.cont.arr);
@@ -1288,16 +1310,21 @@ if (key1==="validCount" || key1==="timestamp"){
 				contValN=contR.cont.nVal;
 				contDocEnd=contR.cont.nDocEnd;
 		}else{
+			
 			// запрос с информации полного дня (location id)	{"cont" :{"arr" : arr, "nDoc" = nDoc, "nVal" : nVal }};
+			if(!(filter_location_id==="")){
 			var contR = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);
-				cont28 = contR.cont.arr; 
-				//console.log(contR.cont.arr);
-				//console.log(contR.cont.nDoc);
-				//console.log(contR.cont.nVal);
-				//console.log(contR.cont.nDocEnd);
+				cont28 = contR.cont.arr;
 				contDocN=contR.cont.nDoc;
 				contValN=contR.cont.nVal;
-				contDocEnd=contR.cont.nDocEnd;	
+				contDocEnd=contR.cont.nDocEnd;
+			}else{
+				var contR = await loadDBHistoryBecDriv(usersFile1,rowPerPage, currentPage, filter_driver_id);
+				cont28 = contR.cont.arr;
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;
+			};	
 		}
 		
 		//console.log(cont28);	
