@@ -950,7 +950,7 @@ if (key1==="validCount" || key1==="timestamp"){
 	
 	async function loadDBHistory2(name) {
 		try{
-	var result1 = await db.collection(name).find().limit(3000).skip(3000).toArray();
+	var result1 = await db.collection(name).find().limit(3000).skip(0).toArray();
 	
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
 		//return result1[0].tempData.cont;		
@@ -1020,6 +1020,54 @@ if (key1==="validCount" || key1==="timestamp"){
 			return result1;
 		}	
 	}
+	
+	async function loadDBHistory3_BecEvends(name,  rowPerPage, curentpage) {
+		try{		
+		
+        var result1 = await db.collection(name).find({}, function(err, item){               
+				if(err) return console.log(err);							
+				//console.log("+++ ---");	
+				return item				
+			}).limit(rowPerPage).skip(curentpage).toArray();
+			//});
+			
+			var cursor=result1;
+			var arr=[];
+			var nDoc=0;
+			var nVal=0;
+			var nDocEnd=0;
+			
+			try{
+				cursor.forEach(function(x) {					
+					var valid=JSON.parse(x.cont);
+					nDoc=nDoc+1;
+					nDocEnd=0;
+					for (var i = 0; i < valid.length; i++) {
+					 {
+						//if (valid[i].location_id===filter_location_id){
+							//console.log(valid[i].location_id);
+							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+							nVal=nVal+1;
+						//}
+					 }
+					}	
+				})
+				if(nDoc===rowPerPage) nDocEnd=nDocEnd+nDoc+curentpage;						
+				}
+				catch(e){
+					console.log(e);
+				};
+				
+				//console.log(result1);	
+		//return {"cont" :{"arr" : arr, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
+		return {"cont" :{"arr" : result1, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
 	
 	async function loadDBHistoryBec(name,  rowPerPage, curentpage, filter_location_id) {
 		try{		
@@ -1189,7 +1237,195 @@ if (key1==="validCount" || key1==="timestamp"){
 		}
 	});
 	
-	// валидации база
+	// действия водителей база, интерфейс Дима 
+	app.post('/api/evendsdm',async function(req, res) {
+		//var id = req.params.id; // получаем день
+		//console.log(req.body);
+		//var id = req.body.dat1;
+		var id = req.body.bodyreg.filter.date.start.substr(0,10);		
+		var usersFile1 = 'even_'+id;
+		console.log(usersFile1);
+		//var partN=req.body.bodyreg.currentPage;
+		//var rowPerPage=req.body.bodyreg.rowPerPage;
+		
+		
+		var rowPerPage = req.body.bodyreg.rowPerPage;
+		var currentPage = req.body.bodyreg.currentPage;
+		var filter_date_start = req.body.bodyreg.filter.date.start;
+		var filter_date_end = req.body.bodyreg.filter.date.end;
+		var filter_line = req.body.bodyreg.filter.line;
+		var filter_trip_id = req.body.bodyreg.filter.trip_id;
+		var filter_passengers = req.body.bodyreg.filter.passengers;
+		var filter_stop_code = req.body.bodyreg.filter.stop_code;
+		var filter_stop_sequence = req.body.bodyreg.filter.stop_sequence;		 
+		var filter_location_id = req.body.bodyreg.filter.location_id;
+		var filter_product_id = req.body.bodyreg.filter.product_id;
+		var filter_card_id = req.body.bodyreg.filter.card_id;
+		var filter_doc_num = req.body.bodyreg.filter.doc_num;
+		
+		console.log(currentPage +" - "+rowPerPage);
+		var user = [];	
+		item =0;			
+		var cont28 = [];
+		var contval = [];
+		var kol =0;
+		var contDocN=0;
+		var contValN=0;
+		var contDocEnd=0;
+		
+		//cont28 = await loadDBHistory2(usersFile1);
+		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		if (filter_location_id===""){
+		//if (true){	
+			//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+				contR = await loadDBHistory3_BecEvends(usersFile1,rowPerPage, currentPage);
+				cont28 = contR.cont.arr; 
+				//console.log(contR.cont.arr);
+				//console.log(contR.cont.nDoc);
+				//console.log(contR.cont.nVal);
+				//console.log(contR.cont.nDocEnd);
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;
+		}else{
+			// запрос с информации полного дня (location id)	{"cont" :{"arr" : arr, "nDoc" = nDoc, "nVal" : nVal }};
+			var contR = await loadDBHistoryBec(usersFile1,rowPerPage, currentPage, filter_location_id);
+				cont28 = contR.cont.arr; 
+				//console.log(contR.cont.arr);
+				//console.log(contR.cont.nDoc);
+				//console.log(contR.cont.nVal);
+				//console.log(contR.cont.nDocEnd);
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;	
+		}
+		
+		//console.log(cont28);	
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {					
+					{
+						user.push(contval[j]);
+						//console.log(contval[j]);
+					}
+				}	
+            //console.log("Валидаций = "+kol);  
+			}
+			
+			//console.log(filter_line);
+			// маршрут
+			var userFF = user.slice(0);
+			/*
+			if(filter_line!="")
+			{
+				var userF = userFF.filter(function (a) {
+				
+				if(a.line===null){
+					//console.log(a.line);
+					return false
+				}else{
+					//console.log(a.line);
+					//console.log(filter_line);
+					//return (a.line==filter_line);
+					return (String(a.line).includes(filter_line));
+				}
+				});
+				userFF=userF.slice(0);
+			}
+			
+			//console.log(userFF.length);
+			
+			// номер турникета
+			if(filter_product_id!="")
+			{
+				var userF = userFF.slice(0);
+				var userFF = userF.filter(function (a) {
+				
+				if(a.product_id===null){
+					//console.log(a.product_id);
+					return false
+				}else{
+					//console.log(a.product_id);
+					//console.log(filter_line);
+					//return ((a.product_id)==(filter_product_id));
+					return (String(a.product_id).includes(filter_product_id));
+					
+				}
+				});
+				userFF=userF.slice(0);
+			}
+			
+            //filter_location_id
+			
+			// номер ПЕ, станции с турникетами
+			if(filter_location_id!="")
+			{				
+				var userF = userFF.slice(0);
+				var userFF = userF.filter(function (a) {
+				
+				if(a.location_id===null){
+					//console.log(a.product_id);
+					return false
+				}else{
+					//console.log(a.product_id);
+					//console.log(filter_line);
+					//return ((a.location_id)==(filter_location_id));
+					return (String(a.location_id).includes(filter_location_id));
+					
+				}
+				});
+			}			
+			
+			// тип билета
+			if(filter_card_id!="")
+			{				
+				var userF = userFF.slice(0);
+				var userFF = userF.filter(function (a) {
+				
+				if(a.card_id===null){					
+					return false
+				}else{					
+					//return ((a.card_id)==(filter_card_id));
+					return (String(a.card_id).includes(filter_card_id));
+				}
+				});
+			}	
+			
+			// к-во пассажиров
+			if(filter_passengers!="")
+			{				
+				var userF = userFF.slice(0);
+				var userFF = userF.filter(function (a) {
+				
+				if(a.card_id===null){					
+					return false
+				}else{					
+					//return ((a.passengers)==(filter_passengers));
+					return (String(a.passengers).includes(filter_passengers));					
+				}
+				});
+			}	
+			*/
+			
+		    //var userF=[];
+			//console.log(userFF.length);
+			var userF = userFF.slice(0);
+		
+
+		var users =userF.slice(0);	
+		//console.log("--------------");
+		//console.log(users);
+		// отправляем пользователя
+		if (users) {
+			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN, nDocEndItem : contDocEnd}});
+		} else {
+			res.status(404).send();
+		}
+	});
+	
+	// действия водителей база, интерфейс Дима 
 	app.post('/api/ausersdm',async function(req, res) {
 		//var id = req.params.id; // получаем день
 		//console.log(req.body);
@@ -1391,6 +1627,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			res.status(404).send();
 		}
 	});
+	
 	
 	
 	// действия водителей база
