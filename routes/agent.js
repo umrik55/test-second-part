@@ -1362,13 +1362,14 @@ if (key1==="validCount" || key1==="timestamp"){
 			if(filter_driver_id!="")
 			{				
 				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
+				var userF = userF.filter(function (a) {
 				
 				if(a.driver_id===null){					
 					return false
 				}else{					
 					return (String(a.driver_id).includes(filter_driver_id));					
 				}
+				userFF=userF.slice(0);
 				});
 			}			
 			
@@ -1378,7 +1379,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			if(filter_evends_id!="")
 			{
 				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
+				var userF = userF.filter(function (a) {
 				var par=a.event;
 				console.log(par);
 				if(par===null){					
@@ -1387,7 +1388,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					return (String(par).includes(filter_evends_id));					
 				}
 				});
-				
+				userFF=userF.slice(0);
 			}
 			var userF = userFF.slice(0);
 		
