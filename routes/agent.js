@@ -1338,113 +1338,62 @@ if (key1==="validCount" || key1==="timestamp"){
 						//console.log(contval[j]);
 					}
 				}	
-            //console.log("Валидаций = "+kol);  
+          
 			}
 			
-			//console.log(filter_line);
+			
 			// маршрут
 			var userFF = user.slice(0);
-			/*
+			//console.log(userFF);
 			if(filter_line!="")
 			{
 				var userF = userFF.filter(function (a) {
 				
-				if(a.line===null){
-					//console.log(a.line);
+				if(a.route===null){					
 					return false
-				}else{
-					//console.log(a.line);
-					//console.log(filter_line);
-					//return (a.line==filter_line);
-					return (String(a.line).includes(filter_line));
+				}else{					
+					return (String(a.route).includes(filter_line));
 				}
 				});
 				userFF=userF.slice(0);
-			}
-			
-			//console.log(userFF.length);
-			
-			// номер турникета
-			if(filter_product_id!="")
-			{
-				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
-				
-				if(a.product_id===null){
-					//console.log(a.product_id);
-					return false
-				}else{
-					//console.log(a.product_id);
-					//console.log(filter_line);
-					//return ((a.product_id)==(filter_product_id));
-					return (String(a.product_id).includes(filter_product_id));
-					
-				}
-				});
-				userFF=userF.slice(0);
-			}
-			
-            //filter_location_id
-			
-			// номер ПЕ, станции с турникетами
-			if(filter_location_id!="")
+			}			
+						
+			// номер водителя
+			if(filter_driver_id!="")
 			{				
 				var userF = userFF.slice(0);
 				var userFF = userF.filter(function (a) {
 				
-				if(a.location_id===null){
-					//console.log(a.product_id);
+				if(a.driver_id===null){					
 					return false
-				}else{
-					//console.log(a.product_id);
-					//console.log(filter_line);
-					//return ((a.location_id)==(filter_location_id));
-					return (String(a.location_id).includes(filter_location_id));
-					
+				}else{					
+					return (String(a.driver_id).includes(filter_driver_id));					
 				}
 				});
 			}			
 			
-			// тип билета
-			if(filter_card_id!="")
-			{				
+			
+			console.log(filter_evends_id);
+			// код действий водителя
+			if(filter_evends_id!="")
+			{
 				var userF = userFF.slice(0);
 				var userFF = userF.filter(function (a) {
-				
-				if(a.card_id===null){					
+				var par=a.event;
+				console.log(par);
+				if(par===null){					
 					return false
 				}else{					
-					//return ((a.card_id)==(filter_card_id));
-					return (String(a.card_id).includes(filter_card_id));
+					return (String(par).includes(filter_evends_id));					
 				}
 				});
-			}	
-			
-			// к-во пассажиров
-			if(filter_passengers!="")
-			{				
-				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
 				
-				if(a.card_id===null){					
-					return false
-				}else{					
-					//return ((a.passengers)==(filter_passengers));
-					return (String(a.passengers).includes(filter_passengers));					
-				}
-				});
-			}	
-			*/
-			
-		    //var userF=[];
-			//console.log(userFF.length);
+			}
 			var userF = userFF.slice(0);
 		
 
 		var users =userF.slice(0);	
-		//console.log("--------------");
-		//console.log(users);
-		// отправляем пользователя
+		
 		if (users) {
 			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN, nDocEndItem : contDocEnd}});
 		} else {
@@ -1525,129 +1474,102 @@ if (key1==="validCount" || key1==="timestamp"){
 						//console.log(contval[j]);
 					}
 				}	
-            //console.log("Валидаций = "+kol);  
+              
 			}
-			//console.log(filter_line);
+			
 			// маршрут
 			var userFF = user.slice(0);
 			if(filter_line!="")
 			{
 				var userF = userFF.filter(function (a) {
 				
-				if(a.line===null){
-					//console.log(a.line);
+				if(a.line===null){					
 					return false
-				}else{
-					//console.log(a.line);
-					//console.log(filter_line);
-					//return (a.line==filter_line);
+				}else{					
 					return (String(a.line).includes(filter_line));
 				}
 				});
 				userFF=userF.slice(0);
-			}
+			}	
 			
-			//console.log(userFF.length);
-			
+			//console.log(userFF);		
 			// номер турникета
 			if(filter_product_id!="")
 			{
 				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
+				var userF = userF.filter(function (a) {
 				
 				if(a.product_id===null){
-					//console.log(a.product_id);
 					return false
-				}else{
-					//console.log(a.product_id);
-					//console.log(filter_line);
-					//return ((a.product_id)==(filter_product_id));
-					return (String(a.product_id).includes(filter_product_id));
-					
+				}else{					
+					return (String(a.product_id).includes(filter_product_id));					
 				}
 				});
 				userFF=userF.slice(0);
 			}
 			
-            //filter_location_id
-			
+			// номер рейса
+			if(filter_trip_id!="")
+			{
+				var userF = userFF.slice(0);
+				var userF = userF.filter(function (a) {
+				
+				if(a.trip_id===null){
+					return false
+				}else{					
+					return (String(a.trip_id).includes(filter_trip_id));					
+				}
+				});
+				userFF=userF.slice(0);
+			}
+			            
 			// номер ПЕ, станции с турникетами
 			if(filter_location_id!="")
 			{				
 				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
+				var userF = userF.filter(function (a) {
 				
-				if(a.location_id===null){
-					//console.log(a.product_id);
+				if(a.location_id===null){					
 					return false
-				}else{
-					//console.log(a.product_id);
-					//console.log(filter_line);
-					//return ((a.location_id)==(filter_location_id));
-					return (String(a.location_id).includes(filter_location_id));
-					
+				}else{					
+					return (String(a.location_id).includes(filter_location_id));					
 				}
 				});
+				userFF=userF.slice(0);
 			}			
 			
 			// тип билета
 			if(filter_card_id!="")
 			{				
 				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
-				
+				var userF = userF.filter(function (a) {				
 				if(a.card_id===null){					
 					return false
-				}else{					
-					//return ((a.card_id)==(filter_card_id));
+				}else{
 					return (String(a.card_id).includes(filter_card_id));
 				}
 				});
+				userFF=userF.slice(0);
 			}	
 			
 			// к-во пассажиров
 			if(filter_passengers!="")
 			{				
 				var userF = userFF.slice(0);
-				var userFF = userF.filter(function (a) {
+				var userF = userF.filter(function (a) {
 				
 				if(a.card_id===null){					
 					return false
-				}else{					
-					//return ((a.passengers)==(filter_passengers));
+				}else{
 					return (String(a.passengers).includes(filter_passengers));					
 				}
 				});
+				userFF=userF.slice(0);
 			}	
 			
-			
-		    //var userF=[];
-			//console.log(userFF.length);
 			var userF = userFF.slice(0);
-		/*	
-		if(userF.length-(rowPerPage)>0){	
-			if(userF.length-(rowPerPage*currentPage)>0){				
-				var poz2 = (rowPerPage*currentPage);
-				var poz1 = (rowPerPage*(currentPage-1));
-				var users =userF.slice(poz1,poz2);
-			}else{
-				var poz2 = (rowPerPage*(currentPage-1));
-				var poz1 = (rowPerPage*(currentPage-2));
-				var users =userF.slice(poz1,poz2);	
-			}	
-		}else{			
-			if 	(currentPage===1){
-				var poz2 = rowPerPage;
-				var poz1 = 0;
-				var users =userF.slice(poz1,poz2);
-			}else{				
-				var users =[];
-			}
-		};
-		*/
-		var users =userF.slice(0);	
-		//console.log(users);
-		// отправляем пользователя
+		
+		var users =userF.slice(0);		
 		if (users) {
 			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN, nDocEndItem : contDocEnd}});
 		} else {
