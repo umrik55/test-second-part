@@ -1091,6 +1091,49 @@ if (key1==="validCount" || key1==="timestamp"){
 		}	
 	}
 	
+	async function loadDBHistoryBecTime(name,  rowPerPage, curentpage, filter_Note_time) {
+		try{		
+		
+        var result1 = await db.collection(name).find({}, function(err, item){               
+				if(err) return console.log(err);							
+				//console.log("+++ ---");	
+				return item				
+			}).toArray();
+			//});
+			var cursor=result1;
+			var arr=[];
+			var nDoc=0;
+			var nVal=0;
+			var nDocEnd=0;
+			try{
+				cursor.forEach(function(x) {					
+					var valid=JSON.parse(x.cont);
+					nDoc=nDoc+1;
+					nDocEnd=0;
+					for (var i = 0; i < valid.length; i++) {
+					 {
+						if (valid[i].Note_time.includes(filter_Note_time)){
+							//console.log(valid[i].Note_time);
+							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+							nVal=nVal+1;
+						}
+					 }
+					}	
+				})				
+				}
+				catch(e){
+					console.log(e);
+				};	
+				//console.log("11111111111111111111+++ ---");	
+		return {"cont" :{"arr" : arr, "nDoc" : nDoc, "nVal" : nVal,  "nDocEnd" : nDocEnd }};
+		}catch(e){
+			console.log("Помилка читання БД "+name);
+			var result1 = "[]";
+			return result1;
+		}	
+	}
+	
+	
 	async function loadDBHistoryBecDriv(name,  rowPerPage, curentpage, filter_driver_id) {
 		try{		
 		
@@ -1132,6 +1175,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			return result1;
 		}	
 	}
+	
 	
 	
 	/////////////////////
@@ -1401,6 +1445,163 @@ if (key1==="validCount" || key1==="timestamp"){
 			res.status(404).send();
 		}
 	});
+	
+	// оборудование база, интерфейс Дима 
+	app.post('/api/equipsdm',async function(req, res) {
+		//var id = req.params.id; // получаем день
+		//console.log(req.body);
+		//var id = req.body.dat1;
+		var id = req.body.bodyreg.filter.date.start.substr(0,10);		
+		var usersFile1 = 'equip_'+id;
+		console.log(usersFile1);
+		//var partN=req.body.bodyreg.currentPage;
+		//var rowPerPage=req.body.bodyreg.rowPerPage;
+		
+		
+		var rowPerPage = req.body.bodyreg.rowPerPage;
+		var currentPage = req.body.bodyreg.currentPage;
+		var filter_date_start = req.body.bodyreg.filter.date.start;
+		var filter_date_end = req.body.bodyreg.filter.date.end;
+		
+		var filter_Note_time = req.body.bodyreg.filter.Note_time;
+		var filter_Location_type = req.body.bodyreg.filter.Location_type;
+		var filter_Event = req.body.bodyreg.filter.Event;		
+		var filter_Device_ID = req.body.bodyreg.filter.Device_ID;
+		var filter_Location = req.body.bodyreg.filter.Location;
+		var filter_Message_uptime = req.body.bodyreg.filter.Message_uptime;		
+		var filter_Message_fwVersion = req.body.bodyreg.filter.Message_fwVersion;
+		var filter_Message_validators = req.body.bodyreg.filter.Message_validators;		
+		var filter_Message_applicationUptime = req.body.bodyreg.filter.Message_applicationUptime;
+		var filter_Message_systemState = req.body.bodyreg.filter.Message_systemState;		
+		var filter_Message_gps = req.body.bodyreg.filter.Message_gps;
+		var filter_Message_driverInterface = req.body.bodyreg.filter.Message_driverInterface;		
+		var filter_Message_service_id = req.body.bodyreg.filter.Message_service_id;
+		
+		//var filter_card_id = req.body.bodyreg.filter.card_id;
+		//var filter_doc_num = req.body.bodyreg.filter.doc_num;
+		//var filter_stop_sequence = req.body.bodyreg.filter.stop_sequence;	
+		
+		console.log(currentPage +" - "+rowPerPage);
+		var user = [];	
+		item =0;			
+		var cont28 = [];
+		var contval = [];
+		var kol =0;
+		var contDocN=0;
+		var contValN=0;
+		var contDocEnd=0;
+		
+		//cont28 = await loadDBHistory2(usersFile1);
+		//cont28 = await loadDBHistory3(usersFile1,rowPerPage, currentPage);
+		if (filter_Note_time===""){		
+				contR = await loadDBHistory3_BecEvends(usersFile1,rowPerPage, currentPage);
+				cont28 = contR.cont.arr; 
+				//console.log(contR.cont.arr);
+				//console.log(contR.cont.nDoc);
+				//console.log(contR.cont.nVal);
+				//console.log(contR.cont.nDocEnd);
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;
+		}else{
+			
+			// запрос с информации полного дня (location id)	{"cont" :{"arr" : arr, "nDoc" = nDoc, "nVal" : nVal }};
+			if(!(filter_Note_time==="")){
+			var contR = await loadDBHistoryBecTime(usersFile1,rowPerPage, currentPage, filter_Note_time);
+				cont28 = contR.cont.arr;
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;
+			}else{
+				/*
+				var contR = await loadDBHistoryBecDriv(usersFile1,rowPerPage, currentPage, filter_driver_id);
+				cont28 = contR.cont.arr;
+				contDocN=contR.cont.nDoc;
+				contValN=contR.cont.nVal;
+				contDocEnd=contR.cont.nDocEnd;
+				*/
+			};	
+		}
+		
+		//console.log(cont28);	
+			for (var i = 0; i < cont28.length; i++) {
+				contval=JSON.parse(cont28[i].cont);
+				//console.log("-------------Блок № "+i);
+				kol=kol+(contval.length);
+				for (var j = 0; j < contval.length; j++) {					
+					{
+						user.push(contval[j]);
+						//console.log(contval[j]);
+					}
+				}	
+          
+			}
+			var userF = user.slice(0);
+			
+			
+			// PE
+			var userFF = user.slice(0);
+			//console.log(userFF);
+			if(filter_Location!="")
+			{
+				var userF = userFF.filter(function (a) {
+				
+				if(a.Location===null){					
+					return false
+				}else{					
+					return (String(a.Location)===String(filter_Location));
+				}
+				});
+				userFF=userF.slice(0);
+			}			
+			/*			
+			// номер водителя
+			if(filter_driver_id!="")
+			{				
+				var userF = userFF.slice(0);
+				var userF = userF.filter(function (a) {
+				
+				if(a.driver_id===null){					
+					return false
+				}else{					
+					return (String(a.driver_id).includes(filter_driver_id));					
+				}
+				userFF=userF.slice(0);
+				});
+			}			
+			
+			
+			console.log(filter_evends_id);
+			// код действий водителя
+			if(filter_evends_id!="")
+			{
+				var userF = userFF.slice(0);
+				var userF = userF.filter(function (a) {
+				var par=a.event;
+				console.log(par);
+				if(par===null){					
+					return false
+				}else{					
+					return (String(par).includes(filter_evends_id));					
+				}
+				});
+				userFF=userF.slice(0);
+			}
+			var userF = userFF.slice(0);
+		*/
+
+		
+		var users =userF.slice(0);	
+		//console.log(users);
+		
+		if (users) {
+			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN, nDocEndItem : contDocEnd}});
+		} else {
+			res.status(404).send();
+		}
+	});
+	
+	
 	
 	// действия водителей база, интерфейс Дима 
 	app.post('/api/ausersdm',async function(req, res) {

@@ -1,0 +1,555 @@
+﻿<!-- 20201207 форма формирование мониторинга обладнання, що надійшло з АСОП, протокол Дм +return-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список валідацій АСОП</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="fonts.css" />
+    <link rel="stylesheet" type="text/css" href="gridview.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap-datepicker.css" />
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <script src="gridview.js"></script>
+    <script src="jquery.js"></script>
+    <script type="text/javascript" src="bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
+</head>
+<body>
+    {{> loader}}
+    {{> menu}}
+    {{> header_2}}
+    {{> modalLegend}}
+    <div id="container" style="float: right; padding-top: 15px;">
+        <div id="texts" style="display:inline; white-space:nowrap;">
+            <span>Користувач: <b>{{username}}</b></span>
+        </div>
+
+        <div style="display:inline;  cursor: pointer; height: 4%">
+            <img id="profile-preview" class="rounded-circle" src="img/user.png">
+        </div>
+    </div>
+    {{> profile}}
+	 
+	
+	<h3 align="center" >
+	<div  class="external-borders" >
+     Запит блоку інформації - 	
+     <button id="button1"><img src="img/DataContainer_MovePreviousHS.png"></button>
+	 <label id="label">№ = 1</label>	
+	 <button id="button"><img src="img/DataContainer_MoveNextHS.png"></button>
+	 &nbsp;&nbsp;&nbsp;&nbsp
+	
+	 ( Параметри запиту: N=
+	 <input type="text" id="input" size="1" value="">
+	 
+	 РО=
+	 <input type="text" id="inputpe" size="1" value="">
+	 Час=
+	 <input type="text" id="inputdriv" size="1" value="">
+	 <button id="buttonF"><img src="img/edit.png"></button>
+	 )
+	 &nbsp;&nbsp;&nbsp;&nbsp
+	 
+	  <label id="nDoc"></label>
+	  <label id="nVal"></label>
+	 
+	 
+	 </div>
+	 </h3>
+	 <h2 align="center">Список обладнання, з архіву АСОП </h2> 
+		
+	<div id="wrapper">
+        <div class="external-borders-big">
+            <div id="ten">
+                <table id='ptable' class="table table-condensed table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id                      
+							</th>
+                            <th>Дата та час
+							<br>
+							<div class="input-group date datefuelpicker" data-provide="datepicker" style="float: left">
+							<input type="text" class="form-control" id="datebegin" name="datebegin">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-th"></span>
+								</div>
+							</div>						
+                            							
+							</th>
+                            <th>Вид транспорту</th>
+							<th>UID</th>
+							<th>ІД контролера</th>
+							<th>Рухома одиниця</th>
+							<th>Час роботи</th>
+							<th>Версія прошивки контролера</th>
+							<th>Валідатори</th>
+							<th>Безперервна робота ПО</th>
+							<th>Стан бортової системи</th>
+							<th>Дані gps</th>
+							<th>Термінал водія</th>
+							<th>Поточний рейс</th>
+							</tr></thead>
+                            <!--<th>Детально</th>-->
+                            <!--<th></th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+
+
+        <script>
+		var partN =1;
+		var mar="";
+		var pe="";
+		document.getElementById('input').value =0;
+		document.getElementById('inputdriv').value = "";
+		document.getElementById('inputpe').value = "";	
+		
+		$("#buttonF").on( "click", function() {
+        partN= document.getElementById('input').value;
+		$("#label").text("№ "+partN);
+		mar= document.getElementById('inputdriv').value;
+		pe= document.getElementById('inputpe').value;
+		});
+		
+		$("#button").on( "click", function() {
+        partN++;
+		
+		$("#label").text("№ "+partN);        
+			GetUsers();		
+			InitPagingB(g);		
+        });
+		
+		$("#button1").on( "click", function() {
+		partN--;
+        $("#label").text("№ "+partN);			
+			GetUsers();		
+			InitPagingB(g);
+		
+        });
+            var store;			
+			// Получение всех пользователей
+            function GetUsers() {                
+				//var dat1 = "2020-10-29";
+				var dat1 = document.getElementById('datebegin').value;
+				if (dat1===""){
+					var dattec = new Date;
+					dat1 = dattec.getFullYear()+"-";
+					if(dattec.getMonth()+1<10){
+						dat1 = dat1+"0"+(dattec.getMonth()+1)+"-";
+					}
+					else{
+						dat1 = dat1+(dattec.getMonth()+1)+"-";
+					}
+					if(dattec.getDate()<10){
+						dat1 = dat1+"0"+dattec.getDate();
+					}
+					else
+					{
+						dat1 = dat1+dattec.getDate();
+					}				
+					document.getElementById('datebegin').value=dat1;
+					}
+				//alert(dat1)};
+				//$("table").empty();
+				document.getElementById("loader").style.display = "block";
+                $.ajax({
+                    url: "/api/equipsdm/",
+                    type: "POST",
+					data : JSON.stringify({
+					//dat1 : dat1,
+					///*
+					bodyreg: {
+							rowPerPage : 100,
+							currentPage : partN-1,
+							filter: {
+							Id: "",
+								date: {
+									start: dat1,
+									end: "2020-11-03T12:00:00Z"
+									},
+								Note_time : mar,
+							   Location_type : "",
+							   Event : "",
+							   Device_ID : "",
+							   Location : pe,
+							   Message_uptime : "",
+							   Message_fwVersion : "",
+							   Message_validators : "",
+							   Message_applicationUptime : "",
+							   Message_systemState : "",
+							   Message_gps : "",
+							   Message_driverInterface : "",
+							   Message_service_id : ""							
+							}
+						}					
+					//*/
+					}),					
+                    contentType: "application/json",
+                    success: function (users) {
+					//alert("success "+users.cont.users.length);
+                        var rows = "";
+						if(users.cont.nDoc===0){
+							$("#nDoc").text("");
+						}else{
+							$("#nDoc").text("бд_док="+users.cont.nDoc);
+						};
+						if(users.cont.nVal===0){
+							$("#nVal").text("");
+						}else{
+							$("#nVal").text("з "+users.cont.nVal+" діями ");
+						};
+						partN=users.cont.nDocEndItem;
+						$("#label").text("№ "+partN);
+                        $.each(users.cont.users, function (index, user) {
+                            // добавляем полученные элементы в таблицу                            
+							rows += row(user);
+                        })
+                       	
+						//$("table tbody").append(rows);                        
+						
+						//store = users;
+						store = users.cont.users;
+                        document.getElementById("loader").style.display = "none";
+                    }
+                });
+				document.getElementById("loader").style.display = "none";
+            }
+            // Получение одного пользователя
+            function GetUser(id) {
+                $.ajax({
+                    url: "/api/ausers/" + id,
+                    type: "GET",
+                    contentType: "application/json",
+                    success: function (user) {
+                        var form = document.forms["userForm"];
+                        form.elements["id"].value = user.id;
+                        form.elements["timestamp"].value = user.timestamp;
+                        form.elements["line"].value = user.line;
+                        form.elements["trip_id"].value = user.trip_id;
+                        form.elements["passengers"].value = user.passengers;
+                        form.elements["stop_code"].value = user.stop_code;
+                        form.elements["stop_sequence"].value = user.stop_sequence;
+                        form.elements["location_id"].value = user.location_id;
+                        form.elements["product_id"].value = user.product_id;
+                        form.elements["card_id"].value = user.card_id;
+                        form.elements["doc_num"].value = user.doc_num;
+                    }
+                });
+            }
+            // Добавление пользователя
+            function CreateUser(timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num) {
+                $.ajax({
+                    url: "api/ausers",
+                    contentType: "application/json",
+                    method: "POST",
+                    data: JSON.stringify({
+                        timestamp: timestamp,
+                        line: line,
+                        trip_id: trip_id,
+                        passengers: passengers,
+                        stop_code: stop_code,
+                        stop_sequence: stop_sequence,
+                        location_id: location_id,
+                        product_id: product_id,
+                        card_id: card_id,
+                        doc_num: doc_num
+                    }),
+                    success: function (user) {
+                        reset();
+                        $("table tbody").append(row(user));
+                        g.updateDataStoreRow(user);
+                        g.pgShowLastPage();
+                    }
+                })
+            }
+            // Изменение пользователя
+            function EditUser(userId, timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num) {
+                $.ajax({
+                    url: "api/ausers",
+                    contentType: "application/json",
+                    method: "PUT",
+                    data: JSON.stringify({
+                        id: userId,
+                        timestamp: timestamp,
+                        line: line,
+                        trip_id: trip_id,
+                        passengers: passengers,
+                        stop_code: stop_code,
+                        stop_sequence: stop_sequence,
+                        location_id: location_id,
+                        product_id: product_id,
+                        card_id: card_id,
+                        doc_num: doc_num
+                    }),
+                    success: function (user) {
+                        reset();
+                        $("tr[data-rowid='" + user.id + "']").replaceWith(row(user));
+                        g.updateDataStoreRow(user);
+                    }
+                })
+            }
+
+            // сброс формы
+            function reset() {
+                var form = document.forms["userForm"];
+                form.reset();
+                form.elements["id"].value = 0;
+            }
+
+            // Удаление пользователя
+            function DeleteUser(id) {
+                var isDelete = confirm("Видалити запис?");
+                if (isDelete) {
+                    $.ajax({
+                        url: "api/ausers/" + id,
+                        contentType: "application/json",
+                        method: "DELETE",
+                        success: function (user) {
+                            //console.log(user);
+                            $("tr[data-rowid='" + user.id + "']").remove();
+                            g.deleteDataStoreRow(user);
+                        }
+                    })
+                }
+            }
+            
+            // создание строки для таблицы
+        var row = function (user) {
+		if (typeof user.Note_time == "undefined") user.Note_time =" ";
+		if (typeof user.Location_type == "undefined") user.Location_type =" ";
+		if (typeof user.Device_ID == "undefined") user.Device_ID =" ";
+		if (typeof user.Location == "undefined") user.Location =" ";
+		if (typeof user.Event == "undefined") user.Event =" ";
+		if (typeof user.Message_uptime == "undefined") user.Message_uptime =" ";
+		if (typeof user.Message_fwVersion == "undefined") user.Message_fwVersion =" ";
+		if (typeof user.Message_validators == "undefined") user.Message_validators =" ";
+		if (typeof user.Message_transitDatabaseVersion == "undefined") user.Message_transitDatabaseVersion =" ";
+		if (typeof user.Message_applicationUptime == "undefined") user.Message_applicationUptime =" ";
+		if (typeof user.Message_systemState == "undefined") user.Message_systemState =" ";
+		if (typeof user.Message_gps == "undefined") user.Message_gps =" ";
+		if (typeof user.Message_driverInterface == "undefined") user.Message_driverInterface =" ";
+		if (typeof user.Message_service_id == "undefined") user.Message_service_id =" ";
+            return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
+                   "<td>" + user.Note_time.substr(0,10)+" "+user.Note_time.substr(11,8) + "</td>" +
+				   "<td>" + user.Location_type + "</td>" +
+				   "<td>" + user.Event + "</td>" +
+				   "<td>" + user.Device_ID+ "</td>" +
+				   "<td>" + user.Location + "</td>" +
+				   "<td>" + user.Message_uptime + "</td>" +
+				   "<td>" + user.Message_fwVersion + "</td>" +
+				   "<td>" + user.Message_validators + "</td>" +
+				   "<td>" + user.Message_applicationUptime + "</td>" +
+				   "<td>" + user.Message_systemState + "</td>" +
+				   "<td>" + user.Message_gps + "</td>" +
+				   "<td>" + user.Message_driverInterface + "</td>" +
+				   "<td>" + user.Message_service_id + "</td>" +
+				   "</tr>";
+        }
+		   
+            // сброс значений формы
+            $("#reset").click(function (e) {
+
+                e.preventDefault();
+                reset();
+            })
+
+            // отправка формы
+            $("form").submit(function (e) {
+                e.preventDefault();
+                var id = this.elements["id"].value;
+                var timestamp = this.elements["timestamp"].value;
+                var line = this.elements["line"].value;
+                var trip_id = this.elements["trip_id"].value;
+                var passengers = this.elements["passengers"].value;
+                var stop_code = this.elements["stop_code"].value;
+                var stop_sequence = this.elements["stop_sequence"].value;
+                var location_id = this.elements["location_id"].value;
+                var product_id = this.elements["product_id"].value;
+                var card_id = this.elements["card_id"].value;
+                var doc_num = this.elements["doc_num"].value;
+                if (id == 0)
+                    CreateUser(timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num);
+                else
+                    EditUser(id, timestamp, line, trip_id, passengers, stop_code, stop_sequence, location_id, product_id, card_id, doc_num);
+            });
+
+            // нажимаем на ссылку Изменить
+            $("body").on("click", ".editLink", function () {
+                var id = $(this).data("id");
+                GetUser(id);
+            })
+            // нажимаем на ссылку Удалить
+            $("body").on("click", ".removeLink", function () {
+                var id = $(this).data("id");
+                DeleteUser(id);
+            })
+
+            function InitPaging(ag) {
+                ag.renderRow = row;
+                var f = function () {
+                    ag.updateDataStore(store);
+                    ag.InitPaging(true, 10);
+                    ag.pgShowFirstPage();
+                };
+                setTimeout(f, 1000);
+            }
+			
+			
+			
+			 function InitPaging(ag)
+               {
+                 ag.renderRow = row;
+                 var f = function ()
+                 {
+                    ag.updateDataStore(store);
+					ag.InitPaging(true,2);
+                    ag.pgShowFirstPage();
+                 };
+                   setTimeout(f,2000);
+              }
+            
+			function InitPagingB(ag) {
+                ag.renderRow = row;
+                var f = function () {
+                    ag.updateDataStore(store);
+                    ag.InitPagingB(true, 2);
+                    ag.pgShowFirstPage();
+                };
+                setTimeout(f, 1000);
+            }			
+			
+			// загрузка пользователей
+            GetUsers();
+
+            // Code to initialize GridView
+            var g = new GridView('ptable');
+            g.Init();
+            InitPaging(g);
+
+            /*
+                               // Сортировка по полям
+                               try
+                               {
+                                  var afields =
+                                {
+                                  sortOrder: 1,
+                                  fields:
+                                  [
+                                   { name:'mar' },
+                                   { name:'amount'}
+                                  ]
+                                };
+
+                               ///g.SetSortFields(afields);
+                              }  catch (e)
+                              {
+                                 alert('SetFields Error: ' + e.message);
+                              }
+
+
+             // Сортировка по колонкам
+            /*
+                          try
+                        {
+                            var tablefields =
+         {
+            sortOrder: 0,
+            fields:
+             [
+              { name:'id',
+                col: 0 },
+			  { name:'Note_time',
+                col: 1 },
+			  { name:'Location_type',
+                col: 2 },
+              { name:'Event',
+                col: 3 },
+			  { name:'Device_ID',
+                col: 4 },
+              { name:'Location',
+                col: 5 },
+			  { name:'Message_systemState',
+                col: 10 }
+             ]
+         };
+         g.SetTableFields(tablefields);
+                       }
+                         catch (e)
+                        {
+                         alert('SetFields Error: ' + e.message);
+                        }
+            */
+
+            try {
+                var tablefields =
+                {
+                    sortOrder: 1,
+                    fields:
+                        [
+                            {
+                                name: 'id',
+                                col: 0
+                            },
+                            {
+                                name: 'timestamp',
+                                col: 1
+                            },
+                            {
+                                name: 'line',
+                                col: 2
+                            },
+							 {
+                                name: 'trip_id',
+                                col: 3
+                            },
+							 {
+                                name: 'passengers',
+                                col: 4
+                            },
+							 {
+                                name: 'stop_code',
+                                col: 5
+                            },
+							 {
+                                name: 'location_id',
+                                col: 7
+                            },
+							{
+                                name: 'product_id',
+                                col: 8
+                            },
+							{
+                                name: 'card_id',
+                                col: 9
+                            }
+
+                        ]
+                };
+                g.SetTableFields(tablefields);
+            } catch (e) {
+                alert('tablefields error ' + e.message);
+            }
+
+
+        </script>
+       
+        <script type="text/javascript">
+		
+	//Инициализация компонента календрря и отлов события смены датты
+			$('.datefuelpicker').datepicker({ 'format': 'yyyy-mm-dd', 'language': 'uk' }).on('changeDate', function (e) { $('.datefuelpicker').datepicker('hide'); $("table tbody").empty(); GetUsers();location.reload() });
+		</script>
+    </div>
+	{{> footer}}
+</body>
+
+</html>

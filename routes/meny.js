@@ -1,3 +1,4 @@
+// 20201207` сервіси для посилань меню + сервис архив оборудования
 // 20200921` сервіси для посилань меню + план конфигурации турникетов
 // 20180814 сервіси для посилань меню
 module.exports = (app) => {
@@ -428,6 +429,21 @@ module.exports = (app) => {
             //var users = JSON.parse(content);
 			var users =[];
             response.render("inEvendsMongoDm.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
+  
+  // запрос страницы с оборудованием  базы АСОП интерфей Дм 
+  app.get("/equipsBDDm", function (request, response) {
+    try {	  
+			var users =[];
+            response.render("inEquipsMongoDm.hbs", {
               users: users,
             });
 	  
