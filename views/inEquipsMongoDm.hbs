@@ -119,21 +119,29 @@
 		$("#label").text("№ "+partN);
 		mar= document.getElementById('inputdriv').value;
 		pe= document.getElementById('inputpe').value;
+		$("#nDoc").text("");
+		$("#nVal").text("");		
 		});
 		
 		$("#button").on( "click", function() {
         partN++;
 		
 		$("#label").text("№ "+partN);        
+			InitPagingB(g);	
+			$("#nDoc").text("");
+			$("#nVal").text("");
 			GetUsers();		
-			InitPagingB(g);		
+			//InitPagingB(g);		
         });
 		
 		$("#button1").on( "click", function() {
 		partN--;
         $("#label").text("№ "+partN);			
-			GetUsers();		
 			InitPagingB(g);
+			$("#nDoc").text("");
+			$("#nVal").text("");			
+			GetUsers();		
+			//InitPagingB(g);
 		
         });
             var store;			
