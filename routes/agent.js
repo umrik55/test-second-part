@@ -1556,6 +1556,37 @@ if (key1==="validCount" || key1==="timestamp"){
 				});
 				userFF=userF.slice(0);
 			}			
+			
+			// вид транспорта
+			if(filter_Location_type!="")
+			{				
+				var userF = userFF.slice(0);
+				var userF = userF.filter(function (a) {
+				
+				if(a.Location_type===null){					
+					return false
+				}else{					
+					return (String(a.Location_type.toLowerCase()).includes(filter_Location_type.toLowerCase()));					
+				}
+				userFF=userF.slice(0);
+				});
+			}	
+			
+			// статус системы
+			if(filter_Message_systemState!="")
+			{				
+				var userF = userFF.slice(0);
+				var userF = userF.filter(function (a) {
+				
+				if(a.Message_systemState===null){					
+					return false
+				}else{					
+					return (String(a.Message_systemState.toLowerCase()).includes(filter_Message_systemState.toLowerCase()));					
+				}
+				userFF=userF.slice(0);
+				});
+			}	
+			
 			/*			
 			// номер водителя
 			if(filter_driver_id!="")
