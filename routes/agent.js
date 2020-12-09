@@ -1116,7 +1116,9 @@ if (key1==="validCount" || key1==="timestamp"){
 							//console.log(valid[i].Note_time);
 							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
 							nVal=nVal+1;
-						}
+						}else{
+							break;
+						};
 					 }
 					}	
 				})				

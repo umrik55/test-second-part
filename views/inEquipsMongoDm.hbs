@@ -159,7 +159,10 @@
 					}				
 					document.getElementById('datebegin').value=dat1;
 					}
-				//alert(dat1)};
+					if(mar!=""){
+					   mar=dat1+"T"+mar;
+					};
+				//alert(mar);
 				//$("table").empty();
 				document.getElementById("loader").style.display = "block";
                 $.ajax({
