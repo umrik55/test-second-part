@@ -1117,7 +1117,7 @@ if (key1==="validCount" || key1==="timestamp"){
 							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
 							nVal=nVal+1;
 						}else{
-							break;
+							//break;
 						};
 					 }
 					}	
@@ -1593,7 +1593,15 @@ if (key1==="validCount" || key1==="timestamp"){
 		*/
 
 		
-		var users =userF.slice(0);	
+		var users =userF.slice(0);
+		users.sort(function(a, b){
+			var nameA=a.Note_time.toLowerCase();
+			var nameB=b.Note_time.toLowerCase();
+			if (nameA < nameB) return -1;	//сортируем строки по возрастанию			
+			if (nameA > nameB) return 1;
+			return 0;                       // Никакой сортировки
+		})
+		
 		//console.log(users);
 		
 		if (users) {
