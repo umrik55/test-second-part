@@ -1466,9 +1466,11 @@ if (key1==="validCount" || key1==="timestamp"){
 		var filter_date_end = req.body.bodyreg.filter.date.end;
 		
 		var filter_Note_time = req.body.bodyreg.filter.Note_time;
-		if(filter_Note_time!=""){
-			filter_Note_time = id+"T" + filter_Note_time;
-		};		
+		if(filter_Note_time===""){
+		}else{
+			filter_Note_time = id+"T"+filter_Note_time;
+		};
+		console.log(filter_Note_time);
 		var filter_Location_type = req.body.bodyreg.filter.Location_type;
 		var filter_Event = req.body.bodyreg.filter.Event;		
 		var filter_Device_ID = req.body.bodyreg.filter.Device_ID;
