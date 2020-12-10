@@ -1112,12 +1112,17 @@ if (key1==="validCount" || key1==="timestamp"){
 					nDocEnd=0;
 					for (var i = 0; i < valid.length; i++) {
 					 {
-						if (valid[i].Note_time.includes(filter_Note_time)){
-							//console.log(valid[i].Note_time);
-							arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
-							nVal=nVal+1;
-						}else{
-							//break;
+						try{
+							if (valid[i].Note_time.includes(filter_Note_time)){
+								//console.log(valid[i].Note_time);
+								arr.push({cont :"["+JSON.stringify( valid[i])+"]"});
+								nVal=nVal+1;
+							}else{
+								//break;
+							};							
+						}catch(e){
+							console.log("Ошибка в формате оборудования");
+							break;
 						};
 					 }
 					}	
