@@ -439,6 +439,23 @@ module.exports = (app) => {
     }
   });
   
+  // действия механиков 
+  app.get("/evendsMeh", function (request, response) {
+    try {   
+	   //var content = fs.readFileSync(refValidateFile, "utf8");	   
+            //var users = JSON.parse(content);
+			var users =[];
+            response.render("inEvendsEquipsMh.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
+  
   // запрос страницы с оборудованием  базы АСОП интерфей Дм 
   app.get("/equipsBDDm", function (request, response) {
     try {	  
