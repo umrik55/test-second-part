@@ -1646,6 +1646,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			return 0;                       // Никакой сортировки
 		})
 		
+/*
 		var tempEquips=[];
 		for (var ii = 0; ii < users.length; ii++) {
 			//console.log(users[j].cont.users.timestamp.substr(11, 8));
@@ -1706,6 +1707,8 @@ if (key1==="validCount" || key1==="timestamp"){
 			  };
 		
 		}
+		
+*/		
 		users.sort(function(a, b){
 			var nameA=a.location_id.toLowerCase();
 			var nameB=b.location_id.toLowerCase();
