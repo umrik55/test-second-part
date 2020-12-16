@@ -1502,7 +1502,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		//var id = req.body.dat1;
 		var id = req.body.bodyreg.filter.date.start.substr(0,10);		
 		var usersFile1 = 'even_'+id;
-		console.log(usersFile1);
+		var usersFileEq = 'equip_'+id;
+		console.log("Remont - "+usersFileEq);
 		//var partN=req.body.bodyreg.currentPage;
 		//var rowPerPage=req.body.bodyreg.rowPerPage;
 		
@@ -1523,7 +1524,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		//var filter_doc_num = req.body.bodyreg.filter.doc_num;
 		//var filter_stop_sequence = req.body.bodyreg.filter.stop_sequence;	
 		
-		console.log(currentPage +" - "+rowPerPage);
+		
 		var user = [];	
 		item =0;			
 		var cont28 = [];
@@ -1636,8 +1637,6 @@ if (key1==="validCount" || key1==="timestamp"){
 			}
 			*/
 			var userF = userFF.slice(0);
-		
-
 		var users =userF.slice(0);
 		users.sort(function(a, b){
 			var nameA=a.timestamp.toLowerCase();
@@ -1646,6 +1645,75 @@ if (key1==="validCount" || key1==="timestamp"){
 			if (nameA > nameB) return 1;
 			return 0;                       // Никакой сортировки
 		})
+		
+		var tempEquips=[];
+		for (var ii = 0; ii < users.length; ii++) {
+			//console.log(users[j].cont.users.timestamp.substr(11, 8));
+			var contPe = users[ii].location_id;
+			var contTime=users[ii].timestamp.substr(0,10)+"T"+users[ii].timestamp.substr(11,4);
+			//var contTime=users[ii].timestamp.substr(0,10)+"T"+"11:12"
+			//console.log(users[ii].timestamp.substr(0,10)+"T"+users[ii].timestamp.substr(11,5)+" - "+contPe);
+			
+			
+			var contRQ = await loadDBHistoryBecTime(usersFileEq, "2", "0", contTime);
+			var cont28Q = contRQ.cont.arr;
+			var contDocNQ=contRQ.cont.nDoc;
+			var contValNQ=contRQ.cont.nVal;
+			var contDocEndQ=contRQ.cont.nDocEnd;
+			//console.log(cont28Q);
+			for (var i = 0; i < cont28Q.length; i++) {
+					contval=JSON.parse(cont28Q[i].cont);					
+					kol=kol+(contval.length);
+					for (var j = 0; j < contval.length; j++) {					
+						{
+							if(contval[j].Location===contPe){
+							//if(contval[j].Location==="0289"){	
+								//console.log(contval[j].Note_time);
+								//console.log(contval[j].Location);
+								//console.log(contval[j].Message_validators);
+								//console.log(contval[j].Message_systemState);
+								//console.log(contval[j].Message_gps);
+								//console.log(contval[j].Message_service_id);
+								if (typeof contval[j].Note_time === "undefined") contval[j].Note_time ="-";
+								if (typeof contval[j].Location === "undefined") contval[j].Location ="-";
+								if (typeof contval[j].Message_validators === "undefined") contval[j].Message_validators ="-";
+								if (typeof contval[j].Message_gps === "undefined") contval[j].Message_gps ="-";
+								if (typeof contval[j].Message_service_id === "undefined") contval[j].Message_service_id ="-";
+								
+								tempEquips.push({timestamp :contval[j].Note_time,
+                                                 location_id : contval[j].Location,												 
+												 Message_validators : contval[j].Message_validators,
+												 Message_systemState : contval[j].Message_systemState,
+												 Message_gps : 	contval[j].Message_gps,
+												 Message_service_id : contval[j].Message_service_id
+								});	
+							}
+							//console.log(contval[j].Location);
+						}
+					}	
+			  
+				}
+				
+		}
+		
+		// добавляем оборудование к действиям механиков
+		for (var i = 0; i < tempEquips.length; i++) {
+		      //console.log("Equins - "+tempEquips[i].Message_service_id);
+			  //console.log("Equins - "+tempEquips[i].Message_gps); 
+			  if((tempEquips[i].Message_service_id!="") || (tempEquips[i].Message_gps!="") ){
+				 //console.log("Equins2 - "+tempEquips[i]); 
+				 users.push(tempEquips[i]);
+			  };
+		
+		}
+		users.sort(function(a, b){
+			var nameA=a.location_id.toLowerCase();
+			var nameB=b.location_id.toLowerCase();
+			if (nameA < nameB) return -1;	//сортируем строки по возрастанию			
+			if (nameA > nameB) return 1;
+			return 0;                       // Никакой сортировки
+		})
+		
 		
 		if (users) {
 			res.send({cont:{users : users, nDoc : contDocN, nVal : contValN, nDocEndItem : contDocEnd}});

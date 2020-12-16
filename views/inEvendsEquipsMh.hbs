@@ -86,6 +86,10 @@
                             <th>Маршрут водія</th>
                             <th>Рейс водія</th>
                             <th>Дія водія</th>
+							<th>Статус</th>
+							<th>GPS</th>
+							<th>Рейс</th>							
+							<th>Валідатори</th>
                             <!--<th>Детально</th>-->
                             <!--<th></th>-->
                         </tr>
@@ -312,13 +316,18 @@
 
             // создание строки для таблицы
             var row = function (user) {
-                if (typeof user.duty_code == "undefined") user.duty_code = " ";
+                if (typeof user.id == "undefined") user.id = " ";
+				if (typeof user.duty_code == "undefined") user.duty_code = " ";
                 if (typeof user.location_id == "undefined") user.location_id = " ";
                 if (typeof user.route == "undefined") user.route = " ";
                 if (typeof user.ext_trip_id == "undefined") user.ext_trip_id = " ";
                 if (typeof user.event == "undefined") user.event = " ";
                 if (typeof user.ext_driver_tb == "undefined") user.ext_driver_tb = " ";
                 if (typeof user.ext_driver_id == "undefined") user.ext_driver_id = " ";
+				if (typeof user.Message_systemState == "undefined") user.Message_systemState = " ";
+				if (typeof user.Message_service_id == "undefined") user.Message_service_id = " ";
+				if (typeof user.Message_gps == "undefined") user.Message_gps = " ";
+				if (typeof user.Message_validators == "undefined") user.Message_validators = " ";
 
                 return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
                     "<td>" + user.timestamp.substr(0, 10) + " " + user.timestamp.substr(11, 8) + "</td>" +
@@ -328,6 +337,11 @@
                     "<td>" + user.route + "</td>" +
                     "<td>" + user.ext_trip_id + "</td>" +
                     "<td>" + user.event + "</td>" +
+					"<td>" + user.Message_systemState + "</td>" +
+					"<td>" + user.Message_gps + "</td>" +
+					"<td>" + user.Message_service_id + "</td>" +
+					"<td>" + user.Message_validators + "</td>" +
+					
 
                     //"<td><a class='editLink' data-id='" + user.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>  ";
 					"</tr>";
