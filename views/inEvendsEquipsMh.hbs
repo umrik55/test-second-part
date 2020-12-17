@@ -90,6 +90,7 @@
 							<th>GPS</th>
 							<th>Рейс</th>							
 							<th>Валідатори</th>
+							<th>Лог</th>
                             <!--<th>Детально</th>-->
                             <!--<th></th>-->
                         </tr>
@@ -289,7 +290,63 @@
                     }
                 })
             }
-
+				
+			// Получение всех пользователей
+            function GetEquips(time,pe) {                
+				var arr=time.split("T");
+				var dat2=arr[0];
+				var time2=arr[1];
+				document.getElementById("loader").style.display = "block";
+                $.ajax({
+                    url: "/api/equipsdm/",
+                    type: "POST",
+					data : JSON.stringify({					
+					bodyreg: {
+							rowPerPage : 4,
+							currentPage : 0,
+							filter: {
+							Id: "",
+								date: {
+									start: dat2,
+									end: ""
+									},
+								Note_time : time2,
+							   Location_type : "",
+							   Event : "",
+							   Device_ID : "",
+							   Location : pe,
+							   Message_uptime : "",
+							   Message_fwVersion : "",
+							   Message_validators : "",
+							   Message_applicationUptime : "",
+							   Message_systemState : "",
+							   Message_gps : "",
+							   Message_driverInterface : "",
+							   Message_service_id : ""							
+							}
+						}					
+					//*/
+					}),					
+                    contentType: "application/json",
+                    success: function (users) {
+					//alert("success "+users.cont.users.length);
+                        var rows = "";						
+                        $.each(users.cont.users, function (index, user) {
+                            // добавляем полученные элементы в таблицу                            
+							rows += rowEq(user);
+                        })
+                       	
+						$("table tbody").append(rows);                        
+						
+						//store = users;
+						//store = users.cont.users;
+						//alert(rows);
+                        document.getElementById("loader").style.display = "none";
+                    }
+                });
+				document.getElementById("loader").style.display = "none";
+            }	
+				
             // сброс формы
             function reset() {
                 var form = document.forms["userForm"];
@@ -316,6 +373,7 @@
 
             // создание строки для таблицы
             var row = function (user) {
+			    var tempEquips = user.timestamp + "," +user.location_id;
                 if (typeof user.id == "undefined") user.id = " ";
 				if (typeof user.duty_code == "undefined") user.duty_code = " ";
                 if (typeof user.location_id == "undefined") user.location_id = " ";
@@ -329,7 +387,8 @@
 				if (typeof user.Message_gps == "undefined") user.Message_gps = " ";
 				if (typeof user.Message_validators == "undefined") user.Message_validators = " ";
 
-                return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
+               // return "<tr data-rowid='" + user.id +"'><td>" + user.id + "</td>" +
+			    return "<tr data-rowid='" + tempEquips + "'><td>" + user.id + "</td>" +
                     "<td>" + user.timestamp.substr(0, 10) + " " + user.timestamp.substr(11, 8) + "</td>" +
                     "<td>" + user.ext_driver_id + "</td>" +
                     "<td>" + user.location_id + "</td>" +
@@ -344,8 +403,43 @@
 					
 
                     //"<td><a class='editLink' data-id='" + user.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>  ";
+					"<td><a class='editLink' data-id='" + tempEquips + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>  ";
 					"</tr>";
             }
+		   
+			// создание строки для таблицы
+        var rowEq = function (user) {
+		if (typeof user.Note_time == "undefined") user.Note_time =" ";
+		if (typeof user.Location_type == "undefined") user.Location_type =" ";
+		if (typeof user.Device_ID == "undefined") user.Device_ID =" ";
+		if (typeof user.Location == "undefined") user.Location =" ";
+		if (typeof user.Event == "undefined") user.Event =" ";
+		if (typeof user.Message_uptime == "undefined") user.Message_uptime =" ";
+		if (typeof user.Message_fwVersion == "undefined") user.Message_fwVersion =" ";
+		if (typeof user.Message_validators == "undefined") user.Message_validators =" ";
+		if (typeof user.Message_transitDatabaseVersion == "undefined") user.Message_transitDatabaseVersion =" ";
+		if (typeof user.Message_applicationUptime == "undefined") user.Message_applicationUptime =" ";
+		if (typeof user.Message_systemState == "undefined") user.Message_systemState =" ";
+		if (typeof user.Message_gps == "undefined") user.Message_gps =" ";
+		if (typeof user.Message_driverInterface == "undefined") user.Message_driverInterface =" ";
+		if (typeof user.Message_service_id == "undefined") user.Message_service_id =" ";
+            return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
+                   "<td>" + user.Note_time.substr(0,10)+" "+user.Note_time.substr(11,8) + "</td>" +
+				   "<td>" + user.Location_type + "</td>" +
+				   "<td>" + user.Location + "</td>" +
+				   "<td>" + "" + "</td>" +
+				   "<td>" + ""+ "</td>" +				  
+				   "<td>" + "" + "</td>" +
+				   "<td>" + "" + "</td>" +
+				   "<td>" + user.Message_systemState + "</td>" +
+				   "<td>" + user.Message_gps + "</td>" +
+				   "<td>" + user.Message_service_id + "</td>" +
+				   "<td>" + user.Message_validators + "</td>" +
+				   "<td>" + "" + "</td>" +				   
+				   //"<td>" + "" + "</td>" +
+				   
+				   "</tr>";
+        }
 		   
             // сброс значений формы
             $("#reset").click(function (e) {
@@ -377,7 +471,13 @@
             // нажимаем на ссылку Изменить
             $("body").on("click", ".editLink", function () {
                 var id = $(this).data("id");
-                GetUser(id);
+				var arr = id.split(",");
+				var time = arr[0].substr(0,10)+"T"+arr[0].substr(11,4);
+				//time="2020-10-29T11:0"
+				var pe = arr[1];
+				//pe="0289"
+				alert(time+" - "+pe);
+                GetEquips(time,pe);
             })
             // нажимаем на ссылку Удалить
             $("body").on("click", ".removeLink", function () {
