@@ -1646,7 +1646,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			return 0;                       // Никакой сортировки
 		})
 		
-
+/*
 		var tempEquips=[];
 		//for (var ii = 0; ii < users.length; ii++) {
 		for (var ii = 0; ii < 1; ii++) {	
@@ -1688,7 +1688,8 @@ if (key1==="validCount" || key1==="timestamp"){
 												 Message_systemState : contval[j].Message_systemState,
 												 Message_gps : 	contval[j].Message_gps,
 												 Message_service_id : contval[j].Message_service_id
-								});	
+								});			
+								
 							}
 							//console.log(contval[j].Location);
 						}
@@ -1709,7 +1710,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		
 		}
 		
-		
+*/		
 		users.sort(function(a, b){
 			var nameA=a.location_id.toLowerCase();
 			var nameB=b.location_id.toLowerCase();
