@@ -1662,7 +1662,7 @@ if (key1==="validCount" || key1==="timestamp"){
 			var contDocNQ=contRQ.cont.nDoc;
 			var contValNQ=contRQ.cont.nVal;
 			var contDocEndQ=contRQ.cont.nDocEnd;
-			//console.log(cont28Q);
+			console.log(cont28Q);
 			for (var i = 0; i < cont28Q.length; i++) {
 					contval=JSON.parse(cont28Q[i].cont);					
 					kol=kol+(contval.length);
