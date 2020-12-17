@@ -1646,9 +1646,10 @@ if (key1==="validCount" || key1==="timestamp"){
 			return 0;                       // Никакой сортировки
 		})
 		
-/*
+
 		var tempEquips=[];
-		for (var ii = 0; ii < users.length; ii++) {
+		//for (var ii = 0; ii < users.length; ii++) {
+		for (var ii = 0; ii < 1; ii++) {	
 			//console.log(users[j].cont.users.timestamp.substr(11, 8));
 			var contPe = users[ii].location_id;
 			var contTime=users[ii].timestamp.substr(0,10)+"T"+users[ii].timestamp.substr(11,4);
@@ -1708,7 +1709,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		
 		}
 		
-*/		
+		
 		users.sort(function(a, b){
 			var nameA=a.location_id.toLowerCase();
 			var nameB=b.location_id.toLowerCase();
