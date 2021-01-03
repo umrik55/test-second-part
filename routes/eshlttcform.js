@@ -115,7 +115,6 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('fuel').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		console.log(result1[0].tempData.cont.substr(0,1800));
 		return result1[0].tempData.cont;
 		}catch(e){			
 			console.log("Помилка читання БД "+name);
@@ -136,7 +135,6 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('evends').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		console.log(result1[0].tempData.cont.substr(0,1800));
 		return result1[0].tempData.cont;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
@@ -157,7 +155,6 @@ module.exports = app => {
 		try{
 		var result1 = await db.collection('equips').find({ _id: name }).toArray();
 		//console.log(JSON.parse(result1[0].tempData.cont).length);
-		console.log(result1[0].tempData.cont.substr(0,1800));
 		return result1[0].tempData.cont;
 		}catch(e){
 			console.log("Помилка читання БД "+name);
@@ -744,19 +741,23 @@ module.exports = app => {
 			if(key!="note_time" && key!="note_time_" && key!="info"){								
 				if(fF===fP){				
 					for (var i = 0; i < confP[key].validations.length; i++) {
+						//console.log(confP[key].validations[i]);						
 						for (var j = 0; j < confF[key].validations.length; j++) {
+							//console.log("----"+confF[key].validations[j]);
+							egvt=0;
 							if(confP[key].validations[i]===confF[key].validations[j]){
 								egvt=1;
 								break;
 							};							
 						}
-					if(egvt===0)	
-						contest = "Так";
-						break;
+						if(egvt===0){	
+							contest = "Так";
+							break;
+						}
 					}	
 				}else{ 
 					contest = "Так";
-					break;
+					break;						
 				};
 			};
         };			
@@ -1876,8 +1877,9 @@ module.exports = app => {
 						
 						
 						for (var i=0; i < users.length; i++) {
+							//console.log(users[i]);
 							users[i] = mondutyM(users[i],descr,usersdr, usersvalid, eventPe, validPe, obPe, chobPe,chobPeP );  
-							//users[i] = mondutyM(users[i],descr,usersdr, usersvalid);  
+							//users[i] = mondutyM(users[i],descr,usersdr, usersvalid); 							
 							};
 						//users.sort(compare);					
 						

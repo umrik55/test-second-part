@@ -37,11 +37,11 @@
 	 
 	
 	<h3 align="center" >
-	<div  class="external-borders" >
+	<div  class="external-borders">
      Запит інформації - 	
-     <button id="button1"><img src="img/DataContainer_MovePreviousHS.png"></button>
-	 <label id="label">№ = 1</label>	
-	 <button id="button"><img src="img/DataContainer_MoveNextHS.png"></button>
+     <button  id="button1" ><img src="img/DataContainer_MovePreviousHS.png"></button>
+	 <label  id="label">№ = 1</label>	
+	 <button  id="button"><img src="img/DataContainer_MoveNextHS.png"></button>
 	 &nbsp;&nbsp;&nbsp;&nbsp
 	
 	 ( Параметри запиту: 
@@ -188,8 +188,14 @@
 					}),					
                     contentType: "application/json",
                     success: function (users) {
+					//success: function (users) (
 					//alert("success "+users.cont.users.length);
-                        var rows = "";
+                    if(users.cont.users.length===0){
+						document.getElementById("loader").style.display = "none";
+						alert("Дій механіків на цю дату — не знайдено.")
+					};
+
+						var rows = "";
 						if(users.cont.nDoc===0){
 							$("#nDoc").text("");
 						}else{
@@ -212,9 +218,11 @@
 						//store = users;
 						store = users.cont.users;
                         document.getElementById("loader").style.display = "none";
-                    }
+                    },
+					error: function (error) { document.getElementById("loader").style.display = "none"; alert("Невідома помилка..."); }
+			
                 });
-				document.getElementById("loader").style.display = "none";
+				//document.getElementById("loader").style.display = "none";
             }
             // Получение одного пользователя
             function GetUser(id) {
@@ -329,6 +337,10 @@
 					}),					
                     contentType: "application/json",
                     success: function (users) {
+						if(users.cont.users.length===0){
+							document.getElementById("loader").style.display = "none";
+							alert("Логів обладнання на цей час — не знайдено.")
+						};
 					//alert("success "+users.cont.users.length);
                         var rows = "";						
                         $.each(users.cont.users, function (index, user) {
@@ -342,7 +354,9 @@
 						//store = users.cont.users;
 						//alert(rows);
                         document.getElementById("loader").style.display = "none";
-                    }
+                    },
+					error: function (error) { document.getElementById("loader").style.display = "none"; alert("Невідома помилка..."); }
+			
                 });
 				document.getElementById("loader").style.display = "none";
             }	
