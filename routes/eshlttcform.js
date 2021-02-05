@@ -1,3 +1,4 @@
+//20210205  версия для ГИОЦ Этап 2, двойной формуляр на смену
 //20201016  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 //20200917 -  сервисе план конфигурации турникетов
 //20200527 -  сервисе /api/pe_date_formVtrat
@@ -390,7 +391,9 @@ module.exports = app => {
 							userf.A2 = 1;
 							if(typeof users[i].duty_code == "undefined"){
 							}else{	
-								userf.factWorkHeaderID = userf.factWorkHeaderID +" ("+users[i].duty_code+")";
+								//userf.factWorkHeaderID = userf.factWorkHeaderID +" ("+users[i].duty_code+")";
+								userf.factWorkHeaderID = userf.factWorkHeaderID +"<br>("+users[i].duty_code+" "+
+									" ПЕ="+users[i].location_id+"<br>М="+users[i].route+" Р="+users[i].ext_trip_id+")";
 							};
 							if(typeof users[i].ext_trip_id == "undefined"){
 								if(users[i].event=="SI" || users[i].event=="SO"){
