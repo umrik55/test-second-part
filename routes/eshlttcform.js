@@ -397,14 +397,14 @@ module.exports = app => {
 								
 								for (var jj = 0; jj< userfs.length; jj++) {
 									//console.log(userfs[jj]);
-									console.log(descr+userfs[jj].factWorkHeaderID+" -----------");
-									console.log(users[i].duty_code+" -----------");
+									//console.log(descr+userfs[jj].factWorkHeaderID+" -----------");
+									//console.log(users[i].duty_code+" -----------");
 									if((descr+userfs[jj].factWorkHeaderID)===users[i].duty_code){										
 										
-										userf.factWorkHeaderID=userf.factWorkHeaderID+"<br>("+userfs[jj].factWorkHeaderID+" "+
-										" РО="+userfs[jj].PENumPe+"<br>М="+userfs[jj].marNum+"-"+userfs[jj].vipNum+userfs[jj].smenNum+
-										" Тб="+userfs[jj].driversTabNum+")";
-										console.log(userfs[jj].userf.factWorkHeaderID+" ++++++++");
+										userf.factWorkHeaderID=userf.factWorkHeaderID+"<br>("+descr+userfs[jj].factWorkHeaderID+" "+
+										" РО="+userfs[jj].PENumPe+"<br>М="+userfs[jj].marNum+"-"+userfs[jj].vipNum+"-"+userfs[jj].smenNum+
+										" Тб="+userfs[jj].driversTabNum+" Ч="+userfs[jj].factWorkHeaderBegin.substr(11,5)+"-"+userfs[jj].factWorkHeaderEnd.substr(11,5)+")";
+										//console.log(userfs[jj].userf.factWorkHeaderID+" ++++++++");
 									};
 									
 								}	
