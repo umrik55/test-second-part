@@ -295,7 +295,7 @@ module.exports = app => {
         catch(e){console.log(e);}
     });
 	
-	function monduty(userf, descr, users, usersvalid, eventPe, validPe, obPe) {
+	function monduty(userf, descr, users, usersvalid, eventPe, validPe, obPe, userfs) {
 		//console.log("F="+descr);
 		/*
 		var eventPeFile = 'data/eventPe.json'; // файл последних действий водителя
@@ -392,8 +392,23 @@ module.exports = app => {
 							if(typeof users[i].duty_code == "undefined"){
 							}else{	
 								//userf.factWorkHeaderID = userf.factWorkHeaderID +" ("+users[i].duty_code+")";
-								userf.factWorkHeaderID = userf.factWorkHeaderID +"<br>("+users[i].duty_code+" "+
-									" ПЕ="+users[i].location_id+"<br>М="+users[i].route+" Р="+users[i].ext_trip_id+")";
+								//userf.factWorkHeaderID = userf.factWorkHeaderID +"<br>("+users[i].duty_code+" "+
+								//	" РО="+users[i].location_id+"<br>М="+users[i].route+" Р="+users[i].ext_trip_id+")";
+								
+								for (var jj = 0; jj< userfs.length; jj++) {
+									//console.log(userfs[jj]);
+									console.log(descr+userfs[jj].factWorkHeaderID+" -----------");
+									console.log(users[i].duty_code+" -----------");
+									if((descr+userfs[jj].factWorkHeaderID)===users[i].duty_code){										
+										
+										userf.factWorkHeaderID=userf.factWorkHeaderID+"<br>("+userfs[jj].factWorkHeaderID+" "+
+										" РО="+userfs[jj].PENumPe+"<br>М="+userfs[jj].marNum+"-"+userfs[jj].vipNum+userfs[jj].smenNum+
+										" Тб="+userfs[jj].driversTabNum+")";
+										console.log(userfs[jj].userf.factWorkHeaderID+" ++++++++");
+									};
+									
+								}	
+									
 							};
 							if(typeof users[i].ext_trip_id == "undefined"){
 								if(users[i].event=="SI" || users[i].event=="SO"){
@@ -1325,7 +1340,7 @@ module.exports = app => {
 												
 						
 						for (var i=0; i < users.length; i++) {
-							users[i] = monduty(users[i],descr,usersdr, usersvalid, eventPe, validPe, obPe);  
+							users[i] = monduty(users[i],descr,usersdr, usersvalid, eventPe, validPe, obPe, users);  
 							};
 						//users.sort(compare);
 										
