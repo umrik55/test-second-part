@@ -6,7 +6,7 @@
 // 20200909  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, без передачи валидаций в ГИОЦ 193.23.225.178 read config
 // 20181130  сервисы принятия от АСОП валидаций, билетной продукции, событий водителя
-module.exports = app => {
+module.exports = app => {	
 	var bodyParser = require('body-parser');
 	var fs = require('fs');
 	var request = require('request'); 
@@ -46,8 +46,24 @@ module.exports = app => {
 	
 	var validPeFile = 'data/validPe.json'; // файл последних действий водителя
     var validPe = {}; // объявление obj последних действий водителя
-	var vapecont = fs.readFileSync(validPeFile, 'utf8');
-	validPe = JSON.parse(vapecont);	
+	//var vapecont = fs.readFileSync(validPeFile, 'utf8');
+	//var vapecont = await loadDB(validPeFile);
+	
+	//var vapecont = await loadDB(validPeFile);
+	var vapecont = loadValidPe(validPeFile).then(function(result) {
+			  validPe = JSON.parse(result);	
+		});
+	//};
+	
+	function loadValidPe(validPeFile) {
+		  return new Promise(function(resolve, reject) {
+			// запрос с монгоДБ
+			var vape = loadDB(validPeFile);
+			resolve(vape);			
+	});
+    }
+	
+	
 	
 	//валидации по рейсам ПЕ, водитель
 	var peValidTrip = 'data/peValidTrips.json'; // файл валидации по рейсам
@@ -849,6 +865,7 @@ if (key1==="validCount" || key1==="timestamp"){
 		return result;
 	}
 	
+		
 	function insertDB(name, data) {
 		var result = 0;
 		//console.log(name);
@@ -1228,6 +1245,45 @@ if (key1==="validCount" || key1==="timestamp"){
 	
 	
 	/////////////////////
+// запрос страницы с валидациями АСОП
+  app.get("/agent", async function (request, response) {
+  var refValidateFile = "data/validations.json"; // файл по валидациям 
+   try {
+    /* 
+	 User.findById(request.session.userId).exec(function (error, user) {
+        if (error) {
+          return response.redirect("/auth");		  
+        } else {
+          if (user === null || user.is_active === false) {
+            return response.redirect("/auth");
+          } else {
+            var content = fs.readFileSync(refValidateFile, "utf8");
+            var users = JSON.parse(content);
+            response.render("inAgent.hbs", {
+              users: users,
+            });
+          }
+        }
+      });
+	  */
+	   //var content = fs.readFileSync(refValidateFile, "utf8");
+        //    var users = JSON.parse(content);
+		var content = await loadDBVal(refValidateFile);
+        var users = JSON.parse(content);	
+		
+            response.render("inAgent.hbs", {
+              users: users,
+            });
+	  
+    } catch (e) {
+		console.log(e);
+      var errit = [];
+      errit.push(e);
+      response.render("error.hbs", { errit: errit });
+    }
+  });
+
+
 // получение данных втрат из файла отчета
 	app.get('/api/vtraty/:sdate', function(req, res) {
 		var sdate = req.params.sdate; // получаем datu
@@ -1546,7 +1602,7 @@ if (key1==="validCount" || key1==="timestamp"){
 				//contDocN=contR.cont.nDoc;
 				//contValN=contR.cont.nVal;
 				//contDocEnd=contR.cont.nDocEnd;
-				var filter_driver_id_arr=["700001","700002","700003","700004","700005","700006","A1200",];
+				var filter_driver_id_arr=["700001","700002","700003","700004","700005","700006",];
 				var contR = await loadDBHistoryBecDrivAll(usersFile1,rowPerPage, currentPage, filter_driver_id_arr);
 				cont28 = contR.cont.arr;
 				contDocN=contR.cont.nDoc;
@@ -2132,7 +2188,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					user.push(contval[j]);
 					
 				}	
-            //console.log("Валидаций = "+kol);  
+           //console.log("Действия водителя = "+kol);  
 			}
 		if(user.length-700>0){
 			var poz = user.length-700
@@ -2472,6 +2528,8 @@ if (key1==="validCount" || key1==="timestamp"){
 		var tempdata=[];
 		var item = 0; // указатель блока вaлидаций для истории
 		var itemdata=[]; // блок вaлидаций для истории
+		
+		
 		
 		//var giocValid=nconf.get("giocValids");		
 		validCount=validCount+1;

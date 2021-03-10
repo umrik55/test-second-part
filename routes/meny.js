@@ -325,32 +325,21 @@ module.exports = (app) => {
   });
 
   // запрос страницы с валидациями АСОП
-  app.get("/agent", function (request, response) {
+  app.get("/agentN", function (request, response) {
     try {
-    /* 
-	 User.findById(request.session.userId).exec(function (error, user) {
-        if (error) {
-          return response.redirect("/auth");		  
-        } else {
-          if (user === null || user.is_active === false) {
-            return response.redirect("/auth");
-          } else {
-            var content = fs.readFileSync(refValidateFile, "utf8");
-            var users = JSON.parse(content);
-            response.render("inAgent.hbs", {
-              users: users,
-            });
-          }
-        }
-      });
-	  */
-	   var content = fs.readFileSync(refValidateFile, "utf8");
-            var users = JSON.parse(content);
+    
+	   var users=[];
+	  //var content = fs.readFileSync(refValidateFile, "utf8");
+        //   users = JSON.parse(content);
+		//var content = loadDBVal(refValidateFile);
+        //var users = JSON.parse(content);	
+		
             response.render("inAgent.hbs", {
               users: users,
             });
 	  
     } catch (e) {
+		console.log(e);
       var errit = [];
       errit.push(e);
       response.render("error.hbs", { errit: errit });
@@ -377,8 +366,9 @@ module.exports = (app) => {
         }
       });
 	  */
-	   var content = fs.readFileSync(refValidateFile, "utf8");
-            var users = JSON.parse(content);
+	   var users=[];
+	  // var content = fs.readFileSync(refValidateFile, "utf8");
+      //      var users = JSON.parse(content);
             response.render("inAgentMongo.hbs", {
               users: users,
             });
@@ -518,7 +508,7 @@ module.exports = (app) => {
   });
 
   // запрос страницы с состоянием оборудования  АСОП
-  app.get("/equips", function (request, response) {
+  app.get("/equipsN", function (request, response) {
     try {
     /* 
 	 User.findById(request.session.userId).exec(function (error, user) {
@@ -537,8 +527,9 @@ module.exports = (app) => {
         }
       });
 	  */
-	   var content = fs.readFileSync(refEvendsFile, "utf8");
-            var users = JSON.parse(content);
+	   var users =[];
+	   //var content = fs.readFileSync(refEvendsFile, "utf8");
+         //   var users = JSON.parse(content);
             response.render("inEquips.hbs", {
               users: users,
             });
@@ -551,7 +542,7 @@ module.exports = (app) => {
   });
 
   // запрос страницы с событиями водителей  АСОП
-  app.get("/evends", function (request, response) {
+  app.get("/evendsN", function (request, response) {
     try {
 	/*	
 	 User.findById(request.session.userId).exec(function (error, user) {
@@ -571,8 +562,9 @@ module.exports = (app) => {
         }
       });
 	  */
-	   var content = fs.readFileSync(refEvendsFile, "utf8");
-            var users = JSON.parse(content);
+	  var users=[];
+	  // var content = fs.readFileSync(refEvendsFile, "utf8");
+        //    var users = JSON.parse(content);
             //console.log(users);
             response.render("inEvents.hbs", {
               users: users,

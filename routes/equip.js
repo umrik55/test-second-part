@@ -19,11 +19,6 @@ module.exports = app => {
 	var hbs = require('hbs'); // шаблонизатор
 	var usersFile = 'data/equips.json'; // файл пользователей
 	
-	var obPeFile = 'data/equipsPe.json'; // файл оборудования ПЕ
-    var obPe = {}; // объявление obj последних сообщений оборудования
-	var vapecont = fs.readFileSync(obPeFile, 'utf8');
-	obPe = JSON.parse(vapecont);
-
 	var peConfigFile = 'data/configTurnikets.json'; // файл изменения конфигураций
 	var content = fs.readFileSync(peConfigFile, 'utf8');
 	var peConfig  = JSON.parse(content);
@@ -69,6 +64,36 @@ module.exports = app => {
 			console.log('Connected equips.json to MongoDB');
 		}
 	});
+	
+	var obPeFile = 'data/equipsPe.json'; // файл оборудования ПЕ
+    var obPe = {}; // объявление obj последних сообщений оборудования
+	//var vapecont = fs.readFileSync(obPeFile, 'utf8');
+	//obPe = JSON.parse(vapecont);
+	
+	
+	
+ // var eventPeFile = "data/eventPe.json"; // файл последних действий водителя
+ // var eventPe = {}; // объявление obj последних действий водителя
+  //var evpecont = fs.readFileSync(eventPeFile, "utf8");
+  //eventPe = JSON.parse(evpecont);
+  //var vapecont = fs.readFileSync(validPeFile, 'utf8');
+  //var vapecont = await loadDB(validPeFile);
+	
+  //var vapecont = await loadDB(validPeFile);
+	var vapecont = loadValidPe(obPeFile).then(function(result) {
+			  obPe = JSON.parse(result);	
+		});
+	//};
+	
+	function loadValidPe(obPeFile) {
+		  return new Promise(function(resolve, reject) {
+			// запрос с монгоДБ
+			var vape = loadDB(obPeFile);
+			resolve(vape);			
+	});
+    }
+	
+	
 	
 
 	function confirmConfig(pe, trips, timeData, validationArr) {

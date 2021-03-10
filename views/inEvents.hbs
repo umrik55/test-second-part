@@ -62,6 +62,7 @@
 
         <script>
             var store;
+			var rows = "";
             // Получение всех
             function GetUsers() {
                 document.getElementById("loader").style.display = "block";
@@ -70,16 +71,19 @@
                     type: "GET",
                     contentType: "application/json",
                     success: function (users) {
-                        var rows = "";
+                        //var rows = "";
                         $.each(users, function (index, user) {
                             // добавляем полученные элементы в таблицу
-                            rows += row(user);
+							//alert(row(user));
+							rows += row(user);
+							
                         })
-                        ////$("table tbody").append(rows);
+                        $("table tbody").append(rows);
                         store = users;
                         document.getElementById("loader").style.display = "none";
                     }
                 });
+				document.getElementById("loader").style.display = "none";
             }
             // Получение одного
             function GetUser(id) {
@@ -180,14 +184,15 @@
             }
             // создание строки для таблицы
             var row = function (user) {
+			    if (typeof user.timestamp == "undefined") return "";
                 if (typeof user.duty_code == "undefined") user.duty_code = " ";
                 if (typeof user.location_id == "undefined") user.location_id = " ";
                 if (typeof user.route == "undefined") user.route = " ";
                 if (typeof user.ext_trip_id == "undefined") user.ext_trip_id = " ";
                 if (typeof user.event == "undefined") user.event = " ";
-                if (typeof user.ext_driver_tb == "undefined") user.ext_driver_tb = " ";
+                //if (typeof user.ext_driver_tb == "undefined") user.ext_driver_tb = " ";
                 if (typeof user.ext_driver_id == "undefined") user.ext_driver_id = " ";
-
+			
                 return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" +
                     "<td>" + user.timestamp.substr(0, 10) + " " + user.timestamp.substr(11, 8) + "</td>" +
                     "<td>" + user.ext_driver_id + "</td>" +
@@ -195,11 +200,10 @@
                     "<td>" + user.duty_code + "</td>" +
                     "<td>" + user.route + "</td>" +
                     "<td>" + user.ext_trip_id + "</td>" +
-                    "<td>" + user.event + "</td>" +
-
-                    //"<td><a class='editLink' data-id='" + user.id + "'><span class='text-danger glyphicon glyphicon-edit'></span></a>  ";
+                    "<td>" + user.event + "</td>" +                    
 					"</tr>";
             }
+			
             // сброс значений формы
             $("#reset").click(function (e) {
 
@@ -255,9 +259,6 @@
             g.Init();
             InitPaging(g);
 
-
-
-
             try {
                 var tablefields =
                 {
@@ -271,6 +272,7 @@
                             {
                                 name: 'timestamp',
                                 col: 1
+								
                             },
                             {
                                 name: 'ext_driver_id',
@@ -288,12 +290,15 @@
                                 name: 'event',
                                 col: 7
                             }
-                        ]
+						]
                 };
                 g.SetTableFields(tablefields);
             } catch (e) {
                 alert('tablefields error ' + e.message);
             }
+
+
+
         </script>
 
         <script type="text/javascript">

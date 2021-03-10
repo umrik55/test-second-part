@@ -18,10 +18,8 @@ module.exports = (app) => {
   var fetch = require("node-fetch");
   var tbnId = fs.readFileSync("data/driverASOPjson.json", "utf8");
   var userstb = JSON.parse(tbnId);
-  var eventPeFile = "data/eventPe.json"; // файл последних действий водителя
-  var eventPe = {}; // объявление obj последних действий водителя
-  var evpecont = fs.readFileSync(eventPeFile, "utf8");
-  eventPe = JSON.parse(evpecont);
+  
+
 
   //mongodb
   var nconf = require("nconf");
@@ -41,6 +39,31 @@ module.exports = (app) => {
       console.log("Connected evends.json to MongoDB");
     }
   });
+
+  
+  var eventPeFile = "data/eventPe.json"; // файл последних действий водителя
+  var eventPe = {}; // объявление obj последних действий водителя
+  //var evpecont = fs.readFileSync(eventPeFile, "utf8");
+  //eventPe = JSON.parse(evpecont);
+  //var vapecont = fs.readFileSync(validPeFile, 'utf8');
+  //var vapecont = await loadDB(validPeFile);
+	
+  //var vapecont = await loadDB(validPeFile);
+	var vapecont = loadValidPe(eventPeFile).then(function(result) {
+			  eventPe = JSON.parse(result);	
+		});
+	//};
+	
+	function loadValidPe(eventPeFile) {
+		  return new Promise(function(resolve, reject) {
+			// запрос с монгоДБ
+			var vape = loadDB(eventPeFile);
+			resolve(vape);			
+	});
+    }
+	
+
+
 
   function saveDB(name, data) {
     var result = 0;
@@ -362,6 +385,7 @@ module.exports = (app) => {
 		//console.log("--------"+content);
 		//var usersP=content;
 		var usersP = JSON.parse(content);
+		//console.log("length ="+ usersP.length);
 	
 	if (usersP.length - 700 > 0) {
       var poz = usersP.length - 700;
@@ -369,7 +393,7 @@ module.exports = (app) => {
     } else {
       var users = usersP;
     }
-
+    //console.log(users);
     res.send(users);
   });
 
