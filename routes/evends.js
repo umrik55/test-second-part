@@ -49,11 +49,12 @@ module.exports = (app) => {
   //var vapecont = await loadDB(validPeFile);
 	
   //var vapecont = await loadDB(validPeFile);
+	/*
 	var vapecont = loadValidPe(eventPeFile).then(function(result) {
 			  eventPe = JSON.parse(result);	
 		});
 	//};
-	
+	*/
 	function loadValidPe(eventPeFile) {
 		  return new Promise(function(resolve, reject) {
 			// запрос с монгоДБ
@@ -62,7 +63,8 @@ module.exports = (app) => {
 	});
     }
 	
-
+    var evpecont = fs.readFileSync(eventPeFile, "utf8");
+    eventPe = JSON.parse(evpecont);
 
 
   function saveDB(name, data) {
