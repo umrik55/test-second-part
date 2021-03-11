@@ -80,12 +80,13 @@ module.exports = app => {
   //var vapecont = await loadDB(validPeFile);
 	
   //var vapecont = await loadDB(validPeFile);
-	var vapecont = loadValidPe(obPeFile).then(function(result) {
+	/*
+	var vapecont = loadEquipsPe(obPeFile).then(function(result) {
 			  obPe = JSON.parse(result);	
 		});
 	//};
-	
-	function loadValidPe(obPeFile) {
+	*/
+	function loadEquipsPe(obPeFile) {
 		  return new Promise(function(resolve, reject) {
 			// запрос с монгоДБ
 			var vape = loadDB(obPeFile);
@@ -93,7 +94,8 @@ module.exports = app => {
 	});
     }
 	
-	
+	var vapecont = fs.readFileSync(obPeFile, 'utf8');
+	obPe = JSON.parse(vapecont);
 	
 
 	function confirmConfig(pe, trips, timeData, validationArr) {

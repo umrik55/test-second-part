@@ -50,11 +50,12 @@ module.exports = app => {
 	//var vapecont = await loadDB(validPeFile);
 	
 	//var vapecont = await loadDB(validPeFile);
+	/*
 	var vapecont = loadValidPe(validPeFile).then(function(result) {
 			  validPe = JSON.parse(result);	
 		});
 	//};
-	
+	*/
 	function loadValidPe(validPeFile) {
 		  return new Promise(function(resolve, reject) {
 			// запрос с монгоДБ
@@ -63,7 +64,8 @@ module.exports = app => {
 	});
     }
 	
-	
+	 var vapecont = fs.readFileSync(validPeFile, 'utf8');
+	 validPe = JSON.parse(vapecont);	
 	
 	//валидации по рейсам ПЕ, водитель
 	var peValidTrip = 'data/peValidTrips.json'; // файл валидации по рейсам
