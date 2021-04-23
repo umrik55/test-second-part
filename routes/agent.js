@@ -1,3 +1,4 @@
+// 20210423  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb рейсы ПЕ
 // 20201203  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + интерфейс Evends Dm
 // 20201130  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + nDocEndItem return
 // 20201108  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb
@@ -6,7 +7,7 @@
 // 20200909  версия для ГИОЦ Этап 2, чтение с базы данных mongodb
 // 20200909  версия для ГИОЦ Этап 2, без передачи валидаций в ГИОЦ 193.23.225.178 read config
 // 20181130  сервисы принятия от АСОП валидаций, билетной продукции, событий водителя
-module.exports = app => {	
+module.exports = app => {
 	var bodyParser = require('body-parser');
 	var fs = require('fs');
 	var request = require('request'); 
@@ -46,26 +47,8 @@ module.exports = app => {
 	
 	var validPeFile = 'data/validPe.json'; // файл последних действий водителя
     var validPe = {}; // объявление obj последних действий водителя
-	//var vapecont = fs.readFileSync(validPeFile, 'utf8');
-	//var vapecont = await loadDB(validPeFile);
-	
-	//var vapecont = await loadDB(validPeFile);
-	/*
-	var vapecont = loadValidPe(validPeFile).then(function(result) {
-			  validPe = JSON.parse(result);	
-		});
-	//};
-	*/
-	function loadValidPe(validPeFile) {
-		  return new Promise(function(resolve, reject) {
-			// запрос с монгоДБ
-			var vape = loadDB(validPeFile);
-			resolve(vape);			
-	});
-    }
-	
-	 var vapecont = fs.readFileSync(validPeFile, 'utf8');
-	 validPe = JSON.parse(vapecont);	
+	var vapecont = fs.readFileSync(validPeFile, 'utf8');
+	validPe = JSON.parse(vapecont);	
 	
 	//валидации по рейсам ПЕ, водитель
 	var peValidTrip = 'data/peValidTrips.json'; // файл валидации по рейсам
@@ -272,6 +255,13 @@ module.exports = app => {
 							 console.log(err);
 						}else{	 
 							console.log('renamed complete');
+							//чтение файла для записи в бд
+							var tripsPe = {};  
+							var tripscont = fs.readFileSync(peValidTripSS, 'utf8');
+							tripsPe = JSON.parse(tripscont);
+							// запись бд рейсов
+							var data = JSON.stringify(tripsPe);
+							saveDB(peValidTripSS, data);
 						// формируем файл с данными на текущие сутки			
 						peTrip={};
 						var data = JSON.stringify(peTrip);			
@@ -301,6 +291,8 @@ module.exports = app => {
 				var result = false;
 				var data = JSON.stringify(peTrip);			
 				fs.writeFileSync(peValidTrip, data);
+				// запись бд рейсов
+				saveDB(peValidTrip, data);
 				result = true;
 				return result;
 			}catch(e){
@@ -867,7 +859,6 @@ if (key1==="validCount" || key1==="timestamp"){
 		return result;
 	}
 	
-		
 	function insertDB(name, data) {
 		var result = 0;
 		//console.log(name);
@@ -1247,45 +1238,6 @@ if (key1==="validCount" || key1==="timestamp"){
 	
 	
 	/////////////////////
-// запрос страницы с валидациями АСОП
-  app.get("/agent", async function (request, response) {
-  var refValidateFile = "data/validations.json"; // файл по валидациям 
-   try {
-    /* 
-	 User.findById(request.session.userId).exec(function (error, user) {
-        if (error) {
-          return response.redirect("/auth");		  
-        } else {
-          if (user === null || user.is_active === false) {
-            return response.redirect("/auth");
-          } else {
-            var content = fs.readFileSync(refValidateFile, "utf8");
-            var users = JSON.parse(content);
-            response.render("inAgent.hbs", {
-              users: users,
-            });
-          }
-        }
-      });
-	  */
-	   //var content = fs.readFileSync(refValidateFile, "utf8");
-        //    var users = JSON.parse(content);
-		var content = await loadDBVal(refValidateFile);
-        var users = JSON.parse(content);	
-		
-            response.render("inAgent.hbs", {
-              users: users,
-            });
-	  
-    } catch (e) {
-		console.log(e);
-      var errit = [];
-      errit.push(e);
-      response.render("error.hbs", { errit: errit });
-    }
-  });
-
-
 // получение данных втрат из файла отчета
 	app.get('/api/vtraty/:sdate', function(req, res) {
 		var sdate = req.params.sdate; // получаем datu
@@ -2190,7 +2142,7 @@ if (key1==="validCount" || key1==="timestamp"){
 					user.push(contval[j]);
 					
 				}	
-           //console.log("Действия водителя = "+kol);  
+            //console.log("Валидаций = "+kol);  
 			}
 		if(user.length-700>0){
 			var poz = user.length-700
@@ -2530,8 +2482,6 @@ if (key1==="validCount" || key1==="timestamp"){
 		var tempdata=[];
 		var item = 0; // указатель блока вaлидаций для истории
 		var itemdata=[]; // блок вaлидаций для истории
-		
-		
 		
 		//var giocValid=nconf.get("giocValids");		
 		validCount=validCount+1;
