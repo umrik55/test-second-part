@@ -1,0 +1,425 @@
+﻿<!-- 20191229 мониторинга валидаций и действий водителей по рейсам из списка  формуляров + валидаторы-->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Оперативні дані по рейсам</title>
+	<link rel="stylesheet" type="text/css" href="tcal.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" type="text/css" href="gridview.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap-datepicker.css" />
+	<script type="text/javascript" src="tcal.js"></script>
+	<script src="gridview.js"></script>
+	<script src="jquery.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+	<script type="text/javascript" src="bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="bootstrap-datepicker.uk.min.js"></script>
+	<script type="text/javascript" src="gridview.js"></script>
+
+	<style>
+		#zatemnenie {
+			background: rgba(102, 102, 102, 0.5);
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: auto;
+			display: none;
+		}
+
+		#okno {
+			width: 60%;
+			height: 50%;
+			text-align: center;
+			padding: 15px;
+			border: 3px solid #0000cc;
+			border-radius: 10px;
+			color: #0000cc;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			margin: auto;
+			background: #fff;
+			overflow-y: scroll;
+		}
+
+		#zatemnenie:target {
+			display: block;
+		}
+
+	</style>
+
+</head>
+
+<body>
+    {{> loader}}
+	{{> menu}}
+	{{> header_2}}
+    {{> modalLegend}}
+    <div id="container" style="float: right; padding-top: 15px;">
+        <div id="texts" style="display:inline; white-space:nowrap;">
+            <span>Користувач: <b>{{username}}</b></span>
+        </div>
+
+        <div style="display:inline;  cursor: pointer; height: 4%">
+            <img id="profile-preview" class="rounded-circle" src="img/user.png">
+        </div>
+    </div>
+    {{> profile}}
+	<h2 id="DateInfo" align="center"> Транспортна робота філії на дату: </h2>
+	<input type="hidden" name="selectReport" id="selRep" value="10">
+	<div class="modal">
+		<!-- Place at bottom of page -->
+	</div>
+	<div id="wrapper_form">
+        <div class="external-borders">
+		<label for="dateCreate"> </label>
+		<div class="form-group" style="float: left">
+			<select name="rezs" id="rezs" onchange="addChange()" class="form-control" style="width:300px;">
+				{{#each repps}}
+				<option value={{this.idname}}>{{this.name}}</option>
+				{{/each}}
+			</select>
+		</div>
+		<div class="input-group date datefuelpicker" data-provide="datepicker" style="float: left">
+			<input type="text" class="form-control" id="datebegin" name="datebegin">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-th"></span>
+			</div>
+		</div>
+
+		<div id="ten_2">
+			<table id="col" class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						 <th>ID</th>  
+						<th>Філія</th>                
+						<th>Валідацій згідно АСДУ</th>
+						<th>Рейси</th>
+						<th>Годин в АСДУ</th>
+						<th>Годин в АСОП</th>
+						<th>Валідатор годин в АСОП</th>
+						<th>Рухомих одиниць</th>				
+						<th>Рейси без валідацій</th>
+						<th>Годин РО поза АСОП</th>										
+						<th>Рейсів без валідацій</th>
+						<th>Годин рейсів без валідацій</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+        </div>
+		<script>
+			//Ожидание списка формуляров :)
+			var gCheck = true;
+			$body = $("body"); $(document).on({ ajaxStart: function () { if (gCheck) { $body.addClass("loading"); } }, ajaxStop: function () { $body.removeClass("loading"); } });
+			var MedS = [];//инициализация глобального массива для хранения данных с мед. службы
+			var Vtk = [];//инициализация глобального массива для хранения данных с ОТК
+			var date = new Date();
+			var DateNow = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+			document.getElementById('datebegin').value = DateNow;
+			GetUsers();//Получение списка формуляров
+			var gCheck = true;
+
+			// Получение всех формуляров
+			function GetUsers() {
+                document.getElementById("loader").style.display = "block";
+				var gCheck = true;
+				var tDate = document.getElementById('datebegin').value;
+				var data4 = document.getElementById('selRep').value; //текущая филия
+				var tempDateH = new Date();
+				var tempTimeH = tempDateH.getHours() + ":" + (tempDateH.getMinutes() < 10 ? "0" + tempDateH.getMinutes() : tempDateH.getMinutes());
+				document.getElementById('DateInfo').innerHTML = " Оперативні дані по валідаціям та рейсам філій на лінії на дату " + tDate + ", час " + (tempTimeH < 10 ? "0" + tempTimeH : tempTimeH);
+
+				$.ajax({
+					url: "/api/formulars_formTripsFi/",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						tDate: tDate,
+						tData4: data4
+					}),
+					beforeSend: function () {
+						$('#loader').show();
+					},
+					success: function (users) {
+						gCheck = false;
+						if (users.length == 0) {
+                            document.getElementById("loader").style.display = "none";
+							alert("Формулярів на цю дату — не знайдено.")
+						} else {
+							var rows = "";
+							$.each(users, function (index, user) {
+								//alert(JSON.stringify(user));
+								//if (tempTime > dutyBeg - 1) {
+									rows += row(user);
+								//};
+								
+							})
+							$("#col").append(rows);
+                            document.getElementById("loader").style.display = "none";
+						}
+					},
+					error: function (error) { document.getElementById("loader").style.display = "none"; alert("Невідома помилка...");}
+				});
+			}
+
+			//Получение массива данных с АРМ:медицина за текущие сутки
+			function GetMed() {
+				var tDate = document.getElementById('datebegin').value;
+				$.ajax({
+					url: "/api/formulars_med/",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						tDate: tDate
+					}),
+					success: function (users2) {
+						MedS = users2;
+					}
+				});
+			}
+
+			//Получение массива данных с АРМ:втк за текущие сутки
+			function GetVtk() {
+				var tDate = document.getElementById('datebegin').value;
+				$.ajax({
+					url: "/api/formulars_vtk/",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						tDate: tDate
+					}),
+					success: function (users2) {
+						Vtk = users2;
+					}
+				});
+			}
+
+			//Получение массива данных с АРМ:втк за текущие сутки
+			function GetDuty(duty) {
+				var user = {
+					trips: 1,
+					validat: 0,
+					tiket: 0,
+					status: 0
+				};
+				var typeFilii = getSelect("rezs");
+
+				$.ajax({
+					url: "/api/monduty/" + typeFilii,
+					type: "GET",
+					contentType: "application/json",
+					success: function (user) {
+						//alert("qqq");
+						//alert(user.route);
+					}
+				});
+			}
+
+			// прочитать тип транспорта Select
+			function getSelect(id) {
+				var i, o;
+				var rez = "Інший";
+				var sel = document.getElementById(id);
+				var opt = sel.options;
+				for (i = 0; i < opt.length; i++) {
+					o = opt[i];
+					if (o.selected == true) {
+						rez = o.text;
+						break;
+					}
+				}
+				var ind = rez.indexOf("Ф");
+				rez = rez.substr(ind + 1);
+				var descr = "A";
+				switch (true) {
+					case (rez) > 0 && (rez) < 9:
+						descr = "A";
+						break;
+					case (rez) > 8 && (rez) < 13:
+						descr = "B";
+						break;
+					case (rez) > 12 && (rez) < 16:
+						descr = "C";
+						break;
+					default:
+						descr = "A";
+				}
+				return descr;
+			}
+
+			function addChange() {
+				var o;
+				var sel = document.getElementById('rezs');
+				var opt = sel.options;
+				for (var i = 0; i < opt.length; i++) {
+					o = opt[i];
+					if (o.selected == true) {
+						document.getElementById('selRep').value = o.value;
+						break;
+					}
+				}
+
+				$("table tbody").empty(); GetUsers();
+			}
+
+			// создание строки для таблицы
+			var row = function (user) {
+			
+				///*	
+					if(!user.validation) user.validation="-";
+					if(user.obtime==0) user.obtime="-";	
+						
+					var strTD="";
+					var strTD1="";
+					
+					
+					
+					//оборудование
+					if(user.obtime==="-"){
+						strTD=" bgcolor='#FF7518'";
+					}else{
+						var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+						var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 19);
+						var local = localISOTime+".003Z";
+						//alert(+Date.parse(local)-Date.parse(user.obtime+".003Z"))
+						if(+Date.parse(local)-Date.parse(user.obtime+".003Z")<=180000){
+							strTD=" bgcolor='#00ffa1'";
+						}else{
+							strTD=" bgcolor='#FFFF00'";
+						};
+						
+					};
+					//валидации
+					strTD1=" bgcolor='#D3D3D3'";
+					if(user.validation==="-"){
+						strTD1=" bgcolor='#FF7518'";
+					}else{
+						var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+						var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 19);
+						var local = localISOTime+".000Z";
+						if(Date.parse(local)-Date.parse(user.validation+".003Z")<=300000){
+							strTD1=" bgcolor='#00ffa1'";
+						}else{
+							strTD1=" bgcolor='#FFFF00'";
+						};
+						
+					};
+						
+					if(user.info && user.validation){
+					
+					};
+					if(user.info){
+					}else{
+						user.info="На даний час інформація відсутня"
+					};
+					var vtratyT;
+					vtratyT =(Number(user.NValid)/Number(user.timeAsop))*(Number(user.timeNotAsopF)+Number(user.timeNotValidAsopF));
+					
+					var nametemp="";
+					if(user.id_filii==="sum"){
+						user.NPENotAsop="Кількість РО="+user.NPENotAsop.length;
+						user.id_filii="";
+						nametemp="Всього"
+					}else{
+					  switch(user.id_filii) {
+						  case "2":  
+							nametemp="AП 2"
+							break
+						 case "5":  
+							nametemp="AП 5"
+							break
+						 case "6":  
+							nametemp="AП 6"
+							break
+						 case "8":  
+							nametemp="AП 8"
+							break 
+						case "9":  
+							nametemp="Тр. 1"
+							break
+						case "10":  
+							nametemp="Тр. 2"
+							break
+						case "11":  
+							nametemp="Тр. 3"
+							break		
+						case "12":  
+							nametemp="Тр. 4"
+							break	
+						case "13":  
+							nametemp="Подільське депо"
+							break
+						case "14":  
+							nametemp="Депо Шевченко"
+							break
+						case "15":  
+							nametemp="Дарницьке депо"
+							break		
+						}
+					};
+				//*/				  
+					//alert("1");
+					var result;
+					result= "<tr data-rowid='" + user.id_filii + "'><td"+">" + user.id_filii + "</td>" + 							
+							"<td"+">"  + nametemp + "</td>" +							
+							"<td"+">"  + user.NValid + "</td>" +
+							"<td"+">"  + user.tripsNoValid+"</td>" +							
+							"<td"+">"  + user.timeAsdu + "</td>" +
+							"<td"+">"  + user.timeAsop + "</td>" +
+							"<td"+">"  + user.timeAsopVal + "</td>" +
+							"<td"+">"  + user.NPE + "</td>" +					
+							"<td"+">"  + user.NPENotAsop+"</td>" +
+							"<td"+">"  + user.timeNotAsopF+"</td>" +
+							"<td"+">"  + user.NoPEVal  + "</td>" +
+							"<td"+">"  + user.timeNotValidAsopF+"</td>" +							
+							"</tr>";
+					//alert(result);		
+					return result;		
+							
+				}
+		
+			// нажимаем на ссылку показать оборудование
+			$("body").on("click", ".close", function () {
+				window.location = "#zatemnenie";
+				var data2 = $(this).data("id");//время  посылки оборудования
+				var url = data2;
+				document.getElementById('okno').innerHTML = url + "<br>" + "<a href='#" + $(this).data("loc") + "' class='close'>Закрити</a>";
+				window.location = "#zatemnenie";
+			})
+
+			// нажимаем на ссылку Изменить (переход к ЕШЛ)
+			$("body").on("click", ".editLink", function () {
+				var data2 = $(this).data("id");//табельный
+				var data3 = document.getElementById('datebegin').value;//текущая дата расчёта
+				var data4 = document.getElementById('selRep').value;//текущая филия
+				var dataAll = data2 + "d" + data3 + "d" + data4;//генерируем строку для передачи одним параметром
+				var url = "/formeshl" + dataAll
+				window.location = url;//Открываем другую страницу (НЕ ИСПОЛЬЗУ AJAX-запрос)
+			})
+
+			// Инициализируем нашу таблицу как грид, дабы была возможность сортировки
+			var g = new GridView('col');
+			g.Init();
+		</script>
+		<script type="text/javascript">
+			//Инициализация компонента календрря и отлов события смены датты
+			$('.datefuelpicker').datepicker({ 'format': 'yyyy-mm-dd', 'language': 'uk' }).on('changeDate', function (e) { $('.datefuelpicker').datepicker('hide'); $("table tbody").empty(); GetUsers(); });
+		</script>
+	</div>
+	<div id="zatemnenie">
+		<div id="okno">
+		</div>
+	</div>
+	{{> footer}}
+</body>
+
+</html>
