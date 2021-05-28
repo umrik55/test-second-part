@@ -1,3 +1,4 @@
+// 20210528  версия для ГИОЦ Этап 2, добавлены в валидации номер карты, айди продукта
 // 20210423  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb рейсы ПЕ
 // 20201203  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + интерфейс Evends Dm
 // 20201130  версия для ГИОЦ Этап 2, чтение/save с базы данных mongodb + nDocEndItem return
@@ -2610,8 +2611,8 @@ if (key1==="validCount" || key1==="timestamp"){
 				stop_code : stop_code,
 				stop_sequence : stop_sequence,
 				location_id : location_id,
-				//product_id : product_id,
-				//card_id : card_id,
+				product_id1 : product_id,
+				card_id1 : card_id,
 				product_id : door_id,
 				card_id : card_type,
 				doc_num : doc_num
